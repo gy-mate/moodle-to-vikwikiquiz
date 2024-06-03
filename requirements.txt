@@ -1,0 +1,4 @@
+# future: delete line below and extract dependencies below that to requirements-dev.txt when https://youtrack.jetbrains.com/issue/PY-9941/ is fixed
+# only for development
+black~=24.4.2
+mypy~=1.10.0
