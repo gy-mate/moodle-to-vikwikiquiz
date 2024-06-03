@@ -2,3 +2,6 @@
 # only for development
 black~=24.4.2
 mypy~=1.10.0
+types-beautifulsoup4~=4.12.0.20240511
+
+beautifulsoup4~=4.12.3
