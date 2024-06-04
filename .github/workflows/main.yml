@@ -17,27 +17,27 @@ jobs:
         with:
           python-version: 3.12.3
 
-      - name: Install Dependencies
+      - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install homebrew-pypi-poet
 
-      - name: Checkout CLI Tool Repository
+      - name: Install moodle-to-vikwikiquiz
         run: |
-          git clone https://github.com/gy-mate/moodle-to-vikwikiquiz
+          git clone https://github.com/gy-mate/moodle-to-vikwikiquiz.git
           cd moodle-to-vikwikiquiz
           pip install .
 
-      - name: Generate Homebrew Formula
+      - name: Generate Homebrew formula
         run: |
           poet -f moodle-to-vikwikiquiz > Formula/moodle_to_vikwikiquiz.rb
 
-      - name: Update Formula
+      - name: Update formula
         run: |
           sed -i 's|https://files.pythonhosted.org/packages/source/|https://github.com/gy-mate/homebrew-moodle-to-vikwikiquiz/archive/|' Formula/moodle_to_vikwikiquiz.rb
           sed -i 's|sha256 ".*"|sha256 "$(curl -sL https://github.com/gy-mate/homebrew-moodle-to-vikwikiquiz/archive/v${GITHUB_REF#refs/tags/}.tar.gz | shasum -a 256 | awk "{print \$1}")"|' Formula/moodle_to_vikwikiquiz.rb
 
-      - name: Commit and Push
+      - name: Commit and push
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
