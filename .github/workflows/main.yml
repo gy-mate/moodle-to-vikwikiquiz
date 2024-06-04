@@ -32,17 +32,17 @@ jobs:
 
       - name: Generate Homebrew formula
         run: |
-          poet -f moodle-to-vikwikiquiz > Formula/moodle_to_vikwikiquiz.rb
+          poet -f moodle-to-vikwikiquiz > Formula/moodle-to-vikwikiquiz.rb
 
       - name: Update formula
         run: |
-          sed -i 's|https://files.pythonhosted.org/packages/source/|https://github.com/gy-mate/homebrew-moodle-to-vikwikiquiz/archive/|' Formula/moodle_to_vikwikiquiz.rb
-          sed -i 's|sha256 ".*"|sha256 "$(curl -sL https://github.com/gy-mate/homebrew-moodle-to-vikwikiquiz/archive/v${GITHUB_REF#refs/tags/}.tar.gz | shasum -a 256 | awk "{print \$1}")"|' Formula/moodle_to_vikwikiquiz.rb
+          sed -i 's|https://files.pythonhosted.org/packages/source/|https://github.com/gy-mate/homebrew-moodle-to-vikwikiquiz/archive/|' Formula/moodle-to-vikwikiquiz.rb
+          sed -i 's|sha256 ".*"|sha256 "$(curl -sL https://github.com/gy-mate/homebrew-moodle-to-vikwikiquiz/archive/v${GITHUB_REF#refs/tags/}.tar.gz | shasum -a 256 | awk "{print \$1}")"|' Formula/moodle-to-vikwikiquiz.rb
 
       - name: Commit and push
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add Formula/moodle_to_vikwikiquiz.rb
+          git add Formula/moodle-to-vikwikiquiz.rb
           git commit -m "Update formula for version ${{ github.event.release.tag_name }}"
           git push
