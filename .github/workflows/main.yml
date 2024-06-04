@@ -32,10 +32,11 @@ jobs:
           TAG_NAME=${GITHUB_REF/refs\/tags\//}
           TAR_URL=https://github.com/gy-mate/homebrew-moodle-to-vikwikiquiz/archive/refs/tags/$TAG_NAME.tar.gz
           SHA256=$(curl -L $TAR_URL | sha256sum | cut -d' ' -f1)
-          sed -i "s|url \".*\"|url \"$TAR_URL\"|" $FORMULA_PATH
-          sed -i "s|sha256 \".*\"|sha256 \"$SHA256\"|" $FORMULA_PATH
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout main
+          sed -i "s|url \".*\"|url \"$TAR_URL\"|" $FORMULA_PATH
+          sed -i "s|sha256 \".*\"|sha256 \"$SHA256\"|" $FORMULA_PATH
           git add $FORMULA_PATH
           git commit -m "Updated formula for release ${{ github.event.release.tag_name }}"
           git push
