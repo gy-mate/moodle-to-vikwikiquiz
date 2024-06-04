@@ -6,7 +6,7 @@ setup(
     packages=find_packages(),
     entry_points={
         'console_scripts': [
-            'moodle-to-vikwikiquiz=moodle-to-vikwikiquiz:main',
+            'moodle-to-vikwikiquiz=src.main:main',
         ],
     },
 )

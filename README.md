@@ -10,7 +10,7 @@
 
 ## 📖 About
 
-A program for converting a graded Moodle quiz saved as a HTML file to a vik.viki quiz wikitext.
+A program for converting a graded Moodle quiz saved as an HTML file to a [vik.viki](https://vik.wiki/wiki/Segítség:Kvíz) quiz wikitext.
 
 
 ## 📋 Features
