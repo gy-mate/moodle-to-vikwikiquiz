@@ -7,10 +7,7 @@ from src.grading_types import GradingType
 from src.quiz import Quiz
 
 
-def main(verbose=False) -> None:
-    configure_logging(verbose)
-    logging.getLogger(__name__).info("Program started...")
-    
+def main() -> None:
     parser = ArgumentParser()
     parser.add_argument("-v", "--verbose", action="store_true", help="increase output verbosity")
     parser.add_argument("source_directory", help="the directory to import questions from")
@@ -19,6 +16,9 @@ def main(verbose=False) -> None:
     parser.add_argument("-g", "--grading", help="the grading type of the quiz")
     parser.add_argument("-o", "--output", help="the output file")
     args = parser.parse_args()
+    
+    configure_logging(args.verbose)
+    logging.getLogger(__name__).info("Program started...")
     
     full_source_directory = os.path.basename(args.source_directory)
     if args.grading == "+":
