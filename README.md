@@ -1,6 +1,6 @@
 # moodle-to-vikwikiquiz
 
-![Lines of code](https://img.shields.io/badge/lines_of_code-50-blue)
+![Lines of code](https://img.shields.io/badge/lines_of_code-200+-blue)
 [![Build status](https://scrutinizer-ci.com/g/gy-mate/homebrew-moodle-to-vikwikiquiz/badges/build.png?b=main)](https://scrutinizer-ci.com/g/gy-mate/homebrew-moodle-to-vikwikiquiz/build-status/main)
 [![Code quality](https://img.shields.io/scrutinizer/quality/g/gy-mate/homebrew-moodle-to-vikwikiquiz/main)](https://scrutinizer-ci.com/g/gy-mate/homebrew-moodle-to-vikwikiquiz/)
 [![Type hinting used](https://img.shields.io/badge/type_hinting-used-brightgreen)](https://docs.python.org/3/library/typing.html)
@@ -10,7 +10,7 @@
 
 ## 📖 About
 
-A program for converting a graded Moodle quiz saved as an HTML file to a [vik.viki](https://vik.wiki/wiki/Segítség:Kvíz) quiz wikitext.
+A program for converting a graded Moodle quiz saved as an HTML file to a [vik.viki quiz](https://vik.wiki/wiki/Segítség:Kvíz) wikitext.
 
 
 ## 📋 Features
