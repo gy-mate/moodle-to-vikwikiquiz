@@ -26,18 +26,16 @@ class Quiz:
         if self.grading:
             text += f"\n|pontozás={self.grading.value}"
         text += "\n}}"
-        
         for question in self.questions:
             text += f"\n\n\n{question}"
-        
+        text += "\n"
         return text
     
     def import_questions(self, directory: str) -> None:
-        questions: list[Question] = []
         for subdir, dirs, files in os.walk(directory):
             for file in files:
                 file_path = os.path.join(subdir, file)
-                with open(file_path, "r") as source_file:
+                with open(file_path, "rb") as source_file:
                     webpage = BeautifulSoup(source_file, "html.parser")
                     
                     multichoice_questions = webpage.find_all("div", class_="multichoice")
@@ -59,7 +57,7 @@ class Quiz:
                         i = 1
                         for answer in answers:
                             with contextlib.suppress(TypeError):
-                                answer_texts.append(answer.find("div", class_="ml-1").text)
+                                answer_texts.append(answer.find("div", class_="ml-1").text.rstrip("."))
                                 if "correct" in answer["class"]:
                                     correct_answers.append(i)
                                 i += 1
@@ -76,38 +74,22 @@ The answers are:""")
                             print()
                             while True:
                                 additional_correct_answer = input(
-                                    f"Please enter a missing correct answer (if there is any remaining) and press Enter: ")
+                                    f"Please enter a missing correct answer (if there is any remaining) then press Enter: ")
                                 if additional_correct_answer == "" or len(correct_answers) == len(answer_texts) - 1:
                                     break
                                 correct_answers.append(int(additional_correct_answer))
                         illustration = True if question.find("img", class_="img-responsive") else False
-                        questions.append(
-                            Question(q_type=QuestionType.MultipleChoice, text=question_text, illustration=illustration,
-                                     answers=answer_texts,
-                                     correct_answers=correct_answers))
-        self.questions = set(questions)
-        
-    def deduplicate_questions(self) -> None:
-        copied_questions = list(self.questions)
-        other_copied_questions = list(self.questions)
-        new_questions: list[Question] = []
-        with contextlib.suppress(KeyError):
-            while copied_questions:
-                question = copied_questions.pop()
-                i = 0
-                while True:
-                    other_question = other_copied_questions[i]
-                    if question != other_question and question.text == other_question.text:
-                        for j, answer in enumerate(other_question.answers):
-                            if answer not in question.answers:
-                                question.answers.append(answer)
-                                if j + 1 in other_question.correct_answers:
-                                    question.correct_answers.append(len(question.answers))
-                        other_copied_questions.remove(other_question)
-                    else:
-                        i += 1
-                        if i >= len(other_copied_questions):
-                            break
-                other_copied_questions.remove(question)
-                new_questions.append(question)
-        self.questions = set(new_questions)
+                        
+                        for existing_question in self.questions:
+                            if existing_question.text == question_text:
+                                for k, answer in enumerate(answer_texts):
+                                    if answer not in existing_question.answers:
+                                        existing_question.answers.append(answer)
+                                        if k + 1 in correct_answers:
+                                            existing_question.correct_answers.append(len(existing_question.answers))
+                                break
+                        else:
+                            self.questions.add(
+                                Question(q_type=QuestionType.MultipleChoice, text=question_text, illustration=illustration,
+                                         answers=answer_texts,
+                                         correct_answers=correct_answers))

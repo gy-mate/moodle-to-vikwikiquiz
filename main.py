@@ -29,7 +29,6 @@ def main(verbose=False) -> None:
         grading = None
     quiz = Quiz(parent_article=args.parent_article, title=args.title, grading=grading)
     quiz.import_questions(full_source_directory)
-    quiz.deduplicate_questions()
     
     export_file = f"{full_source_directory}/quiz.txt"
     if requested_export_file := args.output:
