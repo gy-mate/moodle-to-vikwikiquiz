@@ -10,39 +10,41 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v2
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
         with:
-          python-version: 3.12.3
+          ruby-version: '3.3.2'
 
-      - name: Install dependencies
+      - name: Install Brew
         run: |
-          python -m pip install --upgrade pip
-          pip install homebrew-pypi-poet
+          sudo apt-get update
+          sudo apt-get install build-essential
+          /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+          echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >>~/.profile
+          eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+          brew tap homebrew/core
 
-      - name: Install moodle-to-vikwikiquiz
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Update Formula
         run: |
-          git clone https://github.com/gy-mate/moodle-to-vikwikiquiz.git
-          cd moodle-to-vikwikiquiz
-          pip install .
-
-      - name: Generate Homebrew formula
-        run: |
-          poet -f moodle-to-vikwikiquiz > Formula/moodle-to-vikwikiquiz.rb
-
-      - name: Update formula
-        run: |
-          sed -i 's|https://files.pythonhosted.org/packages/source/|https://github.com/gy-mate/homebrew-moodle-to-vikwikiquiz/archive/|' Formula/moodle-to-vikwikiquiz.rb
-          sed -i 's|sha256 ".*"|sha256 "$(curl -sL https://github.com/gy-mate/homebrew-moodle-to-vikwikiquiz/archive/v${GITHUB_REF#refs/tags/}.tar.gz | shasum -a 256 | awk "{print \$1}")"|' Formula/moodle-to-vikwikiquiz.rb
+          FORMULA_PATH=Formula/moodle-to-vikwikiquiz.rb
+          FORMULA_NAME=moodle-to-vikwikiquiz
+          TAG_NAME=${GITHUB_REF/refs\/tags\//}
+          TAR_URL=https://github.com/gy-mate/homebrew-moodle-to-vikwikiquiz/archive/refs/tags/$TAG_NAME.tar.gz
+          SHA256=$(curl -L $TAR_URL | sha256sum | cut -d' ' -f1)
+          sed -i "s|url \".*\"|url \"$TAR_URL\"|" $FORMULA_PATH
+          sed -i "s|sha256 \".*\"|sha256 \"$SHA256\"|" $FORMULA_PATH
 
       - name: Commit and push
         run: |
           git config --global user.name "github-actions[bot]"
-          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add Formula/moodle-to-vikwikiquiz.rb
-          git commit -m "Update formula for version ${{ github.event.release.tag_name }}"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add $FORMULA_PATH
+          git commit -m "Updated formula for release ${{ github.event.release.tag_name }}"
           git push
+
+      - name: Test Formula
+        run: |
+          brew install --build-from-source Formula/moodle-to-vikwikiquiz.rb
+          moodle-to-vikwikiquiz --version
