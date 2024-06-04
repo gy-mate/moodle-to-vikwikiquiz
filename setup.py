@@ -5,8 +5,8 @@ setup(
     description="A CLI for converting a graded Moodle quiz HTML to a vik.wiki quiz wikitext.",
     author="Máté Gyöngyösi",
     url="https://github.com/gy-mate/homebrew-moodle-to-vikwikiquiz",
-    version="1.0.0",
-    packages=find_packages(),
+    version="1.0.11",
+    packages=find_packages("src"),
     entry_points={
         "console_scripts": [
             "moodle-to-vikwikiquiz=src.main:main",
