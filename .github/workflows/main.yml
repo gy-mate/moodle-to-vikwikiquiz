@@ -1,4 +1,4 @@
-name: Update Homebrew Formula
+name: Update Homebrew formula
 
 on:
   release:
@@ -23,6 +23,8 @@ jobs:
           pip install homebrew-pypi-poet
 
       - name: Install moodle-to-vikwikiquiz
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git clone https://github.com/gy-mate/moodle-to-vikwikiquiz.git
           cd moodle-to-vikwikiquiz
