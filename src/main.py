@@ -3,8 +3,8 @@ import logging
 import os.path
 import sys
 
-from grading_types import GradingType
-from quiz import Quiz
+from src.grading_types import GradingType
+from src.quiz import Quiz
 
 
 def main(verbose=False) -> None:
@@ -28,7 +28,7 @@ def main(verbose=False) -> None:
     else:
         grading = None
     quiz = Quiz(parent_article=args.parent_article, title=args.title, grading=grading)
-    quiz.import_questions(full_source_directory)
+    quiz.import_files(full_source_directory)
     
     export_file = f"{full_source_directory}/quiz.txt"
     if requested_export_file := args.output:
@@ -36,7 +36,7 @@ def main(verbose=False) -> None:
             export_file = os.path.basename(requested_export_file)
     with open(export_file, "w") as file:
         file.write(str(quiz))
-        
+    
     logging.getLogger(__name__).info("...program finished!")
 
 

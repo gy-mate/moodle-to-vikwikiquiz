@@ -1,5 +1,5 @@
-from grading_types import GradingType
-from question_types import QuestionType
+from src.grading_types import GradingType
+from src.question_types import QuestionType
 
 
 class Question:
