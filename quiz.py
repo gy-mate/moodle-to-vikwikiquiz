@@ -80,11 +80,34 @@ The answers are:""")
                                 if additional_correct_answer == "" or len(correct_answers) == len(answer_texts) - 1:
                                     break
                                 correct_answers.append(int(additional_correct_answer))
-                        illustration = False
-                        if question.find("img", class_="img-responsive"):
-                            illustration = True
+                        illustration = True if question.find("img", class_="img-responsive") else False
                         questions.append(
                             Question(q_type=QuestionType.MultipleChoice, text=question_text, illustration=illustration,
                                      answers=answer_texts,
                                      correct_answers=correct_answers))
         self.questions = set(questions)
+        
+    def deduplicate_questions(self) -> None:
+        copied_questions = list(self.questions)
+        other_copied_questions = list(self.questions)
+        new_questions: list[Question] = []
+        with contextlib.suppress(KeyError):
+            while copied_questions:
+                question = copied_questions.pop()
+                i = 0
+                while True:
+                    other_question = other_copied_questions[i]
+                    if question != other_question and question.text == other_question.text:
+                        for j, answer in enumerate(other_question.answers):
+                            if answer not in question.answers:
+                                question.answers.append(answer)
+                                if j + 1 in other_question.correct_answers:
+                                    question.correct_answers.append(len(question.answers))
+                        other_copied_questions.remove(other_question)
+                    else:
+                        i += 1
+                        if i >= len(other_copied_questions):
+                            break
+                other_copied_questions.remove(question)
+                new_questions.append(question)
+        self.questions = set(new_questions)
