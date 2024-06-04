@@ -17,16 +17,15 @@ jobs:
         with:
           ruby-version: '3.3.2'
 
-      - name: Install Brew
+      - name: Install brew
         run: |
           sudo apt-get update
           sudo apt-get install build-essential
           /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
           echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >>~/.profile
           eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-          brew tap homebrew/core
 
-      - name: Update Formula
+      - name: Update formula
         run: |
           FORMULA_PATH=Formula/moodle-to-vikwikiquiz.rb
           FORMULA_NAME=moodle-to-vikwikiquiz
@@ -44,7 +43,7 @@ jobs:
           git commit -m "Updated formula for release ${{ github.event.release.tag_name }}"
           git push
 
-      - name: Test Formula
+      - name: Test formula
         run: |
           brew install --build-from-source Formula/moodle-to-vikwikiquiz.rb
           moodle-to-vikwikiquiz --version
