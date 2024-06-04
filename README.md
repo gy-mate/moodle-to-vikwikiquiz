@@ -38,6 +38,22 @@ A program for converting a graded Moodle quiz saved as an HTML file to a [vik.vi
 moodle-to-vikwikiquiz [--verbose|-v] [[--grading|-g] grading_method] [[--output|-o] destination_file] source_directory parent_article title
 ```
 
+Parameters:
+* `grading_method`: `+` or `-`. See https://vik.wiki/wiki/Segítség:Kvíz#Pontozás for further info.
+* `destination_file`: The name of the file where the wikitext quiz should be exported to. Use `.txt` as the extension.
+* `source_directory`: The directory where the Moodle quiz HTML files are located. The review page of the quizzes should be downloaded.
+* `parent_article`: The article name of the course on [vik.wiki](https://vik.wiki/).
+* `title`: How the quiz should be named on [vik.wiki](https://vik.wiki/). This usually is in the following form: `[course name] kvíz – [exam name]`.
+
+Example:
+* Convert all *Elektronika alapjai* Moodle quizzes downloaded to `~/Downloads/downloaded_ELA_quizzes`:
+```bash
+moodle-to-vikwikiquiz --grading - ~/Downloads/downloaded_ELA_quizzes "Elektronika alapjai" "Elektronika alapjai kvíz – vizsga"
+```
+
+Always check the output before uploading it to [vik.wiki](https://vik.wiki/). 
+Upload all images and add their filenames to the quiz manually on [vik.wiki](https://vik.wiki/).
+
 ## 📜 License
 
 This project is licensed under the _GNU General Public License v3.0_.
