@@ -2,6 +2,8 @@ import re
 
 from bs4 import Tag
 
+from src.question import Question
+
 
 def get_grading_of_question(question: Tag) -> tuple[bool, float, float]:
     correctly_answered: bool
@@ -13,12 +15,10 @@ def get_grading_of_question(question: Tag) -> tuple[bool, float, float]:
     numbers = re.findall(r"\d+\.\d+", grading_text)
     grade = float(numbers[0])
     maximum_points = float(numbers[1])
-    
     if grade == maximum_points:
         correctly_answered = True
     else:
         correctly_answered = False
-    
     return correctly_answered, grade, maximum_points
 
 
@@ -69,3 +69,18 @@ def get_question_text(question: Tag) -> str:
     assert isinstance(found_tag, Tag)
     question_text = found_tag.text
     return question_text
+
+
+def question_already_exists(existing_question: Question, question_text: str) -> bool:
+    return existing_question.text == question_text
+
+
+def add_answers_to_existing_question(answer_texts: list[str], correct_answers: list[int],
+                                     existing_question: Question) -> None:
+    # report false positive to mypy developers
+    for k, answer in enumerate(answer_texts):  # type: ignore
+        if answer not in existing_question.answers:
+            assert isinstance(answer, str)
+            existing_question.answers.append(answer)
+            if k + 1 in correct_answers:
+                existing_question.correct_answers.append(len(existing_question.answers))

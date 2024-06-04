@@ -5,7 +5,9 @@ from bs4 import BeautifulSoup, Tag
 from src.grading_types import GradingType
 from src.question import Question
 from src.question_types import QuestionType
-from src.quiz_helpers import complete_correct_answers, get_answers, get_grading_of_question, get_question_text
+from src.quiz_helpers import add_answers_to_existing_question, complete_correct_answers, get_answers, \
+    get_grading_of_question, get_question_text, \
+    question_already_exists
 
 
 class Quiz:
@@ -56,14 +58,8 @@ class Quiz:
     def add_question_no_duplicates(self, answer_texts: list[str], correct_answers: list[int], has_illustration: bool,
                                    question_text: str) -> None:
         for existing_question in self.questions:
-            if existing_question.text == question_text:
-                # report false positive to mypy developers
-                for k, answer in enumerate(answer_texts):  # type: ignore
-                    if answer not in existing_question.answers:
-                        assert isinstance(answer, str)
-                        existing_question.answers.append(answer)
-                        if k + 1 in correct_answers:
-                            existing_question.correct_answers.append(len(existing_question.answers))
+            if question_already_exists(existing_question, question_text):
+                add_answers_to_existing_question(answer_texts, correct_answers, existing_question)
                 break
         else:
             self.questions.add(
