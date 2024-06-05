@@ -2,7 +2,7 @@ import re
 
 from bs4 import Tag
 
-from src.moodle_to_vikwikiquiz.question import Question
+from .question import Question
 
 
 def get_grading_of_question(question: Tag) -> tuple[bool, float, float]:

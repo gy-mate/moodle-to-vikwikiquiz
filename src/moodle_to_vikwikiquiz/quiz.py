@@ -2,9 +2,9 @@ import os
 
 from bs4 import BeautifulSoup
 
-from src.moodle_to_vikwikiquiz.grading_types import GradingType
-from src.moodle_to_vikwikiquiz.question_types import QuestionType
-from src.moodle_to_vikwikiquiz.quiz_helpers import *
+from .grading_types import GradingType
+from .question_types import QuestionType
+from .quiz_helpers import *
 
 
 class Quiz:

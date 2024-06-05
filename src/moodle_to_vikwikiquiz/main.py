@@ -3,8 +3,8 @@ import logging
 import os.path
 import sys
 
-from src.moodle_to_vikwikiquiz.grading_types import GradingType
-from src.moodle_to_vikwikiquiz.quiz import Quiz
+from .grading_types import GradingType
+from .quiz import Quiz
 
 
 def main() -> None:

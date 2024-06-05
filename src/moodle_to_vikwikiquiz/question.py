@@ -1,5 +1,5 @@
-from src.moodle_to_vikwikiquiz.grading_types import GradingType
-from src.moodle_to_vikwikiquiz.question_types import QuestionType
+from .grading_types import GradingType
+from .question_types import QuestionType
 
 
 class Question:
