@@ -24,7 +24,7 @@ def main() -> None:
     configure_logging(args.verbose)
     logging.getLogger(__name__).info("Program started...")
 
-    full_source_directory = os.path.basename(args.source_directory)
+    full_source_directory = args.source_directory
     if args.grading == "+":
         grading = GradingType.Kind
     elif args.grading == "-":
