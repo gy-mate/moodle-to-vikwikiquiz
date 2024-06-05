@@ -5,7 +5,7 @@ class MoodleToVikwikiquiz < Formula
 
   desc "A CLI for converting a graded Moodle quiz HTML to a vik.wiki quiz wikitext."
   homepage "https://github.com/gy-mate/homebrew-moodle-to-vikwikiquiz"
-  url "https://github.com/gy-mate/homebrew-moodle-to-vikwikiquiz/archive/1.0.12.tar.gz"
+  url "https://github.com/gy-mate/homebrew-moodle-to-vikwikiquiz/archive/1.0.13.tar.gz"
   license "GPl-3.0"
   sha256 ""
   head "https://github.com/gy-mate/homebrew-moodle-to-vikwikiquiz.git"
