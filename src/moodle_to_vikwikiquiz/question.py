@@ -1,16 +1,16 @@
-from src.grading_types import GradingType
-from src.question_types import QuestionType
+from src.moodle_to_vikwikiquiz.grading_types import GradingType
+from src.moodle_to_vikwikiquiz.question_types import QuestionType
 
 
 class Question:
     def __init__(
-            self,
-            q_type: QuestionType,
-            text: str,
-            illustration: bool,
-            answers: list[str],
-            correct_answers: list[int],
-            grading: GradingType | None = None,
+        self,
+        q_type: QuestionType,
+        text: str,
+        illustration: bool,
+        answers: list[str],
+        correct_answers: list[int],
+        grading: GradingType | None = None,
     ):
         self.q_type = q_type
         self.text = text
@@ -18,7 +18,7 @@ class Question:
         self.grading = grading
         self.answers = answers
         self.correct_answers = correct_answers
-    
+
     def __str__(self) -> str:
         text = f"== {self.text} =="
         if self.illustration:
@@ -30,6 +30,16 @@ class Question:
         for answer in self.answers:
             text += f"\n# {answer}"
         return text
-    
+
     def __hash__(self) -> int:
-        return hash(frozenset((self.q_type, self.text, self.answers.sort(), self.correct_answers.sort(), self.grading)))
+        return hash(
+            frozenset(
+                (
+                    self.q_type,
+                    self.text,
+                    self.answers.sort(),
+                    self.correct_answers.sort(),
+                    self.grading,
+                )
+            )
+        )

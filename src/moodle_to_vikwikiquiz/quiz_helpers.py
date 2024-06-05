@@ -2,15 +2,15 @@ import re
 
 from bs4 import Tag
 
-from src.question import Question
+from src.moodle_to_vikwikiquiz.question import Question
 
 
 def get_grading_of_question(question: Tag) -> tuple[bool, float, float]:
     correctly_answered: bool
-    
+
     found_tag = question.find("div", class_="grade")
     assert isinstance(found_tag, Tag)
-    
+
     grading_text = found_tag.text
     numbers = re.findall(r"\d+\.\d+", grading_text)
     grade = float(numbers[0])
@@ -22,15 +22,22 @@ def get_grading_of_question(question: Tag) -> tuple[bool, float, float]:
     return correctly_answered, grade, maximum_points
 
 
-def complete_correct_answers(answer_texts: list[str], correct_answers: list[int], grade: float,
-                             maximum_points: float, question_text: str) -> None:
-    print(f"""
+def complete_correct_answers(
+    answer_texts: list[str],
+    correct_answers: list[int],
+    grade: float,
+    maximum_points: float,
+    question_text: str,
+) -> None:
+    print(
+        f"""
 
 Question: '{question_text}'
 
 I see that answers {correct_answers} are correct, but this list may be incomplete because you only got {grade:g} points out of {maximum_points:g}.
 
-The answers are:""")
+The answers are:"""
+    )
     assert isinstance(answer_texts, list)
     # report false positive to mypy developers
     for j, answer in enumerate(answer_texts):  # type: ignore
@@ -38,8 +45,12 @@ The answers are:""")
     print()
     while True:
         additional_correct_answer = input(
-            f"Please enter a missing correct answer (if there is any remaining) then press Enter: ")
-        if additional_correct_answer == "" or len(correct_answers) == len(answer_texts) - 1:
+            f"Please enter a missing correct answer (if there is any remaining) then press Enter: "
+        )
+        if (
+            additional_correct_answer == ""
+            or len(correct_answers) == len(answer_texts) - 1
+        ):
             break
         correct_answers.append(int(additional_correct_answer))
 
@@ -75,8 +86,9 @@ def question_already_exists(existing_question: Question, question_text: str) -> 
     return existing_question.text == question_text
 
 
-def add_answers_to_existing_question(answer_texts: list[str], correct_answers: list[int],
-                                     existing_question: Question) -> None:
+def add_answers_to_existing_question(
+    answer_texts: list[str], correct_answers: list[int], existing_question: Question
+) -> None:
     # report false positive to mypy developers
     for k, answer in enumerate(answer_texts):  # type: ignore
         if answer not in existing_question.answers:
