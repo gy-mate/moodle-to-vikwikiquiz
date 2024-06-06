@@ -28,8 +28,29 @@ A program for converting a graded Moodle quiz saved as an HTML file to a [vik.vi
 2. Run the following command in the terminal:
 
   ```bash
-  brew install gy-mate/moodle-to-vikwikiquiz/moodle-to-vikwikiquiz
+  brew install pipx && pipx ensurepath && pipx install moodle-to-vikwikiquiz
   ```
+
+### ⏫ Updating
+
+Run the following command in the terminal:
+
+```bash
+pipx upgrade-all
+```
+
+If you want this to run automatically, create a cron job:
+
+1. Open the `crontab` file:
+  ```bash
+  crontab -e
+  ```
+2. Add the following line to the end of the file:
+  ```bash
+  @weekly pipx upgrade-all
+  ```
+  You may replace `@weekly` with `@daily` or `@monthly`.
+
 
 
 ## 🧑‍💻 Usage
