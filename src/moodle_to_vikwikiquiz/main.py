@@ -22,7 +22,7 @@ def main() -> None:
     args = parser.parse_args()
 
     configure_logging(args.verbose)
-    logging.getLogger(__name__).info("Program started...")
+    logging.getLogger(__name__).debug("Program started...")
 
     full_source_directory = args.source_directory
     if args.grading == "+":
@@ -41,7 +41,7 @@ def main() -> None:
     with open(export_file, "w") as file:
         file.write(str(quiz))
 
-    logging.getLogger(__name__).info("...program finished!")
+    logging.getLogger(__name__).debug("...program finished!")
 
 
 def configure_logging(verbose: bool) -> None:
