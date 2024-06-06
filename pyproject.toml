@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "moodle-to-vikwikiquiz"
+description = "A CLI for converting a graded Moodle quiz HTML to a vik.wiki quiz wikitext"
+readme = "README.md"
+authors = [
+    { name="Máté Gyöngyösi", email="melees00_quern@icloud.com" },
+]
+version = "1.0.23"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Operating System :: OS Independent",
+]
+requires-python = ">=3.9"
+dependencies = [
+    "beautifulsoup4",
+]
+
+[project.urls]
+Homepage = "https://github.com/gy-mate/moodle-to-vikwikiquiz"
+Issues = "https://github.com/gy-mate/moodle-to-vikwikiquiz/issues"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[project.scripts]
+moodle-to-vikwikiquiz = "moodle_to_vikwikiquiz.main:main"
