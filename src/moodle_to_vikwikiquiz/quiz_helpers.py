@@ -43,6 +43,12 @@ The answers are:"""
     for j, answer in enumerate(answer_texts):  # type: ignore
         print(f"#{j + 1}\t{answer}")
     print()
+    get_missing_correct_answers(answer_texts, correct_answers)
+
+
+def get_missing_correct_answers(
+    answer_texts: list[str], correct_answers: list[int]
+) -> None:
     while True:
         additional_correct_answer = input(
             f"Please enter a missing correct answer (if there is any remaining) then press Enter: "
