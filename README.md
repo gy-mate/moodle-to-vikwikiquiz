@@ -46,7 +46,7 @@ Parameters:
 * `title`: How the quiz should be named on [vik.wiki](https://vik.wiki/). This usually is in the following form: `[course name] kvíz – [exam name]`.
 
 Example:
-* Convert all *Elektronika alapjai* Moodle quizzes downloaded to `~/Downloads/downloaded_ELA_quizzes`:
+* Convert all [Elektronika alapjai](https://vik.wiki/wiki/Elektronika_alapjai) Moodle quizzes downloaded to `~/Downloads/downloaded_ELA_quizzes`:
 ```bash
 moodle-to-vikwikiquiz --grading - ~/Downloads/downloaded_ELA_quizzes "Elektronika alapjai" "Elektronika alapjai kvíz – vizsga"
 ```
