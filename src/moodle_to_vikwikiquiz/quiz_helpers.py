@@ -1,3 +1,4 @@
+import os
 import re
 
 from bs4 import Tag
@@ -56,27 +57,34 @@ def complete_correct_answers(
             get_id_of_only_remaining_answer(answer_texts, correct_answers)
         )
         return
-    print(f"\n\nQuestion: '{question_text}'")
+    os.system("cls||clear")
+    print(f"Question: '{question_text}'")
     match len(correct_answers):
         case 0:
-            print("\nI see that none of your answers were correct.")
+            print("\nI see that none of your answers were correct.", end=" ")
         case 1:
             print(
                 f"\nI see that answer {correct_answers[0]} is correct, "
-                f"but there might be additional correct answers because you only got {grade:g} points out of {maximum_points:g}."
+                f"but there might be additional correct answers because you only got {grade:g} points out of {maximum_points:g}.",
+                end=" ",
             )
         case _:
             print(
                 f"\nI see that answers {correct_answers} are correct, "
-                f"but this list may be incomplete because you only got {grade:g} points out of {maximum_points:g}."
+                f"but this list may be incomplete because you only got {grade:g} points out of {maximum_points:g}.",
+                end=" ",
             )
-    print(f"\nThe possible answers are:")
+    print(f"The possible answers are:", end="\n\n")
     assert isinstance(answer_texts, list)
     # report false positive to mypy developers
     for j, answer in enumerate(answer_texts):  # type: ignore
         print(f"#{j + 1}\t{answer}")
     print()
-    get_missing_correct_answers(answer_texts, correct_answers, question_type)
+    while True:
+        get_missing_correct_answers(answer_texts, correct_answers, question_type)
+        if correct_answers:
+            break
+        print("Error: no correct answers were provided!", end="\n\n")
 
 
 def get_id_of_only_remaining_answer(
@@ -130,7 +138,7 @@ def get_question_text(question: Tag) -> str:
 
 
 def format_latex_as_wikitext(text: str) -> str:
-    text = re.sub(r"^(\\)?\\\(( )?( \\(?=\\))?", "<math>", text)
+    text = re.sub(r"^(\\)?\\\(( )?(( )?\\(?=\\))?", "<math>", text)
     text = re.sub(r"( \\)?\\\)( )?$", "</math>", text)
     return text
 
