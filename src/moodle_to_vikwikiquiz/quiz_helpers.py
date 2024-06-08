@@ -5,10 +5,10 @@ from bs4 import Tag
 
 # future: report false positive to JetBrains developers
 # noinspection PyPackages
-from .question import Question
+from .question import Question  # type: ignore
 
 # noinspection PyPackages
-from .question_types import QuestionType
+from .question_types import QuestionType  # type: ignore
 
 
 def get_question_type(question: Tag) -> QuestionType:
@@ -20,7 +20,7 @@ def get_question_type(question: Tag) -> QuestionType:
         raise NotImplementedError("Question type not implemented.")
 
 
-def get_grading_of_question(question: Tag) -> tuple[bool, float, float]:
+def get_grading_of_question(question: Tag) -> tuple[bool, float | None, float]:
     correctly_answered: bool
 
     found_tag = question.find("div", class_="grade")
@@ -93,6 +93,7 @@ def get_id_of_only_remaining_answer(
     for i, answer in enumerate(answer_texts, 1):
         if i not in correct_answers:
             return i
+    raise NotImplementedError
 
 
 def get_missing_correct_answers(
@@ -156,4 +157,4 @@ def add_answers_to_existing_question(
             assert isinstance(answer, str)
             existing_question.answers.append(answer)
             if k + 1 in correct_answers:
-                existing_question.correct_answers.append(len(existing_question.answers))
+                existing_question.correct_answers.add(len(existing_question.answers))
