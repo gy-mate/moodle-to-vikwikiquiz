@@ -27,8 +27,15 @@ def get_grading_of_question(question: Tag) -> tuple[bool, float, float]:
 
     grading_text = found_tag.text
     numbers = re.findall(r"\d+\.\d+", grading_text)
-    grade = float(numbers[0])
-    maximum_points = float(numbers[1])
+    grade: float | None = None
+    match len(numbers):
+        case 1:
+            maximum_points = float(numbers[0])
+        case 2:
+            grade = float(numbers[0])
+            maximum_points = float(numbers[1])
+        case _:
+            raise NotImplementedError
     if grade == maximum_points:
         correctly_answered = True
     else:
@@ -123,8 +130,8 @@ def get_question_text(question: Tag) -> str:
 
 
 def format_latex_as_wikitext(text: str) -> str:
-    text = re.sub(r"^\\\(", "<math>", text)
-    text = re.sub(r"\\\)$", "</math>", text)
+    text = re.sub(r"^\\\(( \\)?", "<math>", text)
+    text = re.sub(r"\\\)( )?$", "</math>", text)
     return text
 
 
