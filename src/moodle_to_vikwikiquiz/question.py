@@ -1,4 +1,8 @@
+# future: report false positive to JetBrains developers
+# noinspection PyPackages
 from .grading_types import GradingType
+
+# noinspection PyPackages
 from .question_types import QuestionType
 
 
@@ -23,7 +27,7 @@ class Question:
         text = f"== {self.text} =="
         if self.illustration:
             text += "\n[[Fájl:.png|bélyegkép]]"
-        text += f"\n\n{{{{kvízkérdés|típus={self.q_type.value}|válasz={",".join([str(answer) for answer in self.correct_answers])}"
+        text += f"\n{{{{kvízkérdés|típus={self.q_type.value}|válasz={",".join([str(answer) for answer in self.correct_answers])}"
         if self.grading:
             text += f"|pontozás={self.grading}"
         text += "}}"

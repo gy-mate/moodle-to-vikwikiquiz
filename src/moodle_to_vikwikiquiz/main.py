@@ -3,7 +3,11 @@ import logging
 import os.path
 import sys
 
+# future: report false positive to JetBrains developers
+# noinspection PyPackages
 from .grading_types import GradingType
+
+# noinspection PyPackages
 from .quiz import Quiz
 
 
