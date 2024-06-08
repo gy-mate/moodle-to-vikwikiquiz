@@ -130,8 +130,8 @@ def get_question_text(question: Tag) -> str:
 
 
 def format_latex_as_wikitext(text: str) -> str:
-    text = re.sub(r"^\\\(( \\)?", "<math>", text)
-    text = re.sub(r"\\\)( )?$", "</math>", text)
+    text = re.sub(r"^(\\)?\\\(( )?( \\(?=\\))?", "<math>", text)
+    text = re.sub(r"( \\)?\\\)( )?$", "</math>", text)
     return text
 
 
