@@ -61,7 +61,7 @@ def complete_correct_answers(
     print(f"Question: '{question_text}'")
     match len(correct_answers):
         case 0:
-            print("\nI see that none of your answers were correct.", end=" ")
+            print("\nI couldn't determine any correct answers.", end=" ")
         case 1:
             print(
                 f"\nI see that answer {correct_answers[0]} is correct, "
@@ -110,26 +110,35 @@ def get_missing_correct_answers(
             break
 
 
-def get_answers(question: Tag) -> tuple[list[str], list[int]]:
+def get_answers(question: Tag, grade: float, maximum_points: float) -> tuple[list[str], list[int]]:
     answers = question.find("div", class_="answer")
     assert isinstance(answers, Tag)
     answer_texts: list[str] = []
     correct_answers: list[int] = []
     i = 1
     for answer in answers:
-        try:
-            assert isinstance(answer, Tag)
-        except AssertionError:
+        if not isinstance(answer, Tag):
             continue
         found_tag = answer.find("div", class_="ml-1")
         assert isinstance(found_tag, Tag)
         answer_text = found_tag.text.rstrip(".\n")
         answer_text = format_latex_as_wikitext(answer_text)
         answer_texts.append(answer_text)
-        if "correct" in answer["class"]:
+        if answer_is_correct(answer, grade, maximum_points):
             correct_answers.append(i)
         i += 1
     return answer_texts, correct_answers
+
+
+def answer_is_correct(answer: Tag, grade: float, maximum_points: float) -> bool:
+    if "correct" in answer["class"]:
+        return True
+    elif grade == maximum_points:
+        answer_input_element = answer.find("input")
+        assert isinstance(answer_input_element, Tag)
+        if answer_input_element.has_attr("checked"):
+            return True
+    return False
 
 
 def get_question_text(question: Tag) -> str:

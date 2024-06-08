@@ -71,7 +71,7 @@ class Quiz:
             question_type = get_question_type(question)  # type: ignore
         correctly_answered, grade, maximum_points = get_grading_of_question(question)  # type: ignore
         question_text = get_question_text(question)  # type: ignore
-        answer_texts, correct_answers = get_answers(question)  # type: ignore
+        answer_texts, correct_answers = get_answers(question, grade, maximum_points)  # type: ignore
         if not correctly_answered:
             complete_correct_answers(  # type: ignore
                 answer_texts,
