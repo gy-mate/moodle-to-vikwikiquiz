@@ -22,7 +22,7 @@ class Question(BaseModel):
     def __str__(self) -> str:
         text = f"== {self.text} =="
         if self.illustration:
-            text += "\n[[Fájl:.png|bélyegkép]]"
+            text += "\n[[Fájl:.png|keret|keretnélküli|500x500px]]"
         ordered_correct_answers = list(self.correct_answers)
         ordered_correct_answers.sort()
         text += (f"\n{{{{kvízkérdés|típus={self.q_type.value}"
