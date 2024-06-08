@@ -1,4 +1,3 @@
-import os
 import re
 
 from bs4 import Tag
@@ -57,7 +56,6 @@ def complete_correct_answers(
             get_id_of_only_remaining_answer(answer_texts, correct_answers)
         )
         return
-    os.system("cls||clear")
     print(f"Question: '{question_text}'")
     match len(correct_answers):
         case 0:
@@ -150,7 +148,7 @@ def answer_is_correct(answer: Tag, grade: float, maximum_points: float) -> bool:
 def get_question_text(question: Tag) -> str:
     found_tag = question.find("div", class_="qtext")
     assert isinstance(found_tag, Tag)
-    return found_tag.text
+    return found_tag.text.rstrip()
 
 
 def format_latex_as_wikitext(text: str) -> str:

@@ -65,6 +65,7 @@ class Quiz:
             )
             for question in multi_or_single_choice_questions:
                 self.import_question(question)
+                os.system("cls||clear")
 
     def import_question(self, question: Tag) -> None:
         with contextlib.suppress(NotImplementedError):
