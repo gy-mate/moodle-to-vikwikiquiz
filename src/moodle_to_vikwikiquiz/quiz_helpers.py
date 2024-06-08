@@ -105,6 +105,12 @@ def get_missing_correct_answers(
         )
         if additional_correct_answer == "":
             break
+        elif not additional_correct_answer.isdigit():
+            print("Error: an integer was expected!", end="\n\n")
+            continue
+        elif int(additional_correct_answer)-1 not in range(len(answer_texts)):
+            print("Error: the number is out of the range of possible answers!", end="\n\n")
+            continue
         correct_answers.append(int(additional_correct_answer))
         if question_type == QuestionType.SingleChoice:
             break
