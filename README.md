@@ -17,16 +17,17 @@ A program for converting a graded Moodle quiz saved as an HTML file to a [vik.vi
 
 * Imports multiple HTML files at once
 * Supports single and multiple choice questions
-* Creates placeholders for illustrations
-* Asks for correct answers if it can't be determined from a graded question
 * Deduplicates questions with the same text
+* Asks for correct answers if it can't be determined from a graded question
+* Adds the only remaining correct answer automatically if it can be determined from the grade
+* Creates placeholders for illustrations
+* Formats LaTeX equations as wikitext
 
 
 ## 📥 Installation
 
 1. [Install Homebrew](https://brew.sh/#:~:text=Install%20Homebrew)
 2. Run the following command in the terminal:
-
   ```bash
   brew install pipx && pipx ensurepath && pipx install moodle-to-vikwikiquiz
   ```
@@ -47,9 +48,9 @@ If you want this to run automatically, create a cron job:
   ```
 2. Add the following line to the end of the file:
   ```bash
-  @weekly pipx upgrade-all
+  @daily pipx upgrade-all
   ```
-  You may replace `@weekly` with `@daily` or `@monthly`.
+  You may replace `@daily` with `@weekly` or `@monthly`.
 
 
 
@@ -68,9 +69,9 @@ Parameters:
 
 Example:
 * Convert all [Elektronika alapjai](https://vik.wiki/wiki/Elektronika_alapjai) Moodle quizzes downloaded to `~/Downloads/downloaded_ELA_quizzes`:
-```bash
-moodle-to-vikwikiquiz --grading - ~/Downloads/downloaded_ELA_quizzes "Elektronika alapjai" "Elektronika alapjai kvíz – vizsga"
-```
+  ```bash
+  moodle-to-vikwikiquiz --grading - ~/Downloads/downloaded_ELA_quizzes "Elektronika alapjai" "Elektronika alapjai kvíz"
+  ```
 
 Always check the output before uploading it to [vik.wiki](https://vik.wiki/). 
 Upload all images and add their filenames to the quiz manually on [vik.wiki](https://vik.wiki/).
