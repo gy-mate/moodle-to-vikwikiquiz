@@ -2,6 +2,11 @@ from argparse import ArgumentParser
 import logging
 import os.path
 import sys
+from urllib.parse import urlencode
+import webbrowser
+
+# future: delete the comment below when stubs for the package below are available
+import pyperclip  # type: ignore
 
 # future: report false positive to JetBrains developers
 # noinspection PyPackages
@@ -20,9 +25,11 @@ def main() -> None:
         "source_directory", help="the directory to import questions from"
     )
     parser.add_argument("parent_article", help="the parent article of the quiz")
+    parser.add_argument(
+        "-n", "--new", action="store_true", help="create a new article for the quiz"
+    )
     parser.add_argument("title", help="the title of the quiz")
     parser.add_argument("-g", "--grading", help="the grading type of the quiz")
-    parser.add_argument("-o", "--output", help="the output file")
     args = parser.parse_args()
 
     configure_logging(args.verbose)
@@ -38,13 +45,23 @@ def main() -> None:
     quiz = Quiz(parent_article=args.parent_article, title=args.title, grading=grading)
     quiz.import_files(full_source_directory)
 
-    export_file = f"{full_source_directory}/quiz.txt"
-    if requested_export_file := args.output:
-        if os.path.exists(requested_export_file):
-            export_file = os.path.basename(requested_export_file)
-    with open(export_file, "w") as file:
-        file.write(str(quiz))
-
+    quiz_wikitext = str(quiz)
+    if args.new:
+        wiki_domain = "https://test.vik.wiki"
+        webbrowser.open_new_tab(f"{wiki_domain}/index.php?title=Speciális:Belépés")
+        input("Please log in to the wiki then press Enter to continue...")
+        parameters = {
+            "action": "edit",
+            "preload": "Sablon:Előbetöltés",
+            "preloadparams[]": quiz_wikitext,
+            "summary": "Kvíz létrehozása a https://github.com/gy-mate/moodle-to-vikwikiquiz segítségével importált Moodle-kvízekből",
+        }
+        webbrowser.open_new_tab(
+            f"{wiki_domain}/wiki/{args.title}?{urlencode(parameters)}"
+        )
+    else:
+        pyperclip.copy(quiz_wikitext)
+        print("The wikitext of the quiz has been copied to the clipboard!")
     logging.getLogger(__name__).debug("...program finished!")
 
 
