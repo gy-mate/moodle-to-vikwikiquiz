@@ -23,7 +23,8 @@ class Question(BaseModel):
         text = f"== {self.text} =="
         if self.illustration:
             text += "\n[[Fájl:.png|bélyegkép]]"
-        ordered_correct_answers = list(self.correct_answers).sort()
+        ordered_correct_answers = list(self.correct_answers)
+        ordered_correct_answers.sort()
         text += (f"\n{{{{kvízkérdés|típus={self.q_type.value}"
                  f"|válasz={",".join([str(answer) for answer in ordered_correct_answers])}")
         if self.grading:
