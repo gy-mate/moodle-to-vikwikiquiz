@@ -1,17 +1,29 @@
 import contextlib
+
+# future: report false positive to JetBrains developers
+# noinspection PyUnresolvedReferences
 import os
 
-from bs4 import BeautifulSoup
+# future: report false positive to JetBrains developers
+# noinspection PyUnresolvedReferences
+from bs4 import BeautifulSoup, Tag
 
 # future: report false positive to JetBrains developers
 # noinspection PyPackages
-from .grading_types import GradingType
+# future: report false positive to mypy developers
+from .grading_types import GradingType  # type: ignore
 
 # noinspection PyPackages
-from .question_types import QuestionType
+# future: report false positive to mypy developers
+from .question_types import QuestionType  # type: ignore
 
 # noinspection PyPackages
-from .quiz_helpers import *
+# future: report false positive to mypy developers
+from .quiz_helpers import *  # type: ignore
+
+# noinspection PyPackages
+# future: report false positive to mypy developers
+from .question import Question  # type: ignore
 
 
 class Quiz:
@@ -48,25 +60,36 @@ class Quiz:
         with open(file_path, "rb") as source_file:
             webpage = BeautifulSoup(source_file, "html.parser")
 
-            multi_or_single_choice_questions = webpage.find_all("div", class_="multichoice")
+            multi_or_single_choice_questions = webpage.find_all(
+                "div", class_="multichoice"
+            )
             for question in multi_or_single_choice_questions:
                 self.import_question(question)
 
     def import_question(self, question: Tag) -> None:
         with contextlib.suppress(NotImplementedError):
-            question_type = get_question_type(question)
-        correctly_answered, grade, maximum_points = get_grading_of_question(question)
-        question_text = get_question_text(question)
-        answer_texts, correct_answers = get_answers(question)
+            question_type = get_question_type(question)  # type: ignore
+        correctly_answered, grade, maximum_points = get_grading_of_question(question)  # type: ignore
+        question_text = get_question_text(question)  # type: ignore
+        answer_texts, correct_answers = get_answers(question)  # type: ignore
         if not correctly_answered:
-            complete_correct_answers(
-                answer_texts, correct_answers, grade, maximum_points, question_text, question_type,
+            complete_correct_answers(  # type: ignore
+                answer_texts,
+                correct_answers,
+                grade,
+                maximum_points,
+                question_text,
+                question_type,
             )
         has_illustration = (
             True if question.find("img", class_="img-responsive") else False
         )
         self.add_question_no_duplicates(
-            question_type, question_text, has_illustration, answer_texts, correct_answers,
+            question_type,
+            question_text,
+            has_illustration,
+            answer_texts,
+            correct_answers,
         )
 
     def add_question_no_duplicates(
@@ -78,8 +101,8 @@ class Quiz:
         correct_answers: list[int],
     ) -> None:
         for existing_question in self.questions:
-            if question_already_exists(existing_question, question_text):
-                add_answers_to_existing_question(
+            if question_already_exists(existing_question, question_text):  # type: ignore
+                add_answers_to_existing_question(  # type: ignore
                     answer_texts, correct_answers, existing_question
                 )
                 break

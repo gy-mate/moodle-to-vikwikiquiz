@@ -5,10 +5,10 @@ import sys
 
 # future: report false positive to JetBrains developers
 # noinspection PyPackages
-from .grading_types import GradingType
+from .grading_types import GradingType  # type: ignore
 
 # noinspection PyPackages
-from .quiz import Quiz
+from .quiz import Quiz  # type: ignore
 
 
 def main() -> None:
