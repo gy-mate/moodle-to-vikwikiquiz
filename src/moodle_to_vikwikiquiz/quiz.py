@@ -67,7 +67,7 @@ class Quiz:
                 self.import_question(
                     question=question, file_name=os.path.basename(file_path)
                 )
-                os.system("cls||clear")
+                clear_terminal()  # type: ignore
 
     def import_question(self, question: Tag, file_name: str) -> None:
         with contextlib.suppress(NotImplementedError):
@@ -85,9 +85,7 @@ class Quiz:
                 question_type,
                 file_name,
             )
-        has_illustration = (
-            True if question.find("img", class_="img-responsive") else False
-        )
+        has_illustration = get_if_has_illustration(question)  # type: ignore
         self.add_question_no_duplicates(
             question_type,
             question_text,

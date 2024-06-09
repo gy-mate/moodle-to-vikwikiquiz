@@ -114,6 +114,12 @@ def get_missing_correct_answers(
                 "Error: the number is out of the range of possible answers!", end="\n\n"
             )
             continue
+        elif int(additional_correct_answer) in correct_answers:
+            print(
+                "Error: this answer is already in the list of correct answers!",
+                end="\n\n",
+            )
+            continue
         correct_answers.append(int(additional_correct_answer))
         if question_type == QuestionType.SingleChoice:
             break
@@ -155,7 +161,8 @@ def answer_is_correct(answer: Tag, grade: float, maximum_points: float) -> bool:
 def get_question_text(question: Tag) -> str:
     found_tag = question.find("div", class_="qtext")
     assert isinstance(found_tag, Tag)
-    return found_tag.text.rstrip()
+    text = re.sub(r"\n", " ", found_tag.text)
+    return text.rstrip()
 
 
 def format_latex_as_wikitext(text: str) -> str:
@@ -178,3 +185,16 @@ def add_answers_to_existing_question(
             existing_question.answers.append(answer)
             if k + 1 in correct_answers:
                 existing_question.correct_answers.add(len(existing_question.answers))
+
+
+def get_if_has_illustration(question: Tag) -> bool:
+    if question.find("img", class_="img-responsive"):
+        return True
+    elif question.find("img", role="presentation"):
+        return True
+    else:
+        return False
+
+
+def clear_terminal():
+    os.system("clear||cls")

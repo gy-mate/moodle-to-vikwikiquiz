@@ -15,6 +15,9 @@ from .grading_types import GradingType  # type: ignore
 # noinspection PyPackages
 from .quiz import Quiz  # type: ignore
 
+# noinspection PyPackages
+from .quiz_helpers import clear_terminal  # type: ignore
+
 
 def main() -> None:
     parser = ArgumentParser()
@@ -67,15 +70,16 @@ def main() -> None:
     input("Please log in to the wiki then press Enter to continue...")
     parameters_for_opening_edit = {
         "action": "edit",
+        "summary": "Kvíz létrehozása "
+        "a https://github.com/gy-mate/moodle-to-vikwikiquiz segítségével importált Moodle-kvízekből",
     }
+    clear_terminal()
     if args.new:
         parameters_for_opening_edit_with_paste = parameters_for_opening_edit.copy()
         parameters_for_opening_edit_with_paste.update(
             {
                 "preload": "Sablon:Előbetöltés",
                 "preloadparams[]": quiz_wikitext,
-                "summary": "Kvíz létrehozása "
-                "a https://github.com/gy-mate/moodle-to-vikwikiquiz segítségével importált Moodle-kvízekből",
             }
         )
         url = f"{wiki_domain}/wiki/{args.title}?{urlencode(parameters_for_opening_edit_with_paste)}"
@@ -124,18 +128,12 @@ def configure_logging(verbose: bool) -> None:
     if verbose:
         logging.basicConfig(
             encoding="utf-8",
-            handlers=[
-                logging.StreamHandler(),
-            ],
             format='%(asctime)s [%(levelname)s] "%(pathname)s:%(lineno)d": %(message)s',
             level=logging.DEBUG,
         )
     else:
         logging.basicConfig(
             encoding="utf-8",
-            handlers=[
-                logging.StreamHandler(sys.stdout),
-            ],
             format="[%(levelname)s]: %(message)s",
             level=logging.INFO,
         )
