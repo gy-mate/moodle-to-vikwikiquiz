@@ -1,8 +1,8 @@
 # moodle-to-vikwikiquiz
 
 ![Lines of code](https://img.shields.io/badge/lines_of_code-300+-blue)
-[![Build status](https://scrutinizer-ci.com/g/gy-mate/homebrew-moodle-to-vikwikiquiz/badges/build.png?b=main)](https://scrutinizer-ci.com/g/gy-mate/homebrew-moodle-to-vikwikiquiz/build-status/main)
-[![Code quality](https://img.shields.io/scrutinizer/quality/g/gy-mate/homebrew-moodle-to-vikwikiquiz/main)](https://scrutinizer-ci.com/g/gy-mate/homebrew-moodle-to-vikwikiquiz/)
+[![Build status](https://scrutinizer-ci.com/g/gy-mate/moodle-to-vikwikiquiz/badges/build.png?b=main)](https://scrutinizer-ci.com/g/gy-mate/moodle-to-vikwikiquiz/build-status/main)
+[![Code quality](https://img.shields.io/scrutinizer/quality/g/gy-mate/moodle-to-vikwikiquiz/main)](https://scrutinizer-ci.com/g/gy-mate/moodle-to-vikwikiquiz/)
 [![Type hinting used](https://img.shields.io/badge/type_hinting-used-brightgreen)](https://docs.python.org/3/library/typing.html)
 [![Code style: Black](https://img.shields.io/badge/code_style-black-black.svg)](https://github.com/psf/black)
 [![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen)](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request)
