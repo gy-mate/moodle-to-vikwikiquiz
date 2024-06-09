@@ -1,3 +1,4 @@
+import os
 import re
 
 from bs4 import Tag
@@ -50,19 +51,21 @@ def complete_correct_answers(
     maximum_points: float,
     question_text: str,
     question_type: QuestionType,
+    file_name: str,
 ) -> None:
     if len(correct_answers) == len(answer_texts) - 1:
         correct_answers.append(
             get_id_of_only_remaining_answer(answer_texts, correct_answers)
         )
         return
+    print(f"File: {file_name}")
     print(f"Question: '{question_text}'")
     match len(correct_answers):
         case 0:
-            print("\nI couldn't determine any correct answers.", end=" ")
+            print("\nI couldn't determine any correct answers for sure.", end=" ")
         case 1:
             print(
-                f"\nI see that answer {correct_answers[0]} is correct, "
+                f"\nI see that answer #{correct_answers[0]} is correct, "
                 f"but there might be additional correct answers because you only got {grade:g} points out of {maximum_points:g}.",
                 end=" ",
             )
@@ -106,15 +109,19 @@ def get_missing_correct_answers(
         elif not additional_correct_answer.isdigit():
             print("Error: an integer was expected!", end="\n\n")
             continue
-        elif int(additional_correct_answer)-1 not in range(len(answer_texts)):
-            print("Error: the number is out of the range of possible answers!", end="\n\n")
+        elif int(additional_correct_answer) - 1 not in range(len(answer_texts)):
+            print(
+                "Error: the number is out of the range of possible answers!", end="\n\n"
+            )
             continue
         correct_answers.append(int(additional_correct_answer))
         if question_type == QuestionType.SingleChoice:
             break
 
 
-def get_answers(question: Tag, grade: float, maximum_points: float) -> tuple[list[str], list[int]]:
+def get_answers(
+    question: Tag, grade: float, maximum_points: float
+) -> tuple[list[str], list[int]]:
     answers = question.find("div", class_="answer")
     assert isinstance(answers, Tag)
     answer_texts: list[str] = []

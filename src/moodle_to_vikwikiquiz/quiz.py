@@ -64,10 +64,12 @@ class Quiz:
                 "div", class_="multichoice"
             )
             for question in multi_or_single_choice_questions:
-                self.import_question(question)
+                self.import_question(
+                    question=question, file_name=os.path.basename(file_path)
+                )
                 os.system("cls||clear")
 
-    def import_question(self, question: Tag) -> None:
+    def import_question(self, question: Tag, file_name: str) -> None:
         with contextlib.suppress(NotImplementedError):
             question_type = get_question_type(question)  # type: ignore
         correctly_answered, grade, maximum_points = get_grading_of_question(question)  # type: ignore
@@ -81,6 +83,7 @@ class Quiz:
                 maximum_points,
                 question_text,
                 question_type,
+                file_name,
             )
         has_illustration = (
             True if question.find("img", class_="img-responsive") else False
