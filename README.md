@@ -10,20 +10,21 @@
 
 ## 📖 About
 
-A program for converting a graded Moodle quiz saved as an HTML file to a [vik.viki quiz](https://vik.wiki/wiki/Segítség:Kvíz) wikitext.
+A CLI for converting a graded Moodle quiz saved as an HTML file to a [vik.viki quiz](https://vik.wiki/wiki/Segítség:Kvíz) wikitext.
 
 
-## 📋 Features
+### 📋 Features
 
 * Imports multiple HTML files at once
-* Can export to the clipboard
-* Can create a new article on [vik.wiki](https://vik.wiki/) with the quiz wikitext pre-filled in the editor
+* Can create a new article on [vik.wiki](https://vik.wiki/) with the generated quiz wikitext and summary pre-filled in the editor
+* Can open an existing article on [vik.wiki](https://vik.wiki/) with the summary pre-filled in the editor
+* Copies the generated wikitext to the clipboard
 * Supports single and multiple choice questions
 * Deduplicates questions with the same text
 * Asks for correct answers if it can't be determined from a graded question
 * Adds the only remaining correct answer automatically if it can be determined from the grade
-* Creates placeholders for illustrations
 * Formats LaTeX equations as wikitext
+* Creates placeholders for illustrations
 
 
 ## 📥 Installation
@@ -34,29 +35,8 @@ A program for converting a graded Moodle quiz saved as an HTML file to a [vik.vi
   brew install pipx && pipx ensurepath && pipx install moodle-to-vikwikiquiz
   ```
 
-### ⏫ Updating
 
-Run the following command in the terminal:
-
-```bash
-pipx upgrade-all
-```
-
-If you want this to run automatically, create a cron job:
-
-1. Open the `crontab` file:
-  ```bash
-  crontab -e
-  ```
-2. Add the following line to the end of the file:
-  ```bash
-  @daily pipx upgrade-all
-  ```
-  You may replace `@daily` with `@weekly` or `@monthly`.
-
-
-
-## 🧑‍💻 Usage
+### 🧑‍💻 Usage
 
 ```text
 moodle-to-vikwikiquiz [--verbose|-v] [--new|-n] [[--grading|-g] grading_method] source_directory parent_article title
@@ -80,6 +60,26 @@ Example:
 
 Always check the output before uploading it to [vik.wiki](https://vik.wiki/). 
 Upload all images and add their filenames to the quiz manually on [vik.wiki](https://vik.wiki/).
+
+
+### ⏫ Updating
+
+Run the following command in the terminal:
+```bash
+pipx upgrade-all
+```
+
+If you want this to run automatically, create a cron job:
+
+1. Open the `crontab` file:
+  ```bash
+crontab -e
+  ```
+2. Add the following line to the end of the file:
+  ```bash
+@daily pipx upgrade-all
+  ```
+  You may replace `@daily` with `@weekly` or `@monthly`.
 
 ## 📜 License
 
