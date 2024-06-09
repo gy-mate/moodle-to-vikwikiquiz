@@ -74,7 +74,7 @@ These HTML files should contain the _Review_ page of the quizzes.
 Example:
 * Convert all [Elektronika alapjai](https://vik.wiki/wiki/Elektronika_alapjai) Moodle quizzes downloaded to `~/Downloads/downloaded_ELA_quizzes`:
   ```bash
-  moodle-to-vikwikiquiz --grading - ~/Downloads/downloaded_ELA_quizzes "Elektronika alapjai" "Elektronika alapjai kvíz"
+  moodle-to-vikwikiquiz --new --grading + ~/Downloads/downloaded_ELA_quizzes "Elektronika alapjai" "Elektronika alapjai kvíz"
   ```
 
 Always check the output before uploading it to [vik.wiki](https://vik.wiki/). 
