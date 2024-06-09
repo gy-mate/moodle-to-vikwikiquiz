@@ -69,7 +69,8 @@ Parameters:
 These HTML files should contain the _Review_ page of the quizzes.
 * `parent_article`: The article name of the course on [vik.wiki](https://vik.wiki/).
 * `title`: How the quiz should be named on [vik.wiki](https://vik.wiki/). This usually is in the following form: 
-`[course name] kvíz – [exam name]`. The hyphen and the part after it can be omitted.
+`[course name] kvíz – [exam name]`. (The hyphen and the part after it can be omitted.) 
+This might be an existing article name if the `--new` argument is not provided.
 
 Example:
 * Convert all [Elektronika alapjai](https://vik.wiki/wiki/Elektronika_alapjai) Moodle quizzes downloaded to `~/Downloads/downloaded_ELA_quizzes`:
