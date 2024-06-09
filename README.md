@@ -65,9 +65,11 @@ moodle-to-vikwikiquiz [--verbose|-v] [--new|-n] [[--grading|-g] grading_method] 
 Parameters:
 * `new`: Create a new quiz on [vik.wiki](https://vik.wiki/) by automatically opening an edit page for the new article.
 * `grading_method`: `+` or `-`. See https://vik.wiki/wiki/Segítség:Kvíz#Pontozás for further info.
-* `source_directory`: The absolute path of the directory where the Moodle quiz HTML files are located. The review page of the quizzes should be downloaded.
+* `source_directory`: The absolute path of the directory where the Moodle quiz HTML files are located. 
+These HTML files should contain the _Review_ page of the quizzes.
 * `parent_article`: The article name of the course on [vik.wiki](https://vik.wiki/).
-* `title`: How the quiz should be named on [vik.wiki](https://vik.wiki/). This usually is in the following form: `[course name] kvíz – [exam name]`.
+* `title`: How the quiz should be named on [vik.wiki](https://vik.wiki/). This usually is in the following form: 
+`[course name] kvíz – [exam name]`. The hyphen and the part after it can be omitted.
 
 Example:
 * Convert all [Elektronika alapjai](https://vik.wiki/wiki/Elektronika_alapjai) Moodle quizzes downloaded to `~/Downloads/downloaded_ELA_quizzes`:
