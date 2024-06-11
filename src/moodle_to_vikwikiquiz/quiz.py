@@ -38,12 +38,10 @@ class Quiz:
 
     def __str__(self) -> str:
         text = f"{{{{Vissza | {self.parent_article}}}}}"
-        text += f"""
-
-{{{{Kvízoldal
-|cím={self.title}"""
+        text += f"""{{{{Kvízoldal
+| cím = {self.title}"""
         if self.grading:
-            text += f"\n|pontozás={self.grading.value}"
+            text += f"\n| pontozás = {self.grading.value}"
         text += "\n}}"
         for question in self.questions:
             text += f"\n\n\n{question}"
