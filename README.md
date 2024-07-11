@@ -13,30 +13,25 @@
 A CLI for converting a graded Moodle quiz saved as an HTML file to a [vik.viki quiz](https://vik.wiki/wiki/Segítség:Kvíz) wikitext.
 
 
-### 📋 Features
-
-* Imports multiple HTML files at once
-* Can create a new article on [vik.wiki](https://vik.wiki/) with the generated quiz wikitext and summary pre-filled in the editor
-* Can open an existing article on [vik.wiki](https://vik.wiki/) with the summary pre-filled in the editor
-* Copies the generated wikitext to the clipboard
-* Supports single and multiple choice questions
-* Deduplicates questions with the same text
-* Asks for correct answers if it can't be determined from a graded question
-* Adds the only remaining correct answer automatically if it can be determined from the grade
-* Formats LaTeX equations as wikitext
-* Creates placeholders for illustrations
-
-
 ## 📥 Installation
 
-1. [Install Homebrew](https://brew.sh/#:~:text=Install%20Homebrew)
-2. Run the following command in the terminal:
-  ```bash
-  brew install pipx && pipx ensurepath && pipx install moodle-to-vikwikiquiz
-  ```
+### ✨ Easy
+
+1. [Install `pipx`](https://pipx.pypa.io/stable/#install-pipx)
+1. If using Linux: follow [these](https://github.com/asweigart/pyperclip/blob/master/docs/index.rst#not-implemented-error) steps.
+1. Run the following command in the terminal:
+
+    ```bash
+    pipx install moodle-to-vikwikiquiz
+    ```
 
 
-### 🧑‍💻 Usage
+### 🛠️ Executable (doesn't work yet)
+
+Download the binary of the latest release from [here](https://github.com/gy-mate/moodle-to-vikwikiquiz/releases/latest).
+
+
+## 🧑‍💻 Usage
 
 ```text
 moodle-to-vikwikiquiz [--verbose|-v] [--new|-n] [[--grading|-g] grading_method] source_directory parent_article title
@@ -54,17 +49,33 @@ This might be an existing article name if the `--new` argument is not provided.
 
 Example:
 * Convert all [Elektronika alapjai](https://vik.wiki/wiki/Elektronika_alapjai) Moodle quizzes downloaded to `~/Downloads/downloaded_ELA_quizzes`:
-  ```bash
-  moodle-to-vikwikiquiz --new --grading + ~/Downloads/downloaded_ELA_quizzes "Elektronika alapjai" "Elektronika alapjai kvíz"
-  ```
+
+    ```bash
+    moodle-to-vikwikiquiz --new --grading + ~/Downloads/downloaded_ELA_quizzes "Elektronika alapjai" "Elektronika alapjai kvíz"
+    ```
 
 Always check the output before uploading it to [vik.wiki](https://vik.wiki/). 
 Upload all images and add their filenames to the quiz manually on [vik.wiki](https://vik.wiki/).
 
 
+### 📋 Features
+
+* Imports multiple HTML files at once
+* Can create a new article on [vik.wiki](https://vik.wiki/) with the generated quiz wikitext and summary pre-filled in the editor
+* Can open an existing article on [vik.wiki](https://vik.wiki/) with the summary pre-filled in the editor
+* Copies the generated wikitext to the clipboard
+* Supports single and multiple choice questions
+* Deduplicates questions with the same text
+* Asks for correct answers if it can't be determined from a graded question
+* Adds the only remaining correct answer automatically if it can be determined from the grade
+* Formats LaTeX equations as wikitext
+* Creates placeholders for illustrations
+
+
 ### ⏫ Updating
 
 Run the following command in the terminal:
+
 ```bash
 pipx upgrade-all
 ```
@@ -72,14 +83,23 @@ pipx upgrade-all
 If you want this to run automatically, create a cron job:
 
 1. Open the `crontab` file:
-  ```bash
-crontab -e
-  ```
-2. Add the following line to the end of the file:
-  ```bash
-@daily pipx upgrade-all
-  ```
-  You may replace `@daily` with `@weekly` or `@monthly`.
+
+    ```bash
+    crontab -e
+    ```
+1. Add this line to the beginning of the file:
+    ```bash
+    PATH=~/.local/bin
+    ```
+    If there is already a line beginning with `PATH=`, add `:~/.local/bin` to the end of it.
+1. Add the following line to the end of the file:
+
+    ```bash
+    @daily		pipx upgrade-all
+    ```
+
+   You may replace `@daily` with `@weekly` or `@monthly`.
+
 
 ## 📜 License
 
