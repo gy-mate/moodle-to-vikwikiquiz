@@ -48,10 +48,12 @@ class Quiz:
         text += "\n"
         return text
 
-    def import_files(self, directory: str) -> None:
+    def import_files(self, directory: str, recursively: bool) -> None:
         for subdir, dirs, files in os.walk(directory):
             for file in files:
                 self.import_questions(file, subdir)
+            if not recursively:
+                break
 
     def import_questions(self, file: str, subdir: str) -> None:
         file_path = os.path.join(subdir, file)
