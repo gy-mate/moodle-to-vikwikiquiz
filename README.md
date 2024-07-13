@@ -34,25 +34,12 @@ Download the binary of the latest release from [here](https://github.com/gy-mate
 ## 🧑‍💻 Usage
 
 ```text
-moodle-to-vikwikiquiz [--verbose|-v] [--new|-n] [[--grading|-g] grading_method] source_directory parent_article title
+moodle-to-vikwikiquiz [--verbose|-v] [--new|-n] [--recursive|-r]
 ```
 
-Parameters:
-* `new`: Create a new quiz on [vik.wiki](https://vik.wiki/) by automatically opening an edit page for the new article.
-* `grading_method`: `+` or `-`. See https://vik.wiki/wiki/Segítség:Kvíz#Pontozás for further info.
-* `source_directory`: The absolute path of the directory where the Moodle quiz HTML files are located. 
-These HTML files should contain the _Review_ page of the quizzes.
-* `parent_article`: The article name of the course on [vik.wiki](https://vik.wiki/).
-* `title`: How the quiz should be named on [vik.wiki](https://vik.wiki/). This usually is in the following form: 
-`[course name] kvíz – [exam name]`. (The hyphen and the part after it can be omitted.) 
-This might be an existing article name if the `--new` argument is not provided.
-
-Example:
-* Convert all [Elektronika alapjai](https://vik.wiki/wiki/Elektronika_alapjai) Moodle quizzes downloaded to `~/Downloads/downloaded_ELA_quizzes`:
-
-    ```bash
-    moodle-to-vikwikiquiz --new --grading + ~/Downloads/downloaded_ELA_quizzes "Elektronika alapjai" "Elektronika alapjai kvíz"
-    ```
+Flags:
+* `--new`: Create a new quiz on [vik.wiki](https://vik.wiki/) by automatically opening an edit page for the new article.
+* `--recursive`: Import HTML files in the current directory recursively.
 
 Always check the output before uploading it to [vik.wiki](https://vik.wiki/). 
 Upload all images and add their filenames to the quiz manually on [vik.wiki](https://vik.wiki/).
@@ -60,7 +47,7 @@ Upload all images and add their filenames to the quiz manually on [vik.wiki](htt
 
 ### 📋 Features
 
-* Imports multiple HTML files at once
+* Imports multiple HTML files at once (recursively, if desired)
 * Can create a new article on [vik.wiki](https://vik.wiki/) with the generated quiz wikitext and summary pre-filled in the editor
 * Can open an existing article on [vik.wiki](https://vik.wiki/) with the summary pre-filled in the editor
 * Copies the generated wikitext to the clipboard
@@ -83,21 +70,20 @@ pipx upgrade-all
 If you want this to run automatically, create a cron job:
 
 1. Open the `crontab` file:
-
     ```bash
     crontab -e
     ```
+
 1. Add this line to the beginning of the file:
     ```bash
     PATH=~/.local/bin
     ```
     If there is already a line beginning with `PATH=`, add `:~/.local/bin` to the end of it.
-1. Add the following line to the end of the file:
 
+1. Add the following line to the end of the file:
     ```bash
     @daily		pipx upgrade-all
     ```
-
    You may replace `@daily` with `@weekly` or `@monthly`.
 
 
