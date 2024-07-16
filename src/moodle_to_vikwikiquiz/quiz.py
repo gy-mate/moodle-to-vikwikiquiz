@@ -3,6 +3,7 @@ import contextlib
 # future: report false positive to JetBrains developers
 # noinspection PyUnresolvedReferences
 import os
+from pathlib import Path
 
 # future: report false positive to JetBrains developers
 # noinspection PyUnresolvedReferences
@@ -48,7 +49,7 @@ class Quiz:
         text += "\n"
         return text
 
-    def import_files(self, directory: str, recursively: bool) -> None:
+    def import_files(self, directory: Path, recursively: bool) -> None:
         for subdir, dirs, files in os.walk(directory):
             for file in files:
                 self.import_questions(file, subdir)
