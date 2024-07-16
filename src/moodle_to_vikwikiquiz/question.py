@@ -33,7 +33,7 @@ class Question(BaseModel):
             text += f"|pontozás={self.grading}"
         text += "}}"
         for answer in self.answers:
-            text += f"\n# {answer}"
+            text += f"\n# {answer.replace("\n", " ")}"
         return text
 
     def __hash__(self) -> int:
