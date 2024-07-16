@@ -1,6 +1,6 @@
 from argparse import ArgumentParser, Namespace
 import logging
-import os
+from pathlib import Path
 import time
 from urllib.parse import urlencode
 import webbrowser
@@ -30,8 +30,9 @@ def main() -> None:
         title=quiz_title,
         grading=get_grading(),
     )
+    absolute_source_directory: Path = args.source_directory.resolve()
     quiz.import_files(
-        directory=os.getcwd(),
+        directory=absolute_source_directory,
         recursively=args.recursive,
     )
 
@@ -60,13 +61,19 @@ def parse_arguments() -> Namespace:
         "-n",
         "--new",
         action="store_true",
-        help="Create a new quiz on vik.wiki by automatically opening an edit page for the new article.",
+        help="create a new quiz on vik.wiki by automatically opening an edit page for the new article",
     )
     parser.add_argument(
         "-r",
         "--recursive",
         action="store_true",
-        help="Import HTML files in the current directory recursively.",
+        help="import HTML files from the current directory recursively",
+    )
+    parser.add_argument(
+        "source_directory",
+        type=Path,
+        help="The absolute path of the directory where the Moodle quiz HTML files are located. "
+        "These HTML files should contain the 'Review' page of the quizzes.",
     )
     return parser.parse_args()
 
@@ -103,7 +110,7 @@ def get_desired_name_of_quiz(new: bool) -> str:
     while True:
         try:
             print(
-                "\nPlease enter how the quiz should be named on vik.wiki then press Enter."
+                "\nPlease enter how the quiz should be named on vik.wiki then press Enter!"
                 "\nThis is usually in the following form: `[course name] kvíz – [exam name]`. (The ` – [exam name]` can be omitted.)"
             )
             if not new:
@@ -120,8 +127,8 @@ def get_grading() -> GradingType:
     while True:
         try:
             grading_symbol = input(
-                "\nPlease enter `+` or `-` as the grading type of the quiz then press Enter.\n"
-                "See https://vik.wiki/wiki/Segítség:Kvíz#Pontozás for further info.\n"
+                "\nPlease enter `+` or `-` as the grading type of the quiz then press Enter!"
+                "\nSee https://vik.wiki/wiki/Segítség:Kvíz#Pontozás for further info.\n"
             )
             return GradingType(grading_symbol)
         except ValueError:
@@ -176,7 +183,8 @@ def create_article(
                 print("The URL has been copied to the clipboard!")
             webbrowser.open_new_tab(url)
             print(
-                "The edit page of the new quiz article has been opened in your browser with the wikitext pre-filled!"
+                "The edit page of the new quiz article has been opened in your browser with the wikitext pre-filled! "
+                "Please upload illustrations manually, if there are any."
             )
             return
     pyperclip.copy(quiz_wikitext)
@@ -184,7 +192,8 @@ def create_article(
     url = f"{wiki_domain}/wiki/{quiz_title}?{urlencode(parameters_for_opening_edit)}"
     webbrowser.open_new_tab(url)
     print(
-        "The edit page of the quiz article has been opened in your browser! Please paste the wikitext there manually."
+        "The edit page of the quiz article has been opened in your browser! "
+        "Please paste the wikitext and upload illustrations (if any) there manually."
     )
 
 

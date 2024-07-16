@@ -18,7 +18,7 @@ A CLI for converting a graded Moodle quiz saved as an HTML file to a [vik.viki q
 ### ✨ Easy
 
 1. [Install `pipx`](https://pipx.pypa.io/stable/#install-pipx)
-1. If using Linux: follow [these](https://github.com/asweigart/pyperclip/blob/master/docs/index.rst#not-implemented-error) steps.
+1. If using Linux: follow [these steps](https://github.com/asweigart/pyperclip/blob/master/docs/index.rst#not-implemented-error).
 1. Run the following command in the terminal:
 
     ```bash
@@ -26,20 +26,27 @@ A CLI for converting a graded Moodle quiz saved as an HTML file to a [vik.viki q
     ```
 
 
-### 🛠️ Executable (doesn't work yet)
+### 🛠️ Executable `zipapp`
 
-Download the binary of the latest release from [here](https://github.com/gy-mate/moodle-to-vikwikiquiz/releases/latest).
+1. Download the `.pyz` file of the latest release from [here](https://github.com/gy-mate/moodle-to-vikwikiquiz/releases/latest).
+1. Run the following command in the terminal:
+
+    ```bash
+    python3 moodle-to-vikwikiquiz.pyz source_directory
+    ```
 
 
 ## 🧑‍💻 Usage
 
 ```text
-moodle-to-vikwikiquiz [--verbose|-v] [--new|-n] [--recursive|-r]
+moodle-to-vikwikiquiz [--verbose|-v] [--new|-n] [--recursive|-r] source_directory
 ```
 
-Flags:
+Parameters:
 * `--new`: Create a new quiz on [vik.wiki](https://vik.wiki/) by automatically opening an edit page for the new article.
-* `--recursive`: Import HTML files in the current directory recursively.
+* `--recursive`: Import HTML files from the current directory recursively.
+* `source_directory`: The absolute path of the directory where the Moodle quiz HTML files are located.
+  These HTML files should contain the _Review_ page of the quizzes.
 
 Always check the output before uploading it to [vik.wiki](https://vik.wiki/). 
 Upload all images and add their filenames to the quiz manually on [vik.wiki](https://vik.wiki/).
@@ -85,6 +92,21 @@ If you want this to run automatically, create a cron job:
     @daily		pipx upgrade-all
     ```
    You may replace `@daily` with `@weekly` or `@monthly`.
+
+
+## 🧑‍💻 Development
+
+### 🏗️ Building
+
+- Wheels (`.whl`):
+    ```bash
+    python -m build
+    ```
+
+- `zipapp` (`.pyz`):
+    ```bash
+    shiv --entry-point moodle_to_vikwikiquiz.main:main --output-file moodle-to-vikwikiquiz.pyz --reproducible .
+    ```
 
 
 ## 📜 License
