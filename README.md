@@ -1,6 +1,6 @@
 # moodle-to-vikwikiquiz
 
-![Lines of code](https://img.shields.io/badge/lines_of_code-400+-blue)
+![Lines of code](https://img.shields.io/badge/lines_of_code-600+-blue)
 [![Build status](https://scrutinizer-ci.com/g/gy-mate/moodle-to-vikwikiquiz/badges/build.png?b=main)](https://scrutinizer-ci.com/g/gy-mate/moodle-to-vikwikiquiz/build-status/main)
 [![Code quality](https://img.shields.io/scrutinizer/quality/g/gy-mate/moodle-to-vikwikiquiz/main)](https://scrutinizer-ci.com/g/gy-mate/moodle-to-vikwikiquiz/)
 [![Type hinting used](https://img.shields.io/badge/type_hinting-used-brightgreen)](https://docs.python.org/3/library/typing.html)
