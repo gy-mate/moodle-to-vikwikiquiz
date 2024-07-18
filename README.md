@@ -55,10 +55,9 @@ Upload all images and add their filenames to the quiz manually on [vik.wiki](htt
 ### 📋 Features
 
 * Imports multiple HTML files at once (recursively, if desired)
-* Can create a new article on [vik.wiki](https://vik.wiki/) with the generated quiz wikitext and summary pre-filled in the editor
-* Can open an existing article on [vik.wiki](https://vik.wiki/) with the summary pre-filled in the editor
+* Can open an existing article or create a new one on [vik.wiki](https://vik.wiki/) with the edit summary pre-filled
 * Copies the generated wikitext to the clipboard
-* Supports single and multiple choice questions
+* Supports true or false, single and multiple choice questions
 * Deduplicates questions with the same text
 * Asks for correct answers if it can't be determined from a graded question
 * Adds the only remaining correct answer automatically if it can be determined from the grade
