@@ -1,6 +1,6 @@
 # moodle-to-vikwikiquiz
 
-![Lines of code](https://img.shields.io/badge/lines_of_code-400+-blue)
+![Lines of code](https://img.shields.io/badge/lines_of_code-600+-blue)
 [![Build status](https://scrutinizer-ci.com/g/gy-mate/moodle-to-vikwikiquiz/badges/build.png?b=main)](https://scrutinizer-ci.com/g/gy-mate/moodle-to-vikwikiquiz/build-status/main)
 [![Code quality](https://img.shields.io/scrutinizer/quality/g/gy-mate/moodle-to-vikwikiquiz/main)](https://scrutinizer-ci.com/g/gy-mate/moodle-to-vikwikiquiz/)
 [![Type hinting used](https://img.shields.io/badge/type_hinting-used-brightgreen)](https://docs.python.org/3/library/typing.html)
@@ -10,7 +10,7 @@
 
 ## 📖 About
 
-A CLI for converting a graded Moodle quiz saved as an HTML file to a [vik.viki quiz](https://vik.wiki/wiki/Segítség:Kvíz) wikitext.
+A CLI for converting graded [Moodle quizzes](https://docs.moodle.org/404/en/Quiz_activity) saved as HTML files to a [vik.viki quiz](https://vik.wiki/wiki/Segítség:Kvíz) wikitext.
 
 
 ## 📥 Installation
@@ -18,7 +18,7 @@ A CLI for converting a graded Moodle quiz saved as an HTML file to a [vik.viki q
 ### ✨ Easy
 
 1. [Install `pipx`](https://pipx.pypa.io/stable/#install-pipx)
-1. If using Linux: follow [these](https://github.com/asweigart/pyperclip/blob/master/docs/index.rst#not-implemented-error) steps.
+1. If using Linux: follow [these steps](https://github.com/asweigart/pyperclip/blob/master/docs/index.rst#not-implemented-error).
 1. Run the following command in the terminal:
 
     ```bash
@@ -26,33 +26,27 @@ A CLI for converting a graded Moodle quiz saved as an HTML file to a [vik.viki q
     ```
 
 
-### 🛠️ Executable (doesn't work yet)
+### 🛠️ Executable `zipapp`
 
-Download the binary of the latest release from [here](https://github.com/gy-mate/moodle-to-vikwikiquiz/releases/latest).
+1. Download the `.pyz` file of the latest release from [here](https://github.com/gy-mate/moodle-to-vikwikiquiz/releases/latest).
+1. Run the following command in the terminal:
+
+    ```bash
+    python3 moodle-to-vikwikiquiz.pyz source_directory
+    ```
 
 
 ## 🧑‍💻 Usage
 
 ```text
-moodle-to-vikwikiquiz [--verbose|-v] [--new|-n] [[--grading|-g] grading_method] source_directory parent_article title
+moodle-to-vikwikiquiz [--verbose|-v] [--new|-n] [--recursive|-r] source_path
 ```
 
 Parameters:
-* `new`: Create a new quiz on [vik.wiki](https://vik.wiki/) by automatically opening an edit page for the new article.
-* `grading_method`: `+` or `-`. See https://vik.wiki/wiki/Segítség:Kvíz#Pontozás for further info.
-* `source_directory`: The absolute path of the directory where the Moodle quiz HTML files are located. 
-These HTML files should contain the _Review_ page of the quizzes.
-* `parent_article`: The article name of the course on [vik.wiki](https://vik.wiki/).
-* `title`: How the quiz should be named on [vik.wiki](https://vik.wiki/). This usually is in the following form: 
-`[course name] kvíz – [exam name]`. (The hyphen and the part after it can be omitted.) 
-This might be an existing article name if the `--new` argument is not provided.
-
-Example:
-* Convert all [Elektronika alapjai](https://vik.wiki/wiki/Elektronika_alapjai) Moodle quizzes downloaded to `~/Downloads/downloaded_ELA_quizzes`:
-
-    ```bash
-    moodle-to-vikwikiquiz --new --grading + ~/Downloads/downloaded_ELA_quizzes "Elektronika alapjai" "Elektronika alapjai kvíz"
-    ```
+* `--new`: Create a new quiz on [vik.wiki](https://vik.wiki/) by automatically opening an edit page for the new article.
+* `--recursive`: Import HTML files from the current directory recursively.
+* `source_path`: The absolute or relative path of the file or directory where the Moodle quiz HTML files are located.
+  These HTML files should contain the _Review_ page of the quizzes.
 
 Always check the output before uploading it to [vik.wiki](https://vik.wiki/). 
 Upload all images and add their filenames to the quiz manually on [vik.wiki](https://vik.wiki/).
@@ -60,7 +54,7 @@ Upload all images and add their filenames to the quiz manually on [vik.wiki](htt
 
 ### 📋 Features
 
-* Imports multiple HTML files at once
+* Imports multiple HTML files at once (recursively, if desired)
 * Can create a new article on [vik.wiki](https://vik.wiki/) with the generated quiz wikitext and summary pre-filled in the editor
 * Can open an existing article on [vik.wiki](https://vik.wiki/) with the summary pre-filled in the editor
 * Copies the generated wikitext to the clipboard
@@ -83,22 +77,36 @@ pipx upgrade-all
 If you want this to run automatically, create a cron job:
 
 1. Open the `crontab` file:
-
     ```bash
     crontab -e
     ```
+
 1. Add this line to the beginning of the file:
     ```bash
     PATH=~/.local/bin
     ```
     If there is already a line beginning with `PATH=`, add `:~/.local/bin` to the end of it.
-1. Add the following line to the end of the file:
 
+1. Add the following line to the end of the file:
     ```bash
     @daily		pipx upgrade-all
     ```
-
    You may replace `@daily` with `@weekly` or `@monthly`.
+
+
+## 🧑‍💻 Development
+
+### 🏗️ Building
+
+- Wheels (`.whl`):
+    ```bash
+    python -m build
+    ```
+
+- `zipapp` (`.pyz`):
+    ```bash
+    shiv --entry-point moodle_to_vikwikiquiz.main:main --output-file moodle-to-vikwikiquiz.pyz --reproducible .
+    ```
 
 
 ## 📜 License
