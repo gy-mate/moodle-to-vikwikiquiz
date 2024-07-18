@@ -18,7 +18,7 @@ A CLI for converting graded [Moodle quizzes](https://docs.moodle.org/404/en/Quiz
 ### ✨ Easy
 
 1. [Install `pipx`](https://pipx.pypa.io/stable/#install-pipx)
-1. If using Linux: follow [these steps](https://github.com/asweigart/pyperclip/blob/master/docs/index.rst#not-implemented-error).
+1. _If using Linux: [follow these steps](https://github.com/asweigart/pyperclip/blob/master/docs/index.rst#not-implemented-error)._
 1. Run the following command in the terminal:
 
     ```bash
@@ -48,7 +48,7 @@ Parameters:
 * `source_path`: The absolute or relative path of the file or directory where the Moodle quiz HTML files are located.
   These HTML files should contain the _Review_ page of the quizzes.
 
-Always check and correct the output before uploading it to [vik.wiki](https://vik.wiki/)!
+Always check and correct the output before submitting it to the wiki!
 This includes uploading all images and adding their filenames to the quiz manually.
 
 
@@ -103,7 +103,7 @@ If you want this to run automatically, create a cron job:
         python3 -m pip install --upgrade pip
         pip install build
         ```
-    1. Create the wheel:
+    1. Create the wheels:
         ```bash
         python3 -m build
         ```
