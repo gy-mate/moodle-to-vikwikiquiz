@@ -196,8 +196,8 @@ def format_latex_as_wikitext(latex: Tag) -> str:
 
 @dispatch  # type: ignore
 def format_latex_as_wikitext(latex: str) -> str:
-    wikitext = re.sub(r"^\s?\\?\\\(\s?(\s?\\(?=\\))?", "<math>", latex)
-    wikitext = re.sub(r"\s*\\?\\\)\s?$", "</math>", wikitext)
+    wikitext = re.sub(r"\s?\\?\\\(\s?(\s?\\(?=\\))?", "<math>", latex)
+    wikitext = re.sub(r"\s*\\?\\\)\s?", "</math>", wikitext)
     return wikitext
 
 
