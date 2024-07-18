@@ -30,9 +30,9 @@ def main() -> None:
         title=quiz_title,
         grading=get_grading(),
     )
-    absolute_source_directory: Path = args.source_directory.resolve()
+    absolute_source_path: Path = args.source_path.resolve()
     quiz.import_files(
-        directory=absolute_source_directory,
+        path=absolute_source_path,
         recursively=args.recursive,
     )
 
@@ -43,7 +43,9 @@ def main() -> None:
     parameters_for_opening_edit = {
         "action": "edit",
         "summary": "Kvíz bővítése "
-        "a https://github.com/gy-mate/moodle-to-vikwikiquiz segítségével importált Moodle-kvízekből",
+        "a https://github.com/gy-mate/moodle-to-vikwikiquiz segítségével importált Moodle-kvíz(ek)ből",
+        "preload": "Sablon:Előbetöltés",
+        "preloadparams[]": "<!-- Töröld ki ezt és a következő sort, majd illeszd be a vágólapodra másolt tartalmat! -->",
     }
     clear_terminal()
     create_article(
@@ -70,9 +72,9 @@ def parse_arguments() -> Namespace:
         help="import HTML files from the current directory recursively",
     )
     parser.add_argument(
-        "source_directory",
+        "source_path",
         type=Path,
-        help="The absolute path of the directory where the Moodle quiz HTML files are located. "
+        help="The absolute or relative path of the file or directory where the Moodle quiz HTML files are located. "
         "These HTML files should contain the 'Review' page of the quizzes.",
     )
     return parser.parse_args()
@@ -133,6 +135,8 @@ def get_grading() -> GradingType:
             return GradingType(grading_symbol)
         except ValueError:
             print("This is not a valid grading type!")
+        finally:
+            clear_terminal()
 
 
 def create_article(
@@ -156,22 +160,7 @@ def create_article(
             )
         )
         url = f"{wiki_domain}/wiki/{quiz_title}?{urlencode(parameters_for_opening_edit_with_paste)}"
-        if len(url) >= 2048:
-            logging.getLogger(__name__).warning(
-                "I can't create the article automatically "
-                "because the URL would be too long for some browsers (or the server)."
-            )
-            if args.verbose:
-                pyperclip.copy(url)
-                print(
-                    "This URL has been copied to the clipboard! "
-                    "It will be overwritten but you may recall it later if you use an app like Pastebot."
-                )
-                wait_for_pastebot_to_recognize_copy()
-            parameters_for_opening_edit["summary"] = parameters_for_opening_edit[
-                "summary"
-            ].replace("bővítése", "létrehozása")
-        else:
+        if len(url) < 2048:
             pyperclip.copy(quiz_wikitext)
             print(
                 "The wikitext of the quiz has been copied to the clipboard! "
@@ -187,6 +176,21 @@ def create_article(
                 "Please upload illustrations manually, if there are any."
             )
             return
+        else:
+            logging.getLogger(__name__).warning(
+                "I can't create the article automatically "
+                "because the URL would be too long for some browsers (or the server)."
+            )
+            if args.verbose:
+                pyperclip.copy(url)
+                print(
+                    "This URL has been copied to the clipboard! "
+                    "It will be overwritten but you may recall it later if you use an app like Pastebot."
+                )
+                wait_for_pastebot_to_recognize_copy()
+            parameters_for_opening_edit["summary"] = parameters_for_opening_edit[
+                "summary"
+            ].replace("bővítése", "létrehozása")
     pyperclip.copy(quiz_wikitext)
     print("The wikitext of the quiz has been copied to the clipboard!")
     url = f"{wiki_domain}/wiki/{quiz_title}?{urlencode(parameters_for_opening_edit)}"

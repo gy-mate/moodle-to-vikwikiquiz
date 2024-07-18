@@ -3,6 +3,10 @@ import re
 
 from bs4 import Tag
 
+# noinspection PyPackageRequirements
+from plum import dispatch
+from pylatexenc.latexencode import unicode_to_latex  # type: ignore
+
 # future: report false positive to JetBrains developers
 # noinspection PyPackages
 from .question import Question  # type: ignore
@@ -27,7 +31,10 @@ def get_grading_of_question(question: Tag) -> tuple[bool, float | None, float]:
     assert isinstance(found_tag, Tag)
 
     grading_text = found_tag.text
-    numbers = re.findall(r"\d+\.\d+", grading_text)
+    numbers_in_capture_groups: list[tuple[str, str]] = re.findall(
+        r"(\d+)(\.\d+)?", grading_text
+    )
+    numbers = [whole + fraction for whole, fraction in numbers_in_capture_groups]
     grade: float | None = None
     match len(numbers):
         case 1:
@@ -58,8 +65,8 @@ def complete_correct_answers(
             get_id_of_only_remaining_answer(answer_texts, correct_answers)
         )
         return
-    print(f"File: {file_name}")
-    print(f"Question: '{question_text}'")
+    print(f"File:\t\t{file_name}")
+    print(f"Question:\t'{question_text}'")
     match len(correct_answers):
         case 0:
             print("\nI couldn't determine any correct answers for sure.", end=" ")
@@ -136,11 +143,24 @@ def get_answers(
     for answer in answers:
         if not isinstance(answer, Tag):
             continue
-        found_tag = answer.find("div", class_="ml-1")
+        found_tag = answer.find(class_="ml-1")
         assert isinstance(found_tag, Tag)
-        answer_text = found_tag.text.rstrip(".\n")
-        answer_text = format_latex_as_wikitext(answer_text)
-        answer_texts.append(answer_text)
+        if found_tag.find("img"):
+            answer_texts.append("[[Fájl:.png|keret|keretnélküli|250x250px]]")
+        elif found_tag.find(class_="MathJax"):
+            answer_text = format_latex_as_wikitext(found_tag)
+            answer_texts.append(answer_text)
+        else:
+            match answer_text := found_tag.text:
+                case "True":
+                    answer_text = "Igaz"
+                case "False":
+                    answer_text = "Hamis"
+                case _:
+                    answer_text = answer_text.strip(".\n")
+                    answer_text = re.sub(r"\r\n|\s{2}", " ", answer_text)
+                    answer_text = format_latex_as_wikitext(answer_text)
+            answer_texts.append(answer_text)
         if answer_is_correct(answer, grade, maximum_points):
             correct_answers.append(i)
         i += 1
@@ -161,14 +181,35 @@ def answer_is_correct(answer: Tag, grade: float, maximum_points: float) -> bool:
 def get_question_text(question: Tag) -> str:
     found_tag = question.find("div", class_="qtext")
     assert isinstance(found_tag, Tag)
-    text = re.sub(r"\n", " ", found_tag.text)
-    return text.rstrip()
-
-
-def format_latex_as_wikitext(text: str) -> str:
-    text = re.sub(r"^(\\)?\\\(( )?(( )?\\(?=\\))?", "<math>", text)
-    text = re.sub(r"( \\)?\\\)( )?$", "</math>", text)
+    text = re.sub(r"\s?\r?\n\s?", " ", found_tag.text)
+    text = text.rstrip()
+    text = format_latex_as_wikitext(text)
     return text
+
+
+@dispatch
+def format_latex_as_wikitext(latex: Tag) -> str:
+    wikitext = latex.text
+    mathjax = latex.find(class_="MathJax").find("span").text
+    wikitext = wikitext.replace(mathjax, "", 1)
+    wikitext = wikitext.replace(mathjax, f"<math>{unicode_to_latex(mathjax)}</math>")
+    return wikitext
+
+
+@dispatch  # type: ignore
+def format_latex_as_wikitext(latex: str) -> str:
+    if re.findall(latex_start_anchored := r"^\s?\\?\\\(\s?(\s?\\(?=\\))?", latex):
+        wikitext = re.sub(latex_start_anchored, "<math>", latex)
+    else:
+        latex_start = latex_start_anchored.replace(r"^\s?", "")
+        wikitext = re.sub(latex_start, "<math>", latex)
+
+    if re.findall(latex_end_anchored := r"\s*\\?\\\)\s?$", wikitext):
+        wikitext = re.sub(latex_end_anchored, "</math>", wikitext)
+    else:
+        latex_end = latex_end_anchored.replace(r"\s?$", "")
+        wikitext = re.sub(latex_end, "</math>", wikitext)
+    return wikitext
 
 
 def question_already_exists(existing_question: Question, question_text: str) -> bool:

@@ -1,6 +1,6 @@
 # moodle-to-vikwikiquiz
 
-![Lines of code](https://img.shields.io/badge/lines_of_code-400+-blue)
+![Lines of code](https://img.shields.io/badge/lines_of_code-600+-blue)
 [![Build status](https://scrutinizer-ci.com/g/gy-mate/moodle-to-vikwikiquiz/badges/build.png?b=main)](https://scrutinizer-ci.com/g/gy-mate/moodle-to-vikwikiquiz/build-status/main)
 [![Code quality](https://img.shields.io/scrutinizer/quality/g/gy-mate/moodle-to-vikwikiquiz/main)](https://scrutinizer-ci.com/g/gy-mate/moodle-to-vikwikiquiz/)
 [![Type hinting used](https://img.shields.io/badge/type_hinting-used-brightgreen)](https://docs.python.org/3/library/typing.html)
@@ -10,7 +10,7 @@
 
 ## 📖 About
 
-A CLI for converting a graded Moodle quiz saved as an HTML file to a [vik.viki quiz](https://vik.wiki/wiki/Segítség:Kvíz) wikitext.
+A CLI for converting graded [Moodle quizzes](https://docs.moodle.org/404/en/Quiz_activity) saved as HTML files to a [vik.viki quiz](https://vik.wiki/wiki/Segítség:Kvíz) wikitext.
 
 
 ## 📥 Installation
@@ -39,13 +39,13 @@ A CLI for converting a graded Moodle quiz saved as an HTML file to a [vik.viki q
 ## 🧑‍💻 Usage
 
 ```text
-moodle-to-vikwikiquiz [--verbose|-v] [--new|-n] [--recursive|-r] source_directory
+moodle-to-vikwikiquiz [--verbose|-v] [--new|-n] [--recursive|-r] source_path
 ```
 
 Parameters:
 * `--new`: Create a new quiz on [vik.wiki](https://vik.wiki/) by automatically opening an edit page for the new article.
 * `--recursive`: Import HTML files from the current directory recursively.
-* `source_directory`: The absolute path of the directory where the Moodle quiz HTML files are located.
+* `source_path`: The absolute or relative path of the file or directory where the Moodle quiz HTML files are located.
   These HTML files should contain the _Review_ page of the quizzes.
 
 Always check the output before uploading it to [vik.wiki](https://vik.wiki/). 
