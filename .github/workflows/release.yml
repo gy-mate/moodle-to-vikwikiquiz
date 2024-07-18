@@ -23,7 +23,7 @@ jobs:
 
       - name: Build `.pyz`
         run: |
-          python -m pip install --upgrade pip
+          python3 -m pip install --upgrade pip
           pip install shiv
           shiv --entry-point moodle_to_vikwikiquiz.main:main --output-file moodle-to-vikwikiquiz.pyz --reproducible .
 
@@ -51,9 +51,9 @@ jobs:
 
       - name: Build package
         run: |
-          python -m pip install --upgrade pip
+          python3 -m pip install --upgrade pip
           pip install build
-          python -m build
+          python3 -m build
 
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1

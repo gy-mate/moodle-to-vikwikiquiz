@@ -98,14 +98,25 @@ If you want this to run automatically, create a cron job:
 ### 🏗️ Building
 
 - Wheels (`.whl`):
-    ```bash
-    python -m build
-    ```
+    1. Install `build`:
+        ```bash
+        python3 -m pip install --upgrade pip
+        pip install build
+        ```
+    1. Create the wheel:
+        ```bash
+        python3 -m build
+        ```
 
 - `zipapp` (`.pyz`):
-    ```bash
-    shiv --entry-point moodle_to_vikwikiquiz.main:main --output-file moodle-to-vikwikiquiz.pyz --reproducible .
-    ```
+    1. Install `shiv`:
+        ```bash
+        pipx install shiv
+        ```
+    1. Create the executable:
+        ```bash
+        shiv --entry-point moodle_to_vikwikiquiz.main:main --output-file moodle-to-vikwikiquiz.pyz --reproducible .
+        ```
 
 
 ## 📜 License
