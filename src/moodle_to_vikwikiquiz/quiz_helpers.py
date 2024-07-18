@@ -31,7 +31,9 @@ def get_grading_of_question(question: Tag) -> tuple[bool, float | None, float]:
     assert isinstance(found_tag, Tag)
 
     grading_text = found_tag.text
-    numbers_in_capture_groups: list[tuple[str, str]] = re.findall(r"(\d+)(\.\d+)?", grading_text)
+    numbers_in_capture_groups: list[tuple[str, str]] = re.findall(
+        r"(\d+)(\.\d+)?", grading_text
+    )
     numbers = [whole + fraction for whole, fraction in numbers_in_capture_groups]
     grade: float | None = None
     match len(numbers):
@@ -141,7 +143,7 @@ def get_answers(
     for answer in answers:
         if not isinstance(answer, Tag):
             continue
-        found_tag = answer.find("div", class_="ml-1")
+        found_tag = answer.find(class_="ml-1")
         assert isinstance(found_tag, Tag)
         if found_tag.find("img"):
             answer_texts.append("[[Fájl:.png|keret|keretnélküli|250x250px]]")
@@ -149,9 +151,15 @@ def get_answers(
             answer_text = format_latex_as_wikitext(found_tag)
             answer_texts.append(answer_text)
         else:
-            answer_text = found_tag.text.rstrip(".\n")
-            answer_text = answer_text.replace("\r\n", " ")
-            answer_text = format_latex_as_wikitext(answer_text)
+            match answer_text := found_tag.text:
+                case "True":
+                    answer_text = "Igaz"
+                case "False":
+                    answer_text = "Hamis"
+                case _:
+                    answer_text = answer_text.strip(".\n")
+                    answer_text = re.sub(r"\r\n|\s{2}", " ", answer_text)
+                    answer_text = format_latex_as_wikitext(answer_text)
             answer_texts.append(answer_text)
         if answer_is_correct(answer, grade, maximum_points):
             correct_answers.append(i)
@@ -188,8 +196,8 @@ def format_latex_as_wikitext(latex: Tag) -> str:
 
 @dispatch  # type: ignore
 def format_latex_as_wikitext(latex: str) -> str:
-    latex = re.sub(r"^(\\)?\\\(( )?(( )?\\(?=\\))?", "<math>", latex)
-    wikitext = re.sub(r"( \\)?\\\)( )?$", "</math>", latex)
+    wikitext = re.sub(r"^\\?\\\(\s?(\s?\\(?=\\))?", "<math>", latex)
+    wikitext = re.sub(r"(\s\\)?\\\)\s?$", "</math>", wikitext)
     return wikitext
 
 

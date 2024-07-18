@@ -4,6 +4,9 @@ import contextlib
 # noinspection PyUnresolvedReferences
 import os
 from pathlib import Path
+
+# future: report false positive to JetBrains developers
+# noinspection PyUnresolvedReferences
 import re
 
 # future: report false positive to JetBrains developers
@@ -36,7 +39,7 @@ class Quiz:
         self.title = title
         self.grading = grading
 
-        self.questions: list[Question] = []
+        self.questions: set[Question] = set()
 
     def __str__(self) -> str:
         text = f"{{{{Vissza | {self.parent_article}}}}}"
@@ -66,7 +69,7 @@ class Quiz:
             webpage = BeautifulSoup(source_file, "html.parser")
 
             multi_or_single_choice_questions = webpage.find_all(
-                "div", class_=re.compile(r"multichoice|calculatedmulti")
+                "div", class_=re.compile(r"multichoice|calculatedmulti|truefalse")
             )
             for question in multi_or_single_choice_questions:
                 self.import_question(
@@ -114,7 +117,7 @@ class Quiz:
                 )
                 break
         else:
-            self.questions.append(
+            self.questions.add(
                 Question(
                     q_type=question_type,
                     text=question_text,
