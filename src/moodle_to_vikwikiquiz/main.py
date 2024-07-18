@@ -135,6 +135,8 @@ def get_grading() -> GradingType:
             return GradingType(grading_symbol)
         except ValueError:
             print("This is not a valid grading type!")
+        finally:
+            clear_terminal()
 
 
 def create_article(
