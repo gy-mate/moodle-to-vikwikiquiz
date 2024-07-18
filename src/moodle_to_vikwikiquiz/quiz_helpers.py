@@ -65,8 +65,8 @@ def complete_correct_answers(
             get_id_of_only_remaining_answer(answer_texts, correct_answers)
         )
         return
-    print(f"File: {file_name}")
-    print(f"Question: '{question_text}'")
+    print(f"File:\t\t{file_name}")
+    print(f"Question:\t'{question_text}'")
     match len(correct_answers):
         case 0:
             print("\nI couldn't determine any correct answers for sure.", end=" ")
