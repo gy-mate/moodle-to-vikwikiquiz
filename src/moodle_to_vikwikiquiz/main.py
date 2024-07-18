@@ -99,7 +99,7 @@ def get_name_of_parent_article() -> str:
     while True:
         try:
             input_name = input(
-                f"\nPlease enter the name of the vik.wiki article on the corresponding course on then press Enter: "
+                f"\nPlease enter the name of the vik.wiki article on the corresponding course on then press Enter:\n"
             )
             if not input_name:
                 raise ValueError("Nothing was entered!")
@@ -165,11 +165,11 @@ def create_article(
         else:
             open_article(args, parameters_for_opening_edit, url)
     pyperclip.copy(quiz_wikitext)
-    print("The wikitext of the quiz has been copied to the clipboard!")
+    print("\nThe wikitext of the quiz has been copied to the clipboard!")
     url = f"{wiki_domain}/wiki/{quiz_title}?{urlencode(parameters_for_opening_edit)}"
     webbrowser.open_new_tab(url)
     print(
-        "The edit page of the quiz article has been opened in your browser! "
+        "\nThe edit page of the quiz article has been opened in your browser! "
         "Please paste the wikitext and upload illustrations (if any) there manually."
     )
 
@@ -177,7 +177,7 @@ def create_article(
 def open_article_paste_text(args: Namespace, quiz_wikitext: str, url: str) -> None:
     pyperclip.copy(quiz_wikitext)
     print(
-        "The wikitext of the quiz has been copied to the clipboard! "
+        "\nThe wikitext of the quiz has been copied to the clipboard! "
         "This will be overwritten but you may recall it later if you use an app like Pastebot."
     )
     wait_for_pastebot_to_recognize_copy()
@@ -186,7 +186,7 @@ def open_article_paste_text(args: Namespace, quiz_wikitext: str, url: str) -> No
         print("The URL has been copied to the clipboard!")
     webbrowser.open_new_tab(url)
     print(
-        "The edit page of the new quiz article has been opened in your browser with the wikitext pre-filled! "
+        "\nThe edit page of the new quiz article has been opened in your browser with the wikitext pre-filled! "
         "Please upload illustrations manually, if there are any."
     )
     return
@@ -200,7 +200,7 @@ def open_article(args: Namespace, parameters_for_opening_edit: dict, url: str) -
     if args.verbose:
         pyperclip.copy(url)
         print(
-            "This URL has been copied to the clipboard! "
+            "\nThis URL has been copied to the clipboard! "
             "It will be overwritten but you may recall it later if you use an app like Pastebot."
         )
         wait_for_pastebot_to_recognize_copy()
