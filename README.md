@@ -32,7 +32,7 @@ A CLI for converting graded [Moodle quizzes](https://docs.moodle.org/404/en/Quiz
 1. Run the following command in the terminal:
 
     ```bash
-    python3 moodle-to-vikwikiquiz.pyz source_directory
+    python3 moodle-to-vikwikiquiz.pyz [parameters]
     ```
 
 
@@ -48,8 +48,8 @@ Parameters:
 * `source_path`: The absolute or relative path of the file or directory where the Moodle quiz HTML files are located.
   These HTML files should contain the _Review_ page of the quizzes.
 
-Always check the output before uploading it to [vik.wiki](https://vik.wiki/). 
-Upload all images and add their filenames to the quiz manually on [vik.wiki](https://vik.wiki/).
+Always check and correct the output before uploading it to [vik.wiki](https://vik.wiki/)!
+This includes uploading all images and adding their filenames to the quiz manually.
 
 
 ### 📋 Features
