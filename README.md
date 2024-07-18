@@ -48,7 +48,7 @@ Parameters:
 * `source_path`: The absolute or relative path of the file or directory where the Moodle quiz HTML files are located.
   These HTML files should contain the _Review_ page of the quizzes.
 
-Always check and correct the output before uploading it to [vik.wiki](https://vik.wiki/)!
+Always check and correct the output before submitting it to the wiki!
 This includes uploading all images and adding their filenames to the quiz manually.
 
 
@@ -103,7 +103,7 @@ If you want this to run automatically, create a cron job:
         python3 -m pip install --upgrade pip
         pip install build
         ```
-    1. Create the wheel:
+    1. Create the wheels:
         ```bash
         python3 -m build
         ```
