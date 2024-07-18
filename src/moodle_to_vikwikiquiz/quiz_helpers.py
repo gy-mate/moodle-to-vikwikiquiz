@@ -181,8 +181,10 @@ def answer_is_correct(answer: Tag, grade: float, maximum_points: float) -> bool:
 def get_question_text(question: Tag) -> str:
     found_tag = question.find("div", class_="qtext")
     assert isinstance(found_tag, Tag)
-    text = re.sub(r" ?\r?\n ?", " ", found_tag.text)
-    return text.rstrip()
+    text = re.sub(r"\s?\r?\n\s?", " ", found_tag.text)
+    text = text.rstrip()
+    text = format_latex_as_wikitext(text)
+    return text
 
 
 @dispatch
@@ -196,8 +198,17 @@ def format_latex_as_wikitext(latex: Tag) -> str:
 
 @dispatch  # type: ignore
 def format_latex_as_wikitext(latex: str) -> str:
-    wikitext = re.sub(r"\s?\\?\\\(\s?(\s?\\(?=\\))?", "<math>", latex)
-    wikitext = re.sub(r"\s*\\?\\\)\s?", "</math>", wikitext)
+    if re.findall(latex_start_anchored := r"^\s?\\?\\\(\s?(\s?\\(?=\\))?", latex):
+        wikitext = re.sub(latex_start_anchored, "<math>", latex)
+    else:
+        latex_start = latex_start_anchored.replace(r"^\s?", "")
+        wikitext = re.sub(latex_start, "<math>", latex)
+
+    if re.findall(latex_end_anchored := r"\s*\\?\\\)\s?$", wikitext):
+        wikitext = re.sub(latex_end_anchored, "</math>", wikitext)
+    else:
+        latex_end = latex_end_anchored.replace(r"\s?$", "")
+        wikitext = re.sub(latex_end, "</math>", wikitext)
     return wikitext
 
 
