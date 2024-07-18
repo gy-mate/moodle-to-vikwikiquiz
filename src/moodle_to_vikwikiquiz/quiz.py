@@ -73,11 +73,11 @@ class Quiz:
             )
             for question in multi_or_single_choice_questions:
                 self.import_question(
-                    question=question, file_name=os.path.basename(file_path)
+                    question=question, filename=os.path.basename(file_path)
                 )
                 clear_terminal()  # type: ignore
 
-    def import_question(self, question: Tag, file_name: str) -> None:
+    def import_question(self, question: Tag, filename: str) -> None:
         with contextlib.suppress(NotImplementedError):
             question_type = get_question_type(question)  # type: ignore
         correctly_answered, grade, maximum_points = get_grading_of_question(question)  # type: ignore
@@ -91,7 +91,7 @@ class Quiz:
                 maximum_points,
                 question_text,
                 question_type,
-                file_name,
+                filename,
             )
         has_illustration = get_if_has_illustration(question)  # type: ignore
         self.add_question_no_duplicates(

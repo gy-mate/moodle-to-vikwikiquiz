@@ -58,14 +58,14 @@ def complete_correct_answers(
     maximum_points: float,
     question_text: str,
     question_type: QuestionType,
-    file_name: str,
+    filename: str,
 ) -> None:
     if len(correct_answers) == len(answer_texts) - 1:
         correct_answers.append(
             get_id_of_only_remaining_answer(answer_texts, correct_answers)
         )
         return
-    print(f"File:\t\t{file_name}")
+    print(f"File:\t\t{filename}")
     print(f"Question:\t'{question_text}'")
     match len(correct_answers):
         case 0:
