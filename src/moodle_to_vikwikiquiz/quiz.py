@@ -4,6 +4,7 @@ import contextlib
 # noinspection PyUnresolvedReferences
 import os
 from pathlib import Path
+import re
 
 # future: report false positive to JetBrains developers
 # noinspection PyUnresolvedReferences
@@ -35,7 +36,7 @@ class Quiz:
         self.title = title
         self.grading = grading
 
-        self.questions: set[Question] = set()
+        self.questions: list[Question] = []
 
     def __str__(self) -> str:
         text = f"{{{{Vissza | {self.parent_article}}}}}"
@@ -49,20 +50,23 @@ class Quiz:
         text += "\n"
         return text
 
-    def import_files(self, directory: Path, recursively: bool) -> None:
-        for subdir, dirs, files in os.walk(directory):
+    def import_files(self, path: Path, recursively: bool) -> None:
+        if os.path.isfile(path):
+            self.import_questions(path, path.parent)
+            return
+        for subdir, dirs, files in os.walk(path):
             for file in files:
                 self.import_questions(file, subdir)
             if not recursively:
                 break
 
-    def import_questions(self, file: str, subdir: str) -> None:
+    def import_questions(self, file: Path | str, subdir: Path | str) -> None:
         file_path = os.path.join(subdir, file)
         with open(file_path, "rb") as source_file:
             webpage = BeautifulSoup(source_file, "html.parser")
 
             multi_or_single_choice_questions = webpage.find_all(
-                "div", class_="multichoice"
+                "div", class_=re.compile(r"multichoice|calculatedmulti")
             )
             for question in multi_or_single_choice_questions:
                 self.import_question(
@@ -110,7 +114,7 @@ class Quiz:
                 )
                 break
         else:
-            self.questions.add(
+            self.questions.append(
                 Question(
                     q_type=question_type,
                     text=question_text,
