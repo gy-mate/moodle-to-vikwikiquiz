@@ -43,7 +43,9 @@ def get_grading_of_question(question: Tag) -> tuple[bool, float | None, float]:
             grade = float(numbers[0])
             maximum_points = float(numbers[1])
         case _:
-            raise NotImplementedError
+            raise NotImplementedError(
+                f"{len(numbers)} grade numbers found in '{grading_text}'!"
+            )
     if grade == maximum_points:
         correctly_answered = True
     else:
