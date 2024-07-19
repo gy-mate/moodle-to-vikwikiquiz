@@ -32,7 +32,7 @@ A CLI for converting graded [Moodle quizzes](https://docs.moodle.org/404/en/Quiz
 1. Run the following command in the terminal:
 
     ```bash
-    python3 moodle-to-vikwikiquiz_x.x.x.pyz [parameters]
+    ./moodle-to-vikwikiquiz_x.x.x.pyz [parameters]
     ```
 
 
@@ -109,6 +109,7 @@ If you want this to run automatically, create a cron job:
         ```
 
 - `zipapp` (`.pyz`):
+    1. [Install `pipx`](https://pipx.pypa.io/stable/#install-pipx)
     1. Install `shiv`:
         ```bash
         pipx install shiv
