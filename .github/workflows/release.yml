@@ -9,28 +9,29 @@ permissions:
 
 jobs:
   attach-pyz:
-    name: Attach `.pyz` to release
+    name: Attach zipapp to the release
 
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v3
+      - name: Set up latest python3
+        uses: actions/setup-python@v5
         with:
-          python-version: '3.12.4'
+          python-version: '3.x.x'
 
-      - name: Build `.pyz`
+      - name: Build zipapp
         run: |
           python3 -m pip install --upgrade pip
           pip install shiv
           shiv --entry-point moodle_to_vikwikiquiz.main:main --output-file moodle-to-vikwikiquiz.pyz --reproducible .
 
-      - name: Attach the generated `.pyz`
+      - name: Attach the generated zipapp
         uses: svenstaro/upload-release-action@v2
         with:
           file: moodle-to-vikwikiquiz.pyz
+          overwrite: true
           asset_name: moodle-to-vikwikiquiz_$tag.pyz
 
   pypi-publish:
@@ -44,10 +45,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v3
+      - name: Set up latest python3
+        uses: actions/setup-python@v5
         with:
-          python-version: '3.12.4'
+          python-version: '3.x.x'
 
       - name: Build package
         run: |
