@@ -62,6 +62,8 @@ class Quiz:
                 self.import_questions(file, subdir)
             if not recursively:
                 break
+        if not self.questions:
+            raise ValueError("No questions were imported from the provided source path!")
 
     def import_questions(self, file: Path | str, subdir: Path | str) -> None:
         file_path = os.path.join(subdir, file)
