@@ -1,8 +1,3 @@
-# future: report false positive to JetBrains developers
-# noinspection PyPackages
-# future: report false positive to mypy developers
-from pydantic import BaseModel
-
 # noinspection PyPackages
 from .grading_types import GradingType  # type: ignore
 
@@ -11,13 +6,22 @@ from .grading_types import GradingType  # type: ignore
 from .question_types import QuestionType  # type: ignore
 
 
-class Question(BaseModel):
-    q_type: QuestionType
-    text: str
-    illustration: bool
-    answers: list[str]
-    correct_answers: set[int]
-    grading: GradingType | None = None
+class Question:
+    def __init__(
+        self,
+        q_type: QuestionType,
+        text: str,
+        illustration: bool,
+        answers: list[str],
+        correct_answers: set[int],
+        grading: GradingType | None = None,
+    ) -> None:
+        self.q_type = q_type
+        self.text = text
+        self.illustration = illustration
+        self.answers = answers
+        self.correct_answers = correct_answers
+        self.grading = grading
 
     def __str__(self) -> str:
         text = f"== {self.text} =="

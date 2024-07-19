@@ -108,7 +108,7 @@ class Quiz:
         question_text: str,
         has_illustration: bool,
         answer_texts: list[str],
-        correct_answers: list[int],
+        correct_answers: set[int],
     ) -> None:
         for existing_question in self.questions:
             if question_already_exists(existing_question, question_text):  # type: ignore

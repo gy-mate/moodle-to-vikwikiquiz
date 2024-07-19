@@ -55,7 +55,7 @@ def get_grading_of_question(question: Tag) -> tuple[bool, float | None, float]:
 
 def complete_correct_answers(
     answer_texts: list[str],
-    correct_answers: list[int],
+    correct_answers: set[int],
     grade: float,
     maximum_points: float,
     question_text: str,
@@ -63,7 +63,7 @@ def complete_correct_answers(
     filename: str,
 ) -> None:
     if len(correct_answers) == len(answer_texts) - 1:
-        correct_answers.append(
+        correct_answers.add(
             get_id_of_only_remaining_answer(answer_texts, correct_answers)
         )
         return
@@ -74,7 +74,7 @@ def complete_correct_answers(
             print("\nI couldn't determine any correct answers for sure.", end=" ")
         case 1:
             print(
-                f"\nI see that answer #{correct_answers[0]} is correct, "
+                f"\nI see that answer #{list(correct_answers)[0]} is correct, "
                 f"but there might be additional correct answers because you only got {grade:g} points out of {maximum_points:g}.",
                 end=" ",
             )
@@ -98,7 +98,7 @@ def complete_correct_answers(
 
 
 def get_id_of_only_remaining_answer(
-    answer_texts: list[str], correct_answers: list[int]
+    answer_texts: list[str], correct_answers: set[int]
 ) -> int:
     for i, answer in enumerate(answer_texts, 1):
         if i not in correct_answers:
@@ -107,7 +107,7 @@ def get_id_of_only_remaining_answer(
 
 
 def get_missing_correct_answers(
-    answer_texts: list[str], correct_answers: list[int], question_type: QuestionType
+    answer_texts: list[str], correct_answers: set[int], question_type: QuestionType
 ) -> None:
     while len(correct_answers) < len(answer_texts):
         additional_correct_answer = input(
@@ -129,18 +129,18 @@ def get_missing_correct_answers(
                 end="\n\n",
             )
             continue
-        correct_answers.append(int(additional_correct_answer))
+        correct_answers.add(int(additional_correct_answer))
         if question_type == QuestionType.SingleChoice:
             break
 
 
 def get_answers(
     question: Tag, grade: float, maximum_points: float
-) -> tuple[list[str], list[int]]:
+) -> tuple[list[str], set[int]]:
     answers = question.find("div", class_="answer")
     assert isinstance(answers, Tag)
     answer_texts: list[str] = []
-    correct_answers: list[int] = []
+    correct_answers: set[int] = set()
     i = 1
     for answer in answers:
         if not isinstance(answer, Tag):
@@ -164,7 +164,7 @@ def get_answers(
                     answer_text = format_latex_as_wikitext(answer_text)
             answer_texts.append(answer_text)
         if answer_is_correct(answer, grade, maximum_points):
-            correct_answers.append(i)
+            correct_answers.add(i)
         i += 1
     return answer_texts, correct_answers
 
@@ -219,7 +219,7 @@ def question_already_exists(existing_question: Question, question_text: str) -> 
 
 
 def add_answers_to_existing_question(
-    answer_texts: list[str], correct_answers: list[int], existing_question: Question
+    answer_texts: list[str], correct_answers: set[int], existing_question: Question
 ) -> None:
     # report false positive to mypy developers
     for k, answer in enumerate(answer_texts):  # type: ignore
