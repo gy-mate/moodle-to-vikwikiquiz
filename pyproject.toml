@@ -20,6 +20,7 @@ dependencies = [
     "beautifulsoup4",
     "plum-dispatch",
     "pydantic",
+    "pydantic-core",
     "pylatexenc",
     "pyperclip",
 ]
