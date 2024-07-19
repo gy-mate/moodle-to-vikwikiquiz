@@ -32,9 +32,12 @@ def get_grading_of_question(question: Tag) -> tuple[bool, float | None, float]:
 
     grading_text = found_tag.text
     numbers_in_capture_groups: list[tuple[str, str]] = re.findall(
-        r"(\d+)(\.\d+)?", grading_text
+        r"(\d+)([.,]\d+)?", grading_text
     )
-    numbers = [whole + fraction for whole, fraction in numbers_in_capture_groups]
+    numbers = [
+        whole + fraction.replace(",", ".")
+        for whole, fraction in numbers_in_capture_groups
+    ]
     grade: float | None = None
     match len(numbers):
         case 1:
@@ -111,7 +114,7 @@ def get_missing_correct_answers(
 ) -> None:
     while len(correct_answers) < len(answer_texts):
         additional_correct_answer = input(
-            f"Please enter a missing correct answer (if there is any remaining) then press Enter: "
+            f"Please enter a missing correct answer (if there are any remaining) then press Enter: "
         )
         if additional_correct_answer == "":
             break
