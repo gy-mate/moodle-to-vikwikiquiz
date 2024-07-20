@@ -31,7 +31,7 @@ def main() -> None:
         grading=get_grading(),
     )
     absolute_source_path: Path = args.source_path.resolve()
-    quiz.import_files(
+    quiz.import_file_or_files(
         path=absolute_source_path,
         recursively=args.recursive,
     )

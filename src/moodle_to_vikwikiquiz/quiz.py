@@ -53,19 +53,22 @@ class Quiz:
         text += "\n"
         return text
 
-    def import_files(self, path: Path, recursively: bool) -> None:
+    def import_file_or_files(self, path: Path, recursively: bool) -> None:
         if os.path.isfile(path):
             self.import_questions(path, path.parent)
-            return
+        else:
+            self.import_files(path, recursively)
+        if not self.questions:
+            raise ValueError(
+                "No questions were imported from the provided source path!"
+            )
+
+    def import_files(self, path: Path, recursively: bool) -> None:
         for subdir, dirs, files in os.walk(path):
             for file in files:
                 self.import_questions(file, subdir)
             if not recursively:
                 break
-        if not self.questions:
-            raise ValueError(
-                "No questions were imported from the provided source path!"
-            )
 
     def import_questions(self, file: Path | str, subdir: Path | str) -> None:
         file_path = os.path.join(subdir, file)
@@ -123,17 +126,33 @@ class Quiz:
                 )
                 break
         else:
-            try:
-                self.questions.add(
-                    Question(
-                        q_type=question_type,
-                        text=question_text,
-                        illustration=has_illustration,
-                        answers=answer_texts,
-                        correct_answers=correct_answers,
-                    )
+            self.add_question(
+                answer_texts,
+                correct_answers,
+                has_illustration,
+                question_text,
+                question_type,
+            )
+
+    def add_question(
+        self,
+        answer_texts: list[str],
+        correct_answers: set[int],
+        has_illustration: bool,
+        question_text: str,
+        question_type: QuestionType,
+    ) -> None:
+        try:
+            self.questions.add(
+                Question(
+                    q_type=question_type,
+                    text=question_text,
+                    illustration=has_illustration,
+                    answers=answer_texts,
+                    correct_answers=correct_answers,
                 )
-            except AssertionError:
-                print(
-                    f"Error: question '{question_text}' was not added to the quiz because it wasn't processed correctly!"
-                )
+            )
+        except AssertionError:
+            print(
+                f"Error: question '{question_text}' was not added to the quiz because it wasn't processed correctly!"
+            )
