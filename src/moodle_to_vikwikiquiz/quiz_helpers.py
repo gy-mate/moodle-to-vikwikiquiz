@@ -166,7 +166,7 @@ def get_answers(
                     answer_text = prettify(answer_text)
         answer_texts.append(answer_text)
         if answer_is_correct(
-                answer, answer_text, grade, maximum_points, correct_answers
+            answer, answer_text, grade, maximum_points, correct_answers
         ):
             id_of_correct_answers.add(i)
         i += 1
@@ -192,7 +192,7 @@ def get_correct_answers_if_provided(question: Tag) -> set[str | None]:
         assert isinstance(tag, Tag)
         hint_text = prettify(tag.text)
         if only_correct_answer := re.findall(
-                r"(?<=The correct answer is: ).+", hint_text
+            r"(?<=The correct answer is: ).+", hint_text
         ):
             assert only_correct_answer
             prettified_answer = prettify(only_correct_answer[0])
@@ -212,11 +212,11 @@ def get_correct_answers_if_provided(question: Tag) -> set[str | None]:
 
 
 def answer_is_correct(
-        answer: Tag,
-        answer_text: str,
-        grade: float,
-        maximum_points: float,
-        correct_answers: set[str | None],
+    answer: Tag,
+    answer_text: str,
+    grade: float,
+    maximum_points: float,
+    correct_answers: set[str | None],
 ) -> bool:
     if correct_answers and answer_text in correct_answers:
         return True

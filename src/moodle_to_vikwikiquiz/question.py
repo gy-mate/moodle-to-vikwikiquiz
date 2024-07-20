@@ -18,21 +18,21 @@ class Question:
     ) -> None:
         assert isinstance(q_type, QuestionType)
         self.q_type = q_type
-        
+
         assert isinstance(text, str)
         self.text = text
-        
+
         assert isinstance(illustration, bool)
         self.illustration = illustration
-        
+
         assert isinstance(answers, list)
         assert answers
         self.answers = answers
-        
+
         assert isinstance(correct_answers, set)
         assert correct_answers
         self.correct_answers = correct_answers
-        
+
         if grading:
             assert isinstance(grading, GradingType)
         self.grading = grading
