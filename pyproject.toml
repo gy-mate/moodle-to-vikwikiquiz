@@ -9,7 +9,7 @@ readme = "README.md"
 authors = [
     { name="Máté Gyöngyösi", email="melees00_quern@icloud.com" },
 ]
-version = "1.2.2"
+version = "1.2.3"
 classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
