@@ -45,7 +45,14 @@ def main() -> None:
         "summary": "Kvíz bővítése "
         "a https://github.com/gy-mate/moodle-to-vikwikiquiz segítségével importált Moodle-kvíz(ek)ből",
         "preload": "Sablon:Előbetöltés",
-        "preloadparams[]": "<!-- Töröld ki ezt és a következő sort, majd illeszd be a vágólapodra másolt tartalmat! -->",
+        "preloadparams[]": """<!-- További teendőid (ebben a sorrendben):
+- az e komment alatti sorba illeszd be a vágólapodra másolt tartalmat
+- kattints az 'Előnézet megtekintése' gombra
+- javítsd a helyesírást és a formázást, különös tekintettel a képletekre
+- töltsd fel kézzel az előnézetben piros linkekkel formázott illusztrációkat
+- add hozzá a "Fájl:.png" wikitextekhez a feltöltés során megadott fájlneveket
+- töröld ezt a kommentet
+-->""",
     }
     clear_terminal()
     create_article(
