@@ -180,20 +180,34 @@ def prettify(text: str) -> str:
 
 
 def strip_whitespaces(text: str) -> str:
-    text = text.strip(".\n")
-    text = re.sub(r"\r\n|\s{2}", " ", text)
+    text = text.strip("., \n")
+    text = re.sub(r" \n|\r\n|\s{2}", " ", text)
     return text
 
 
-def get_correct_answers_if_provided(question: Tag) -> set[str]:
+def get_correct_answers_if_provided(question: Tag) -> set[str | None]:
     tag = question.find("div", class_="rightanswer")
-    correct_answers: set[str] = set()
+    correct_answers: set[str | None] = set()
     if tag:
-        hint_text = tag.text
-        if correct_answer := re.findall(r"(?<=The correct answer is: ).+", hint_text):
-            assert correct_answer
-            prettified_answer = prettify(correct_answer[0])
+        assert isinstance(tag, Tag)
+        hint_text = prettify(tag.text)
+        if only_correct_answer := re.findall(
+                r"(?<=The correct answer is: ).+", hint_text
+        ):
+            assert only_correct_answer
+            prettified_answer = prettify(only_correct_answer[0])
             correct_answers.add(prettified_answer)
+        elif hint_text.find("The correct answers are: ") != -1:
+            correct_answer_tags = tag.find_all("p")
+            for correct_answer_tag in correct_answer_tags:
+                correct_answer = correct_answer_tag.text
+                correct_answers.add(prettify(correct_answer))
+        elif tag.find("img"):
+            pass
+        else:
+            raise NotImplementedError(
+                f"Correct answers could not be extracted from '{hint_text}'!"
+            )
     return correct_answers
 
 
@@ -202,7 +216,7 @@ def answer_is_correct(
         answer_text: str,
         grade: float,
         maximum_points: float,
-        correct_answers: set[str],
+        correct_answers: set[str | None],
 ) -> bool:
     if correct_answers and answer_text in correct_answers:
         return True
