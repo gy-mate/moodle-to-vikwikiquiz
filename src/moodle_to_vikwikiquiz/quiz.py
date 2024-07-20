@@ -123,12 +123,17 @@ class Quiz:
                 )
                 break
         else:
-            self.questions.add(
-                Question(
-                    q_type=question_type,
-                    text=question_text,
-                    illustration=has_illustration,
-                    answers=answer_texts,
-                    correct_answers=correct_answers,
+            try:
+                self.questions.add(
+                    Question(
+                        q_type=question_type,
+                        text=question_text,
+                        illustration=has_illustration,
+                        answers=answer_texts,
+                        correct_answers=correct_answers,
+                    )
                 )
-            )
+            except AssertionError:
+                print(
+                    f"Error: question '{question_text}' was not added to the quiz because it wasn't processed correctly!"
+                )
