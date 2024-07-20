@@ -46,7 +46,7 @@ class Question:
                 (
                     self.q_type,
                     self.text,
-                    self.answers.sort(),
+                    frozenset(sorted(self.answers)),
                     frozenset(self.correct_answers),
                     self.grading,
                 )
