@@ -86,11 +86,13 @@ class Quiz:
             question_type = get_question_type(question)  # type: ignore
         correctly_answered, grade, maximum_points = get_grading_of_question(question)  # type: ignore
         question_text = get_question_text(question)  # type: ignore
-        answer_texts, correct_answers = get_answers(question, grade, maximum_points)  # type: ignore
-        if not correctly_answered:
+        answer_texts, id_of_correct_answers, all_correct_answers_known = get_answers(  # type: ignore
+            question, grade, maximum_points
+        )
+        if not correctly_answered and not all_correct_answers_known:
             complete_correct_answers(  # type: ignore
                 answer_texts,
-                correct_answers,
+                id_of_correct_answers,
                 grade,
                 maximum_points,
                 question_text,
@@ -103,7 +105,7 @@ class Quiz:
             question_text,
             has_illustration,
             answer_texts,
-            correct_answers,
+            id_of_correct_answers,
         )
 
     def add_question_no_duplicates(

@@ -139,11 +139,13 @@ def get_missing_correct_answers(
 
 def get_answers(
     question: Tag, grade: float, maximum_points: float
-) -> tuple[list[str], set[int]]:
+) -> tuple[list[str], set[int], bool]:
     answers = question.find("div", class_="answer")
+    correct_answers = get_correct_answers_if_provided(question)
+    all_correct_answers_known = bool(correct_answers)
     assert isinstance(answers, Tag)
     answer_texts: list[str] = []
-    correct_answers: set[int] = set()
+    id_of_correct_answers: set[int] = set()
     i = 1
     for answer in answers:
         if not isinstance(answer, Tag):
@@ -151,10 +153,9 @@ def get_answers(
         found_tag = answer.find(class_="ml-1")
         assert isinstance(found_tag, Tag)
         if found_tag.find("img"):
-            answer_texts.append("[[Fájl:.png|keret|keretnélküli|250x250px]]")
+            answer_text = "[[Fájl:.png|keret|keretnélküli|250x250px]]"
         elif found_tag.find(class_="MathJax"):
             answer_text = format_latex_as_wikitext(found_tag)
-            answer_texts.append(answer_text)
         else:
             match answer_text := found_tag.text:
                 case "True":
@@ -162,18 +163,50 @@ def get_answers(
                 case "False":
                     answer_text = "Hamis"
                 case _:
-                    answer_text = answer_text.strip(".\n")
-                    answer_text = re.sub(r"\r\n|\s{2}", " ", answer_text)
-                    answer_text = format_latex_as_wikitext(answer_text)
-            answer_texts.append(answer_text)
-        if answer_is_correct(answer, grade, maximum_points):
-            correct_answers.add(i)
+                    answer_text = prettify(answer_text)
+        answer_texts.append(answer_text)
+        if answer_is_correct(
+                answer, answer_text, grade, maximum_points, correct_answers
+        ):
+            id_of_correct_answers.add(i)
         i += 1
-    return answer_texts, correct_answers
+    return answer_texts, id_of_correct_answers, all_correct_answers_known
 
 
-def answer_is_correct(answer: Tag, grade: float, maximum_points: float) -> bool:
-    if "correct" in answer["class"]:
+def prettify(text: str) -> str:
+    text = strip_whitespaces(text)
+    text = format_latex_as_wikitext(text)
+    return text
+
+
+def strip_whitespaces(text: str) -> str:
+    text = text.strip(".\n")
+    text = re.sub(r"\r\n|\s{2}", " ", text)
+    return text
+
+
+def get_correct_answers_if_provided(question: Tag) -> set[str]:
+    tag = question.find("div", class_="rightanswer")
+    correct_answers: set[str] = set()
+    if tag:
+        hint_text = tag.text
+        if correct_answer := re.findall(r"(?<=The correct answer is: ).+", hint_text):
+            assert correct_answer
+            prettified_answer = prettify(correct_answer[0])
+            correct_answers.add(prettified_answer)
+    return correct_answers
+
+
+def answer_is_correct(
+        answer: Tag,
+        answer_text: str,
+        grade: float,
+        maximum_points: float,
+        correct_answers: set[str],
+) -> bool:
+    if correct_answers and answer_text in correct_answers:
+        return True
+    elif "correct" in answer["class"]:
         return True
     elif grade == maximum_points:
         answer_input_element = answer.find("input")
