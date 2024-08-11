@@ -1,0 +1,28 @@
+name: ✨ Feature request
+description: Suggest an idea for this software
+labels: ["enhancement"]
+assignees:
+  - gy-mate
+body:
+    - type: textarea
+      id: description
+      attributes:
+        label: Description
+        description: What should be improved?
+        placeholder: "I'm always frustrated when [...]"
+      validations:
+        required: true
+    - type: textarea
+      id: solution
+      attributes:
+        label: Preferred solution
+        description: A clear and concise description of what you would like to happen in these cases.
+        placeholder: ""
+      validations:
+        required: true
+    - type: textarea
+      id: alternatives
+      attributes:
+        label: Considered alternatives
+        description: A clear and concise description of any alternative solutions or features you've considered.
+        placeholder: ""
