@@ -5,12 +5,15 @@
 [![Code quality](https://img.shields.io/scrutinizer/quality/g/gy-mate/moodle-to-vikwikiquiz/main)](https://scrutinizer-ci.com/g/gy-mate/moodle-to-vikwikiquiz/)
 [![Type hinting used](https://img.shields.io/badge/type_hinting-used-brightgreen)](https://docs.python.org/3/library/typing.html)
 [![Code style: Black](https://img.shields.io/badge/code_style-black-black.svg)](https://github.com/psf/black)
+
+[![Recent activity](https://img.shields.io/github/commit-activity/m/gy-mate/moodle-to-vikwikiquiz)](https://github.com/gy-mate/moodle-to-vikwikiquiz/commits/main/)
+![Commits since latest release](https://img.shields.io/github/commits-since/gy-mate/moodle-to-vikwikiquiz/latest)
 [![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen)](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request)
 
 
 ## 📖 About
 
-A CLI for converting graded [Moodle quizzes](https://docs.moodle.org/404/en/Quiz_activity) saved as HTML files to a [vik.viki quiz](https://vik.wiki/wiki/Segítség:Kvíz) wikitext.
+A CLI for converting graded [Moodle quizzes](https://docs.moodle.org/404/en/Quiz_activity) saved as HTML files to a [vik.viki quiz](https://vik.wiki/Segítség:Kvíz) wikitext.
 
 
 ## 📥 Installation

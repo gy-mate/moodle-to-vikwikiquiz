@@ -37,7 +37,7 @@ def main() -> None:
     )
 
     quiz_wikitext = str(quiz)
-    wiki_domain = "https://test.vik.wiki"
+    wiki_domain = "https://vik.wiki"
     webbrowser.open_new_tab(f"{wiki_domain}/index.php?title=Speciális:Belépés")
     input("Please log in to the wiki then press Enter to continue...")
     parameters_for_opening_edit = {
@@ -137,7 +137,7 @@ def get_grading() -> GradingType:
         try:
             grading_symbol = input(
                 "\nPlease enter `+` or `-` as the grading type of the quiz then press Enter!"
-                "\nSee https://vik.wiki/wiki/Segítség:Kvíz#Pontozás for further info.\n"
+                "\nSee https://vik.wiki/Segítség:Kvíz#Pontozás for further info.\n"
             )
             return GradingType(grading_symbol)
         except ValueError:
@@ -166,14 +166,14 @@ def create_article(
                 "bővítése", "létrehozása"
             )
         )
-        url = f"{wiki_domain}/wiki/{quiz_title}?{urlencode(parameters_for_opening_edit_with_paste)}"
+        url = f"{wiki_domain}/{quiz_title}?{urlencode(parameters_for_opening_edit_with_paste)}"
         if len(url) < 2048:
             return open_article_paste_text(args, quiz_wikitext, url)
         else:
             open_article(args, parameters_for_opening_edit, url)
     pyperclip.copy(quiz_wikitext)
     print("\nThe wikitext of the quiz has been copied to the clipboard!")
-    url = f"{wiki_domain}/wiki/{quiz_title}?{urlencode(parameters_for_opening_edit)}"
+    url = f"{wiki_domain}/{quiz_title}?{urlencode(parameters_for_opening_edit)}"
     webbrowser.open_new_tab(url)
     print(
         "\nThe edit page of the quiz article has been opened in your browser! "
