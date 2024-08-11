@@ -1,5 +1,6 @@
 name: 🐛 Bug report
 description: Create a bug report to help us improve this software
+title: ""
 labels: ["bug"]
 projects: ["gy-mate/moodle-to-vikwikiquiz"]
 assignees:
@@ -35,7 +36,8 @@ body:
     id: os
     attributes:
       label: OS
-      description: Which operating system are you using? (If applicable.)
+      description: Which operating system(s) are you using? (If applicable.)
+      multiple: true
       options:
         - Linux
         - macOS
@@ -46,7 +48,8 @@ body:
     id: browser
     attributes:
       label: Browser
-      description: Which browser are you using? (If applicable.)
+      description: Which browser(s) are you using? (If applicable.)
+      multiple: true
       options:
         - Chrome
         - Firefox

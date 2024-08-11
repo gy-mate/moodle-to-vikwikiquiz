@@ -1,6 +1,8 @@
 name: ✨ Feature request
 description: Suggest an idea for this software
+title: ""
 labels: ["enhancement"]
+projects: ["gy-mate/moodle-to-vikwikiquiz"]
 assignees:
   - gy-mate
 body:
