@@ -1,6 +1,5 @@
 name: 🐛 Bug report
 description: Create a bug report to help us improve this software
-title: ""
 labels: ["bug"]
 projects: ["gy-mate/moodle-to-vikwikiquiz"]
 assignees:
@@ -11,7 +10,6 @@ body:
     attributes:
       label: Description
       description: A clear and concise description of what the bug is.
-      placeholder: ""
     validations:
       required: true
   - type: textarea
@@ -25,13 +23,11 @@ body:
     attributes:
       label: Expected behavior
       description: A clear and concise description of what you expected to happen.
-      placeholder: ""
   - type: textarea
     id: actual
     attributes:
       label: Actual behavior
       description: A clear and concise description of what actually happens. If applicable, add screenshots to help explain your problem.
-      placeholder: ""
   - type: dropdown
     id: os
     attributes:
@@ -60,4 +56,3 @@ body:
     attributes:
       label: Version
       description: Which version of the OS or browser are you using? (If applicable.)
-      placeholder: ""
