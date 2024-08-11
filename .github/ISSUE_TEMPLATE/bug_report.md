@@ -1,28 +1,61 @@
----
 name: 🐛 Bug report
-about: Create a bug report to help us improve this software
+description: Create a bug report to help us improve this software
 title: ''
-labels: bug
-assignees: gy-mate
----
-
-## Description
-A clear and concise description of what the bug is.
-
-### To reproduce
-Steps to reproduce the behavior:
-1. Go to '...'
-2. Click on '....'
-3. Scroll down to '....'
-4. See error
-
-#### Expected behavior
-A clear and concise description of what you expected to happen.
-
-#### Actual behavior
-A clear and concise description of what actually happens. If applicable, add screenshots to help explain your problem.
-
-## Debug info
- - OS: e.g. macOS
- - Browser e.g. Safari
- - Version e.g. 17.4
+labels: ["bug"]
+projects: ["gy-mate/moodle-to-vikwikiquiz"]
+assignees:
+    - gy-mate
+body:
+    - type: textarea
+        id: description
+        attributes:
+            label: Description
+            description: A clear and concise description of what the bug is.
+            placeholder: ''
+        validations:
+            required: true
+    - type: textarea
+        id: reproduce
+        attributes:
+            label: To reproduce
+            description: Steps to reproduce the behavior.
+            placeholder: "1. Go to '...'\n2. Click on '....'\n3. Scroll down to '....'\n4. See error"
+    - type: textarea
+        id: expected
+        attributes:
+            label: Expected behavior
+            description: A clear and concise description of what you expected to happen.
+            placeholder: ''
+    - type: textarea
+        id: actual
+        attributes:
+            label: Actual behavior
+            description: A clear and concise description of what actually happens. If applicable, add screenshots to help explain your problem.
+            placeholder: ''
+    - type: dropdown
+        id: os
+        attributes:
+            label: OS
+            description: Which operating system are you using? (If applicable.)
+            options:
+                - Linux
+                - macOS
+                - Windows
+                - iOS
+                - Android
+    - type: dropdown
+        id: browser
+        attributes:
+            label: Browser
+            description: Which browser are you using? (If applicable.)
+            options:
+                - Chrome
+                - Firefox
+                - Safari
+                - Edge
+    - type: input
+        id: version
+        attributes:
+            label: Version
+            description: Which version of the OS or browser are you using? (If applicable.)
+            placeholder: ''
