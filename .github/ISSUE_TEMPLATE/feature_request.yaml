@@ -1,27 +1,34 @@
 name: ✨ Feature request
 description: Suggest an idea for this software
 labels: ["enhancement"]
-projects: ["gy-mate/moodle-to-vikwikiquiz"]
+projects: ["gy-mate/1"]
 assignees:
   - gy-mate
 body:
-    - type: textarea
-      id: description
-      attributes:
-        label: Description
-        description: What should be improved?
-        placeholder: "I'm always frustrated when [...]"
-      validations:
-        required: true
-    - type: textarea
-      id: solution
-      attributes:
-        label: Preferred solution
-        description: A clear and concise description of what you would like to happen in these cases.
-      validations:
-        required: true
-    - type: textarea
-      id: alternatives
-      attributes:
-        label: Considered alternatives
-        description: A clear and concise description of any alternative solutions or features you've considered.
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: What should be improved?
+      placeholder: "I always get frustrated when [...]"
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Preferred solution
+      description: A clear and concise description of what you want to happen in these cases.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: A clear and concise description of any alternative solutions or features you've considered.
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: Which version of `moodle-to-vikwikiquiz` are you using?
+    validations:
+      required: true

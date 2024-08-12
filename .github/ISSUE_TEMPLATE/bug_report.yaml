@@ -1,7 +1,7 @@
 name: 🐛 Bug report
 description: Create a bug report to help us improve this software
 labels: ["bug"]
-projects: ["gy-mate/moodle-to-vikwikiquiz"]
+projects: ["gy-mate/1"]
 assignees:
   - gy-mate
 body:
@@ -13,11 +13,26 @@ body:
     validations:
       required: true
   - type: textarea
+    id: log
+    attributes:
+      label: Stack trace
+      description: The program should print a stack trace when an error occurs. Please paste it here, if applicable.
+      placeholder: |
+        Traceback (most recent call last):
+          File "main.py", line 1, in <module>
+            raise Exception("This is an exception")
+        Exception: This is an exception
+      render: python
+  - type: textarea
     id: reproduce
     attributes:
       label: To reproduce
       description: Steps to reproduce the behavior.
-      placeholder: "1. Go to '...'\n2. Click on '....'\n3. Scroll down to '....'\n4. See error"
+      placeholder: |
+        1. Type '...'
+        2. Press Enter
+        3. Type '...'
+        4. See the error
   - type: textarea
     id: expected
     attributes:
@@ -27,13 +42,19 @@ body:
     id: actual
     attributes:
       label: Actual behavior
-      description: A clear and concise description of what actually happens. If applicable, add screenshots to help explain your problem.
+      description: A clear and concise description of what is actually happening. If applicable, include screenshot(s) to help explain your problem.
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: Which version of `moodle-to-vikwikiquiz` are you using?
+    validations:
+      required: true
   - type: dropdown
     id: os
     attributes:
       label: OS
-      description: Which operating system(s) are you using? (If applicable.)
-      multiple: true
+      description: Which operating system do you use? (If applicable.)
       options:
         - Linux
         - macOS
@@ -44,8 +65,7 @@ body:
     id: browser
     attributes:
       label: Browser
-      description: Which browser(s) are you using? (If applicable.)
-      multiple: true
+      description: Which browser do you use? (If applicable.)
       options:
         - Chrome
         - Firefox
@@ -55,4 +75,4 @@ body:
     id: version
     attributes:
       label: Version
-      description: Which version of the OS or browser are you using? (If applicable.)
+      description: What version of the OS or browser are you using? (If applicable.)
