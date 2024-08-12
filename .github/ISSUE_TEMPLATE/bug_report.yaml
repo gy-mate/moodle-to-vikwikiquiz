@@ -68,7 +68,7 @@ body:
     attributes:
       label: Browser
       description: |
-        If the bug is about interacting with vik.wiki:
+        If the bug is about interacting with [vik.wiki](https://vik.wiki/):
         Which browser do you use?
       options:
         - Google Chrome
