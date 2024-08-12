@@ -55,7 +55,7 @@ body:
     attributes:
       label: OS
       description: |
-        If the bug is about the CLI:
+        *If the bug is about the CLI:*
         Which operating system do you use?
       options:
         - Linux
@@ -68,7 +68,7 @@ body:
     attributes:
       label: Browser
       description: |
-        If the bug is about interacting with [vik.wiki](https://vik.wiki/):
+        *If the bug is about interacting with [vik.wiki](https://vik.wiki/):*
         Which browser do you use?
       options:
         - Google Chrome
