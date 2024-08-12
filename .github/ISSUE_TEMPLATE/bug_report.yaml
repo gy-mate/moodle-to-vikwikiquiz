@@ -54,7 +54,9 @@ body:
     id: os
     attributes:
       label: OS
-      description: Which operating system do you use? (If applicable.)
+      description: |
+        If the bug is about the CLI:
+        Which operating system do you use?
       options:
         - Linux
         - macOS
@@ -65,7 +67,9 @@ body:
     id: browser
     attributes:
       label: Browser
-      description: Which browser do you use? (If applicable.)
+      description: |
+        If the bug is about interacting with vik.wiki:
+        Which browser do you use?
       options:
         - Google Chrome
         - Firefox
@@ -75,4 +79,4 @@ body:
     id: env_version
     attributes:
       label: Version
-      description: What version of the OS or browser are you using? (If applicable.)
+      description: What version of the OS or browser are you using?
