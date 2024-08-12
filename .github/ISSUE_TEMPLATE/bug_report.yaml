@@ -44,7 +44,7 @@ body:
       label: Actual behavior
       description: A clear and concise description of what is actually happening. If applicable, include screenshot(s) to help explain your problem.
   - type: input
-    id: version
+    id: app_version
     attributes:
       label: Version
       description: Which version of `moodle-to-vikwikiquiz` are you using?
@@ -72,7 +72,7 @@ body:
         - Safari
         - Edge
   - type: input
-    id: version
+    id: env_version
     attributes:
       label: Version
       description: What version of the OS or browser are you using? (If applicable.)

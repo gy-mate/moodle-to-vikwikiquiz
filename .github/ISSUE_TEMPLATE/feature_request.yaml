@@ -26,7 +26,7 @@ body:
       label: Alternatives considered
       description: A clear and concise description of any alternative solutions or features you've considered.
   - type: input
-    id: version
+    id: app_version
     attributes:
       label: Version
       description: Which version of `moodle-to-vikwikiquiz` are you using?
