@@ -13,6 +13,13 @@ body:
       placeholder: "I always get frustrated when [...]"
     validations:
       required: true
+  - type: input
+    id: app_version
+    attributes:
+      label: Version
+      description: Which version of `moodle-to-vikwikiquiz` are you using?
+    validations:
+      required: true
   - type: textarea
     id: solution
     attributes:
@@ -25,10 +32,3 @@ body:
     attributes:
       label: Alternatives considered
       description: A clear and concise description of any alternative solutions or features you've considered.
-  - type: input
-    id: app_version
-    attributes:
-      label: Version
-      description: Which version of `moodle-to-vikwikiquiz` are you using?
-    validations:
-      required: true

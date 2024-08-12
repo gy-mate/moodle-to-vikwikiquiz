@@ -12,17 +12,13 @@ body:
       description: A clear and concise description of what the bug is.
     validations:
       required: true
-  - type: textarea
-    id: log
+  - type: input
+    id: app_version
     attributes:
-      label: Stack trace
-      description: The program should print a stack trace when an error occurs. Please paste it here, if applicable.
-      placeholder: |
-        Traceback (most recent call last):
-          File "main.py", line 1, in <module>
-            raise Exception("This is an exception")
-        Exception: This is an exception
-      render: python
+      label: Version
+      description: Which version of `moodle-to-vikwikiquiz` are you using?
+    validations:
+      required: true
   - type: textarea
     id: reproduce
     attributes:
@@ -43,13 +39,17 @@ body:
     attributes:
       label: Actual behavior
       description: A clear and concise description of what is actually happening. If applicable, include screenshot(s) to help explain your problem.
-  - type: input
-    id: app_version
+  - type: textarea
+    id: log
     attributes:
-      label: Version
-      description: Which version of `moodle-to-vikwikiquiz` are you using?
-    validations:
-      required: true
+      label: Stack trace
+      description: The program should print a stack trace when an error occurs. Please paste it here, if applicable.
+      placeholder: |
+        Traceback (most recent call last):
+          File "main.py", line 1, in <module>
+            raise Exception("This is an exception")
+        Exception: This is an exception
+      render: python
   - type: dropdown
     id: os
     attributes:
@@ -67,10 +67,10 @@ body:
       label: Browser
       description: Which browser do you use? (If applicable.)
       options:
-        - Chrome
+        - Google Chrome
         - Firefox
         - Safari
-        - Edge
+        - Microsoft Edge
   - type: input
     id: env_version
     attributes:
