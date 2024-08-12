@@ -10,7 +10,7 @@ body:
     attributes:
       label: Description
       description: What should be improved?
-      placeholder: "I always get frustrated when [...]"
+      placeholder: I always get frustrated when...
     validations:
       required: true
   - type: input
