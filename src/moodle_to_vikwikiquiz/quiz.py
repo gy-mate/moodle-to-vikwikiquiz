@@ -18,6 +18,10 @@ from bs4 import BeautifulSoup, Tag
 # future: report false positive to mypy developers
 from .grading_types import GradingType  # type: ignore
 
+# future: report false positive to JetBrains developers
+# noinspection PyPackages
+from .illustrations import StateOfIllustrations  # type: ignore
+
 # noinspection PyPackages
 # future: report false positive to mypy developers
 from .question_types import QuestionType  # type: ignore
@@ -40,6 +44,7 @@ class Quiz:
         self.grading = grading
 
         self.questions: set[Question] = set()
+        self.state_of_illustrations = StateOfIllustrations.Nil
 
     def __str__(self) -> str:
         text = f"{{{{Vissza | {self.parent_article}}}}}"
@@ -79,12 +84,12 @@ class Quiz:
                 "div", class_=re.compile(r"multichoice|calculatedmulti|truefalse")
             )
             for question in multi_or_single_choice_questions:
-                self.import_question(
-                    question=question, filename=os.path.basename(file_path)
-                )
+                self.import_question(question, file_path, subdir, file)
                 clear_terminal()  # type: ignore
 
-    def import_question(self, question: Tag, filename: str) -> None:
+    def import_question(
+        self, question: Tag, file_path: str, subdir: Path | str, file: Path | str
+    ) -> None:
         with contextlib.suppress(NotImplementedError):
             question_type = get_question_type(question)  # type: ignore
         correctly_answered, grade, maximum_points = get_grading_of_question(question)  # type: ignore
@@ -100,9 +105,9 @@ class Quiz:
                 maximum_points,
                 question_text,
                 question_type,
-                filename,
+                os.path.basename(file_path),
             )
-        has_illustration = get_if_has_illustration(question)  # type: ignore
+        has_illustration = get_if_has_illustration(question, subdir, file)  # type: ignore
         self.add_question_no_duplicates(
             question_type,
             question_text,
@@ -115,7 +120,7 @@ class Quiz:
         self,
         question_type: QuestionType,
         question_text: str,
-        has_illustration: bool,
+        has_illustration: StateOfIllustrations,
         answer_texts: list[str],
         correct_answers: set[int],
     ) -> None:
@@ -138,7 +143,7 @@ class Quiz:
         self,
         answer_texts: list[str],
         correct_answers: set[int],
-        has_illustration: bool,
+        has_illustration: StateOfIllustrations,
         question_text: str,
         question_type: QuestionType,
     ) -> None:

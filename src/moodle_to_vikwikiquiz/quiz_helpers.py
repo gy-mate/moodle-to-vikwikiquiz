@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 import re
 
 from bs4 import Tag
@@ -6,6 +7,10 @@ from bs4 import Tag
 # noinspection PyPackageRequirements
 from plum import dispatch
 from pylatexenc.latexencode import unicode_to_latex  # type: ignore
+
+# future: report false positive to JetBrains developers
+# noinspection PyPackages
+from .illustrations import StateOfIllustrations  # type: ignore
 
 # future: report false positive to JetBrains developers
 # noinspection PyPackages
@@ -280,13 +285,26 @@ def add_answers_to_existing_question(
                 existing_question.correct_answers.add(len(existing_question.answers))
 
 
-def get_if_has_illustration(question: Tag) -> bool:
-    if question.find("img", class_="img-responsive"):
-        return True
-    elif question.find("img", role="presentation"):
-        return True
+def get_if_has_illustration(
+    question: Tag, subdir: Path | str, file: Path | str
+) -> StateOfIllustrations:
+    if question.find("img", class_="img-responsive") or question.find(
+        "img", role="presentation"
+    ):
+        return get_if_illustrations_available(subdir, file)
     else:
-        return False
+        return StateOfIllustrations.Nil
+
+
+def get_if_illustrations_available(
+    subdir: Path | str, file: Path | str
+) -> StateOfIllustrations:
+    assert isinstance(file, Path)
+    asset_folder = os.path.join(subdir, f"{file.stem}_files")
+    if os.path.exists(asset_folder):
+        return StateOfIllustrations.YesAndAvailable
+    else:
+        return StateOfIllustrations.YesButNotAvailable
 
 
 def clear_terminal():

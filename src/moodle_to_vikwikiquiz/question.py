@@ -2,6 +2,9 @@
 from .grading_types import GradingType  # type: ignore
 
 # noinspection PyPackages
+from .illustrations import StateOfIllustrations  # type: ignore
+
+# noinspection PyPackages
 # future: report false positive to mypy developers
 from .question_types import QuestionType  # type: ignore
 
@@ -11,7 +14,7 @@ class Question:
         self,
         q_type: QuestionType,
         text: str,
-        illustration: bool,
+        illustration: StateOfIllustrations,
         answers: list[str],
         correct_answers: set[int],
         grading: GradingType | None = None,
@@ -22,7 +25,7 @@ class Question:
         assert isinstance(text, str)
         self.text = text
 
-        assert isinstance(illustration, bool)
+        assert isinstance(illustration, StateOfIllustrations)
         self.illustration = illustration
 
         assert isinstance(answers, list)
@@ -39,8 +42,13 @@ class Question:
 
     def __str__(self) -> str:
         text = f"== {self.text} =="
-        if self.illustration:
-            text += "\n[[Fájl:.png|keret|keretnélküli|500x500px]]"
+        match self.illustration:
+            case StateOfIllustrations.YesAndAvailable:
+                raise NotImplementedError
+            case StateOfIllustrations.YesButNotAvailable:
+                text += "\n[[Fájl:.png|keret|keretnélküli|500x500px]]"
+            case StateOfIllustrations.Nil:
+                pass
         ordered_correct_answers = list(self.correct_answers)
         ordered_correct_answers.sort()
         text += (
