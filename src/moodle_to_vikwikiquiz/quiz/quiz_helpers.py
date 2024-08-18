@@ -269,7 +269,7 @@ def get_element_illustration(
             if len(question_name) > 25:
                 question_name = f"{question_name[:25]}…"
             random_hash = uuid.uuid4().hex[:6]
-            generated_name = f"{question_name} – válaszlehetőség #{random_hash}"
+            generated_name = f"{question_name} – válaszlehetőség {random_hash}"
             upload_filename = create_upload_filename(
                 quiz_name, generated_name, extension
             )
