@@ -48,7 +48,6 @@ def move_illustration_to_upload_folder(
         if not os.path.exists(upload_directory):
             os.makedirs(upload_directory)
         original_file_path = illustration.original_file_path.resolve()
-        original_file_path = unquote(str(original_file_path))
         shutil.copy(original_file_path, upload_directory)
         current_file_path = Path(
             os.path.join(upload_directory, illustration.original_file_path.name)
