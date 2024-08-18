@@ -1,8 +1,9 @@
 from argparse import ArgumentParser, Namespace
 import logging
+import os
 from pathlib import Path
 import time
-from urllib.parse import urlencode
+from urllib.parse import quote, urlencode
 import webbrowser
 
 # future: delete the comment below when stubs for the package below are available
@@ -35,24 +36,54 @@ def main() -> None:
         path=absolute_source_path,
         recursively=args.recursive,
     )
-    quiz.get_illustrations_ready_for_upload()
-
-    quiz_wikitext = str(quiz)
     wiki_domain = "https://vik.wiki"
+
+    quiz.get_illustrations_ready_for_upload()
+    pyperclip.copy(f"{os.getcwd()}/to_upload")
+    input(
+        f"""The batch upload page of the wiki will be opened. After that, please...
+• click on 'Fájlok kiválasztása...'
+• open the 'to_upload' folder in the working directory
+    • if you're using macOS:
+        • press Command+Shift+G
+        • paste the content of the clipboard
+        • press Enter
+• select all files in the folder
+• click on 'Upload'
+• return here.
+
+Please press Enter then follow these instructions..."""
+    )
+    webbrowser.open_new_tab(
+        f"{wiki_domain}/Speciális:TömegesFeltöltés/moodle-to-vikwikiquiz"
+    )
+    input("Please press Enter if you're done with uploading...")
+    clear_terminal()
+
+    print("Great!\n")
+    input(
+        """Now let's log in to the wiki! The login page will be opened. Please...
+• if you see the login page, log in
+• when you see the main page of the wiki, return here.
+
+Please press Enter then follow these instructions..."""
+    )
+    quiz_wikitext = str(quiz)
     webbrowser.open_new_tab(f"{wiki_domain}/index.php?title=Speciális:Belépés")
-    input("Please log in to the wiki then press Enter to continue...")
+    input("Please press Enter if you've logged in...")
+    print("Great!")
     parameters_for_opening_edit = {
         "action": "edit",
         "summary": "Kvíz bővítése "
         "a https://github.com/gy-mate/moodle-to-vikwikiquiz segítségével importált Moodle-kvíz(ek)ből",
         "preload": "Sablon:Előbetöltés",
         "preloadparams[]": """<!-- További teendőid (ebben a sorrendben):
-- az e komment alatti sorba illeszd be a vágólapodra másolt tartalmat
-- kattints az 'Előnézet megtekintése' gombra
-- javítsd a helyesírást és a formázást, különös tekintettel a képletekre
-- töltsd fel kézzel az előnézetben piros linkekkel formázott illusztrációkat
-- add hozzá a "Fájl:" wikitextekhez a feltöltés során megadott fájlneveket
-- töröld ezt a kommentet
+• az e komment alatti sorba illeszd be a vágólapodra másolt tartalmat
+• kattints az 'Előnézet megtekintése' gombra
+• javítsd a helyesírást és a formázást, különös tekintettel a képletekre
+• töltsd fel kézzel az előnézetben piros linkekkel formázott illusztrációkat
+• add hozzá a "Fájl:" wikitextekhez a feltöltés során megadott fájlneveket
+• töröld ezt a kommentet
 -->""",
     }
     clear_terminal()
@@ -174,7 +205,10 @@ def create_article(
             open_article(args, parameters_for_opening_edit, url)
     pyperclip.copy(quiz_wikitext)
     print("\nThe wikitext of the quiz has been copied to the clipboard!")
-    url = f"{wiki_domain}/{quiz_title}?{urlencode(parameters_for_opening_edit)}"
+    url = quote(
+        string=f"{wiki_domain}/{quiz_title}?{urlencode(parameters_for_opening_edit)}",
+        safe=":/?&=",
+    )
     webbrowser.open_new_tab(url)
     print(
         "\nThe edit page of the quiz article has been opened in your browser! "
