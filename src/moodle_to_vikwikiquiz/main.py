@@ -140,7 +140,7 @@ def get_name_of_parent_article() -> str:
     while True:
         try:
             input_name = input(
-                f"\nPlease enter the name of the vik.wiki article on the corresponding course on then press Enter:\n"
+                f"\nPlease enter the name of the vik.wiki article of the corresponding course then press Enter:\n"
             )
             if not input_name:
                 raise ValueError("Nothing was entered!")
