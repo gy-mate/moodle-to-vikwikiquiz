@@ -2,6 +2,7 @@ import os
 from pathlib import Path
 import re
 from urllib.parse import unquote
+import uuid
 
 from bs4 import Tag
 
@@ -243,6 +244,7 @@ def get_element_illustration(
     element: QuizElement,
     state_of_illustrations: StateOfIllustrations,
     current_folder: Path,
+    question_name: str | None = None,
 ) -> Illustration | None:
     if image := tag.find("img"):
         assert isinstance(image, Tag)
@@ -262,9 +264,19 @@ def get_element_illustration(
         else:
             raise ValueError(f"Unexpected QuizElement type: {type(element)}!")
 
-        upload_filename = create_upload_filename(quiz_name, element_text, extension)
-        if filename_too_long(upload_filename):
-            upload_filename = truncate_filename(element_text, extension, quiz_name)
+        if element_text == "":
+            assert question_name
+            if len(question_name) > 25:
+                question_name = f"{question_name[:25]}…"
+            random_hash = uuid.uuid4().hex[:6]
+            generated_name = f"{question_name} – válaszlehetőség #{random_hash}"
+            upload_filename = create_upload_filename(
+                quiz_name, generated_name, extension
+            )
+        else:
+            upload_filename = create_upload_filename(quiz_name, element_text, extension)
+            if filename_too_long(upload_filename):
+                upload_filename = truncate_filename(element_text, extension, quiz_name)
 
         return Illustration(
             upload_filename=upload_filename,
@@ -302,8 +314,10 @@ def filename_too_long(upload_filename):
     return len(upload_filename) > 100
 
 
-def create_upload_filename(quiz_name: str, element_text: str, extension: str) -> str:
-    upload_filename = f'"{element_text}" ({quiz_name}){extension}'
+def create_upload_filename(
+    quiz_name: str, name_of_illustration: str, extension: str
+) -> str:
+    upload_filename = f'"{name_of_illustration}" ({quiz_name}){extension}'
     return upload_filename
 
 

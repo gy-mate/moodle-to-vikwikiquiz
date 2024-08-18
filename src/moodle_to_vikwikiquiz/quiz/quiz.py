@@ -176,7 +176,17 @@ class Quiz:
                     case _:
                         answer_text = prettify(answer_text)  # type: ignore
             if found_tag.find("img"):
-                illustration = get_element_illustration(found_tag, answer_text, self.title, Answer, self.state_of_illustrations, current_folder)  # type: ignore
+                question_text = get_question_text(question)  # type: ignore
+                # noinspection PyTypeChecker
+                illustration = get_element_illustration(  # type: ignore
+                    found_tag,
+                    answer_text,
+                    self.title,
+                    Answer,
+                    self.state_of_illustrations,
+                    current_folder,
+                    question_text,
+                )
             answers_to_add.append(Answer(answer_text, illustration))
             if answer_is_correct(  # type: ignore
                 answer, answer_text, grade, maximum_points, correct_answers
