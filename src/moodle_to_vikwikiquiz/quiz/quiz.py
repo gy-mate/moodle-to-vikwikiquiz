@@ -41,6 +41,24 @@ from .questions.question import Question  # type: ignore
 from .quiz_element import QuizElement  # type: ignore
 
 
+def move_illustration_to_upload_folder(
+    quiz_element: QuizElement, upload_directory: str
+) -> None:
+    if illustration := quiz_element.illustration:
+        if not os.path.exists(upload_directory):
+            os.makedirs(upload_directory)
+        original_file_path = illustration.original_file_path.resolve()
+        original_file_path = unquote(str(original_file_path))
+        shutil.copy(original_file_path, upload_directory)
+        current_file_path = Path(
+            os.path.join(upload_directory, illustration.original_file_path.name)
+        )
+        new_file_path = os.path.join(
+            current_file_path.parent, illustration.upload_filename
+        )
+        os.rename(current_file_path, new_file_path)
+
+
 class Quiz:
     def __init__(
         self, parent_article: str, title: str, grading: GradingType | None = None
@@ -121,9 +139,6 @@ class Quiz:
             answers,
             id_of_correct_answers,
         )
-
-    def get_illustration(self, question: Tag) -> Illustration | None:
-        pass
 
     def get_answers(
         self, question: Tag, grade: float, maximum_points: float
@@ -214,21 +229,7 @@ class Quiz:
     def get_illustrations_ready_for_upload(self) -> None:
         upload_directory = os.path.join(os.getcwd(), "to_upload")
         for question in self.questions:
-            self.move_illustration_to_upload_folder(question, upload_directory)
+            move_illustration_to_upload_folder(question, upload_directory)
             for answer in question.answers:
                 if answer.illustration:
-                    self.move_illustration_to_upload_folder(answer, upload_directory)
-
-    def move_illustration_to_upload_folder(
-        self, quiz_element: QuizElement, upload_directory: str
-    ) -> None:
-        if illustration := quiz_element.illustration:
-            if not os.path.exists(upload_directory):
-                os.makedirs(upload_directory)
-            original_file_path = illustration.original_file_path.resolve()
-            original_file_path = unquote(str(original_file_path))
-            shutil.copy(original_file_path, upload_directory)
-            new_file_path = os.path.join(
-                upload_directory, illustration.original_file_path.name
-            )
-            os.rename(new_file_path, illustration.upload_filename)
+                    move_illustration_to_upload_folder(answer, upload_directory)
