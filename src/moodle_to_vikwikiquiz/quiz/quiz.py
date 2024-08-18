@@ -176,7 +176,8 @@ class Quiz:
                     case _:
                         answer_text = prettify(answer_text)  # type: ignore
             if found_tag.find("img"):
-                question_text = get_question_text(question)  # type: ignore
+                question_text_tag = question.find("div", class_="qtext")
+                question_text = get_question_text(question_text_tag)  # type: ignore
                 # noinspection PyTypeChecker
                 illustration = get_element_illustration(  # type: ignore
                     found_tag,
