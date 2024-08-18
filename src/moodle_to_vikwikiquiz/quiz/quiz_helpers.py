@@ -243,13 +243,12 @@ def get_element_illustration(
         original_file_path = Path(illustration_path_string)
         extenstion = original_file_path.suffix
 
-        match element:
-            case Question():
-                illustration_size = 500
-            case Answer():
-                illustration_size = 250
-            case _:
-                raise ValueError(f"Unexpected QuizElement type: {type(element)}!")
+        if element is Question:
+            illustration_size = 500
+        elif element is Answer:
+            illustration_size = 250
+        else:
+            raise ValueError(f"Unexpected QuizElement type: {type(element)}!")
 
         upload_filename = create_upload_filename(quiz_name, element_text, extenstion)
         if filename_too_long(upload_filename):
