@@ -10,13 +10,13 @@ import pyperclip  # type: ignore
 
 # future: report false positive to JetBrains developers
 # noinspection PyPackages
-from .grading_types import GradingType  # type: ignore
+from .quiz.grading_types import GradingType  # type: ignore
 
 # noinspection PyPackages
-from .quiz import Quiz  # type: ignore
+from .quiz.quiz import Quiz  # type: ignore
 
 # noinspection PyPackages
-from .quiz_helpers import clear_terminal  # type: ignore
+from .quiz.quiz_helpers import clear_terminal  # type: ignore
 
 
 def main() -> None:
@@ -35,6 +35,7 @@ def main() -> None:
         path=absolute_source_path,
         recursively=args.recursive,
     )
+    quiz.get_illustrations_ready_for_upload()
 
     quiz_wikitext = str(quiz)
     wiki_domain = "https://vik.wiki"
@@ -50,7 +51,7 @@ def main() -> None:
 - kattints az 'Előnézet megtekintése' gombra
 - javítsd a helyesírást és a formázást, különös tekintettel a képletekre
 - töltsd fel kézzel az előnézetben piros linkekkel formázott illusztrációkat
-- add hozzá a "Fájl:.png" wikitextekhez a feltöltés során megadott fájlneveket
+- add hozzá a "Fájl:" wikitextekhez a feltöltés során megadott fájlneveket
 - töröld ezt a kommentet
 -->""",
     }

@@ -8,16 +8,25 @@ from bs4 import Tag
 from plum import dispatch
 from pylatexenc.latexencode import unicode_to_latex  # type: ignore
 
-# future: report false positive to JetBrains developers
 # noinspection PyPackages
-from .illustrations import StateOfIllustrations  # type: ignore
+from .illustration import Illustration  # type: ignore
+
+# noinspection PyPackages
+from .questions.answer import Answer  # type: ignore
+
+# noinspection PyPackages
+from .quiz_element import QuizElement  # type: ignore
 
 # future: report false positive to JetBrains developers
 # noinspection PyPackages
-from .question import Question  # type: ignore
+from .state_of_illustrations import StateOfIllustrations  # type: ignore
+
+# future: report false positive to JetBrains developers
+# noinspection PyPackages
+from .questions.question import Question  # type: ignore
 
 # noinspection PyPackages
-from .question_types import QuestionType  # type: ignore
+from .questions.question_types import QuestionType  # type: ignore
 
 
 def get_question_type(question: Tag) -> QuestionType:
@@ -62,7 +71,7 @@ def get_grading_of_question(question: Tag) -> tuple[bool, float | None, float]:
 
 
 def complete_correct_answers(
-    answer_texts: list[str],
+    answers: list[Answer],
     correct_answers: set[int],
     grade: float,
     maximum_points: float,
@@ -70,10 +79,8 @@ def complete_correct_answers(
     question_type: QuestionType,
     filename: str,
 ) -> None:
-    if len(correct_answers) == len(answer_texts) - 1:
-        correct_answers.add(
-            get_id_of_only_remaining_answer(answer_texts, correct_answers)
-        )
+    if len(correct_answers) == len(answers) - 1:
+        correct_answers.add(get_id_of_only_remaining_answer(answers, correct_answers))
         return
     print(f"File:\t\t{filename}")
     print(f"Question:\t'{question_text}'")
@@ -93,31 +100,31 @@ def complete_correct_answers(
                 end=" ",
             )
     print(f"The possible answers are:", end="\n\n")
-    assert isinstance(answer_texts, list)
+    assert isinstance(answers, list)
     # report false positive to mypy developers
-    for j, answer in enumerate(answer_texts):  # type: ignore
+    for j, answer in enumerate(answers):  # type: ignore
         print(f"#{j + 1}\t{answer}")
     print()
     while True:
-        get_missing_correct_answers(answer_texts, correct_answers, question_type)
+        get_missing_correct_answers(answers, correct_answers, question_type)
         if correct_answers:
             break
         print("Error: no correct answers were provided!", end="\n\n")
 
 
 def get_id_of_only_remaining_answer(
-    answer_texts: list[str], correct_answers: set[int]
+    answers: list[Answer], correct_answers: set[int]
 ) -> int:
-    for i, answer in enumerate(answer_texts, 1):
+    for i, answer in enumerate(answers, 1):
         if i not in correct_answers:
             return i
     raise NotImplementedError
 
 
 def get_missing_correct_answers(
-    answer_texts: list[str], correct_answers: set[int], question_type: QuestionType
+    answers: list[Answer], correct_answers: set[int], question_type: QuestionType
 ) -> None:
-    while len(correct_answers) < len(answer_texts):
+    while len(correct_answers) < len(answers):
         additional_correct_answer = input(
             f"Please enter a missing correct answer (if there are any remaining) then press Enter: "
         )
@@ -126,7 +133,7 @@ def get_missing_correct_answers(
         elif not additional_correct_answer.isdigit():
             print("Error: an integer was expected!", end="\n\n")
             continue
-        elif int(additional_correct_answer) - 1 not in range(len(answer_texts)):
+        elif int(additional_correct_answer) - 1 not in range(len(answers)):
             print(
                 "Error: the number is out of the range of possible answers!", end="\n\n"
             )
@@ -140,42 +147,6 @@ def get_missing_correct_answers(
         correct_answers.add(int(additional_correct_answer))
         if question_type == QuestionType.SingleChoice:
             break
-
-
-def get_answers(
-    question: Tag, grade: float, maximum_points: float
-) -> tuple[list[str], set[int], bool]:
-    answers = question.find("div", class_="answer")
-    correct_answers = get_correct_answers_if_provided(question)
-    all_correct_answers_known = bool(correct_answers)
-    assert isinstance(answers, Tag)
-    answer_texts: list[str] = []
-    id_of_correct_answers: set[int] = set()
-    i = 1
-    for answer in answers:
-        if not isinstance(answer, Tag):
-            continue
-        found_tag = answer.find(class_="ml-1")
-        assert isinstance(found_tag, Tag)
-        if found_tag.find("img"):
-            answer_text = "[[Fájl:.png|keret|keretnélküli|250x250px]]"
-        elif found_tag.find(class_="MathJax"):
-            answer_text = format_latex_as_wikitext(found_tag)
-        else:
-            match answer_text := found_tag.text:
-                case "True":
-                    answer_text = "Igaz"
-                case "False":
-                    answer_text = "Hamis"
-                case _:
-                    answer_text = prettify(answer_text)
-        answer_texts.append(answer_text)
-        if answer_is_correct(
-            answer, answer_text, grade, maximum_points, correct_answers
-        ):
-            id_of_correct_answers.add(i)
-        i += 1
-    return answer_texts, id_of_correct_answers, all_correct_answers_known
 
 
 def prettify(text: str) -> str:
@@ -235,13 +206,96 @@ def answer_is_correct(
     return False
 
 
-def get_question_text(question: Tag) -> str:
+def get_question_data(
+    question: Tag,
+    quiz_name: str,
+    element: QuizElement,
+    state_of_illustrations: StateOfIllustrations,
+) -> tuple[str, Illustration]:
     found_tag = question.find("div", class_="qtext")
+    assert isinstance(found_tag, Tag)
+    question_text = get_question_text(found_tag)
+    illustration = get_element_illustration(
+        found_tag, question_text, quiz_name, element, state_of_illustrations
+    )
+    return question_text, illustration
+
+
+def get_question_text(found_tag: Tag) -> str:
     assert isinstance(found_tag, Tag)
     text = re.sub(r"\s?\r?\n\s?", " ", found_tag.text)
     text = text.rstrip()
     text = format_latex_as_wikitext(text)
     return text
+
+
+def get_element_illustration(
+    tag: Tag,
+    element_text: str,
+    quiz_name: str,
+    element: QuizElement,
+    state_of_illustrations: StateOfIllustrations,
+) -> Illustration | None:
+    if image := tag.find("img"):
+        assert isinstance(image, Tag)
+        illustration_path_string = image["src"]
+        assert isinstance(illustration_path_string, str)
+        original_file_path = Path(illustration_path_string)
+        extenstion = original_file_path.suffix
+
+        match element:
+            case Question():
+                illustration_size = 500
+            case Answer():
+                illustration_size = 250
+            case _:
+                raise ValueError(f"Unexpected QuizElement type: {type(element)}!")
+
+        upload_filename = create_upload_filename(quiz_name, element_text, extenstion)
+        if filename_too_long(upload_filename):
+            upload_filename = truncate_filename(
+                element_text, extenstion, quiz_name
+            )
+
+        return Illustration(
+            upload_filename=upload_filename,
+            size_in_pixels=illustration_size,
+            state_of_illustrations=state_of_illustrations,
+            original_file_path=original_file_path,
+        )
+    else:
+        return None
+
+
+def truncate_filename(
+    element_text: str, extenstion: str, quiz_name: str
+) -> str:
+    number_of_element_text_words = 5
+    while number_of_element_text_words > 1:
+        split_element_text = element_text.split()
+        split_truncated_element_text = " ".join(
+            split_element_text[:number_of_element_text_words]
+        )
+        upload_filename = create_upload_filename(
+            quiz_name, split_truncated_element_text + "…", extenstion
+        )
+        if not filename_too_long(upload_filename):
+            return upload_filename
+        number_of_element_text_words -= 1
+
+    # noinspection PyUnboundLocalVariable
+    split_truncated_element_text = split_truncated_element_text[:15]
+    upload_filename = create_upload_filename(quiz_name, split_truncated_element_text + "…", extenstion)
+    return upload_filename
+
+
+def filename_too_long(upload_filename):
+    return len(upload_filename) > 100
+
+
+def create_upload_filename(quiz_name: str, element_text: str, extenstion: str) -> str:
+    upload_filename = f'"{element_text}" ({quiz_name}){extenstion}'
+    return upload_filename
 
 
 @dispatch
@@ -274,12 +328,12 @@ def question_already_exists(existing_question: Question, question_text: str) -> 
 
 
 def add_answers_to_existing_question(
-    answer_texts: list[str], correct_answers: set[int], existing_question: Question
+    answers: list[Answer], correct_answers: set[int], existing_question: Question
 ) -> None:
     # report false positive to mypy developers
-    for k, answer in enumerate(answer_texts):  # type: ignore
+    for k, answer in enumerate(answers):  # type: ignore
         if answer not in existing_question.answers:
-            assert isinstance(answer, str)
+            assert isinstance(answer, Answer)
             existing_question.answers.append(answer)
             if k + 1 in correct_answers:
                 existing_question.correct_answers.add(len(existing_question.answers))

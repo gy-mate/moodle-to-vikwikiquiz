@@ -3,36 +3,41 @@ import contextlib
 # future: report false positive to JetBrains developers
 # noinspection PyUnresolvedReferences
 import os
+
+# noinspection PyUnresolvedReferences
 from pathlib import Path
 
-# future: report false positive to JetBrains developers
 # noinspection PyUnresolvedReferences
 import re
+import shutil
 
-# future: report false positive to JetBrains developers
 # noinspection PyUnresolvedReferences
 from bs4 import BeautifulSoup, Tag
 
-# future: report false positive to JetBrains developers
+# noinspection PyPackages
+from .questions.answer import Answer  # type: ignore
+
 # noinspection PyPackages
 # future: report false positive to mypy developers
 from .grading_types import GradingType  # type: ignore
 
-# future: report false positive to JetBrains developers
 # noinspection PyPackages
-from .illustrations import StateOfIllustrations  # type: ignore
+from .illustration import Illustration  # type: ignore
 
 # noinspection PyPackages
-# future: report false positive to mypy developers
-from .question_types import QuestionType  # type: ignore
+from .state_of_illustrations import StateOfIllustrations  # type: ignore
 
 # noinspection PyPackages
-# future: report false positive to mypy developers
+from .questions.question_types import QuestionType  # type: ignore
+
+# noinspection PyPackages
 from .quiz_helpers import *  # type: ignore
 
 # noinspection PyPackages
-# future: report false positive to mypy developers
-from .question import Question  # type: ignore
+from .questions.question import Question  # type: ignore
+
+# noinspection PyPackages
+from .quiz_element import QuizElement  # type: ignore
 
 
 class Quiz:
@@ -90,16 +95,18 @@ class Quiz:
     def import_question(
         self, question: Tag, file_path: str, subdir: Path | str, file: Path | str
     ) -> None:
+        if self.state_of_illustrations == StateOfIllustrations.Nil:
+            self.state_of_illustrations = get_if_has_illustration(question, subdir, file)  # type: ignore
         with contextlib.suppress(NotImplementedError):
             question_type = get_question_type(question)  # type: ignore
         correctly_answered, grade, maximum_points = get_grading_of_question(question)  # type: ignore
-        question_text = get_question_text(question)  # type: ignore
-        answer_texts, id_of_correct_answers, all_correct_answers_known = get_answers(  # type: ignore
+        question_text, illustration = get_question_data(question, self.title, Question(), self.state_of_illustrations)  # type: ignore
+        answers, id_of_correct_answers, all_correct_answers_known = self.get_answers(  # type: ignore
             question, grade, maximum_points
         )
         if not correctly_answered and not all_correct_answers_known:
             complete_correct_answers(  # type: ignore
-                answer_texts,
+                answers,
                 id_of_correct_answers,
                 grade,
                 maximum_points,
@@ -107,43 +114,85 @@ class Quiz:
                 question_type,
                 os.path.basename(file_path),
             )
-        has_illustration = get_if_has_illustration(question, subdir, file)  # type: ignore
         self.add_question_no_duplicates(
             question_type,
             question_text,
-            has_illustration,
-            answer_texts,
+            self.state_of_illustrations,
+            illustration,
+            answers,
             id_of_correct_answers,
         )
+
+    def get_illustration(self, question: Tag) -> Illustration | None:
+        pass
+
+    def get_answers(
+        self, question: Tag, grade: float, maximum_points: float
+    ) -> tuple[list[Answer], set[int], bool]:
+        answers = question.find("div", class_="answer")
+        correct_answers = get_correct_answers_if_provided(question)  # type: ignore
+        all_correct_answers_known = bool(correct_answers)
+        assert isinstance(answers, Tag)
+        answers_to_add: list[Answer] = []
+        illustration: Illustration | None = None
+        id_of_correct_answers: set[int] = set()
+        i = 1
+        for answer in answers:
+            if not isinstance(answer, Tag):
+                continue
+            found_tag = answer.find(class_="ml-1")
+            assert isinstance(found_tag, Tag)
+            if found_tag.find(class_="MathJax"):
+                answer_text = format_latex_as_wikitext(found_tag)  # type: ignore
+            else:
+                match answer_text := found_tag.text:
+                    case "True":
+                        answer_text = "Igaz"
+                    case "False":
+                        answer_text = "Hamis"
+                    case _:
+                        answer_text = prettify(answer_text)  # type: ignore
+            if found_tag.find("img"):
+                illustration = get_element_illustration(found_tag, answer_text, self.title, Answer(), self.state_of_illustrations)  # type: ignore
+            answers_to_add.append(Answer(answer_text, illustration))
+            if answer_is_correct(  # type: ignore
+                answer, answer_text, grade, maximum_points, correct_answers
+            ):
+                id_of_correct_answers.add(i)
+            i += 1
+        return answers_to_add, id_of_correct_answers, all_correct_answers_known
 
     def add_question_no_duplicates(
         self,
         question_type: QuestionType,
         question_text: str,
         has_illustration: StateOfIllustrations,
-        answer_texts: list[str],
+        illustration: Illustration | None,
+        answers: list[Answer],
         correct_answers: set[int],
     ) -> None:
         for existing_question in self.questions:
             if question_already_exists(existing_question, question_text):  # type: ignore
                 add_answers_to_existing_question(  # type: ignore
-                    answer_texts, correct_answers, existing_question
+                    answers, correct_answers, existing_question
                 )
                 break
         else:
             self.add_question(
-                answer_texts,
+                answers,
                 correct_answers,
                 has_illustration,
+                illustration,
                 question_text,
                 question_type,
             )
 
     def add_question(
         self,
-        answer_texts: list[str],
+        answers: list[Answer],
         correct_answers: set[int],
         has_illustration: StateOfIllustrations,
+        illustration: Illustration | None,
         question_text: str,
         question_type: QuestionType,
     ) -> None:
@@ -152,12 +201,33 @@ class Quiz:
                 Question(
                     q_type=question_type,
                     text=question_text,
-                    illustration=has_illustration,
-                    answers=answer_texts,
+                    state_of_illustrations=has_illustration,
+                    answers=answers,
                     correct_answers=correct_answers,
+                    illustration=illustration,
                 )
             )
         except AssertionError:
             print(
                 f"Error: question '{question_text}' was not added to the quiz because it wasn't processed correctly!"
             )
+
+    def get_illustrations_ready_for_upload(self) -> None:
+        upload_directory = os.path.join(os.getcwd(), "to_upload")
+        for question in self.questions:
+            self.move_illustration_to_upload_folder(question, upload_directory)
+            for answer in question.answers:
+                if answer.illustration:
+                    self.move_illustration_to_upload_folder(answer, upload_directory)
+
+    def move_illustration_to_upload_folder(
+        self, quiz_element: QuizElement, upload_directory: str
+    ) -> None:
+        if illustration := quiz_element.illustration:
+            if not os.path.exists(upload_directory):
+                os.makedirs(upload_directory)
+            shutil.copy(illustration.original_file_path, upload_directory)
+            new_file_path = os.path.join(
+                upload_directory, illustration.original_file_path.name
+            )
+            os.rename(new_file_path, illustration.upload_filename)
