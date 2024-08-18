@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 import re
+from urllib.parse import unquote
 
 from bs4 import Tag
 
@@ -211,12 +212,18 @@ def get_question_data(
     quiz_name: str,
     element: QuizElement,
     state_of_illustrations: StateOfIllustrations,
+    current_folder: Path,
 ) -> tuple[str, Illustration]:
     found_tag = question.find("div", class_="qtext")
     assert isinstance(found_tag, Tag)
     question_text = get_question_text(found_tag)
     illustration = get_element_illustration(
-        found_tag, question_text, quiz_name, element, state_of_illustrations
+        found_tag,
+        question_text,
+        quiz_name,
+        element,
+        state_of_illustrations,
+        current_folder,
     )
     return question_text, illustration
 
@@ -235,13 +242,18 @@ def get_element_illustration(
     quiz_name: str,
     element: QuizElement,
     state_of_illustrations: StateOfIllustrations,
+    current_folder: Path,
 ) -> Illustration | None:
     if image := tag.find("img"):
         assert isinstance(image, Tag)
         illustration_path_string = image["src"]
         assert isinstance(illustration_path_string, str)
-        original_file_path = Path(illustration_path_string)
-        extenstion = original_file_path.suffix
+        illustration_path_string = unquote(illustration_path_string)
+        original_file_path_string = os.path.join(
+            current_folder, illustration_path_string
+        )
+        original_file_path = Path(original_file_path_string)
+        extension = original_file_path.suffix
 
         if element is Question:
             illustration_size = 500
@@ -250,9 +262,9 @@ def get_element_illustration(
         else:
             raise ValueError(f"Unexpected QuizElement type: {type(element)}!")
 
-        upload_filename = create_upload_filename(quiz_name, element_text, extenstion)
+        upload_filename = create_upload_filename(quiz_name, element_text, extension)
         if filename_too_long(upload_filename):
-            upload_filename = truncate_filename(element_text, extenstion, quiz_name)
+            upload_filename = truncate_filename(element_text, extension, quiz_name)
 
         return Illustration(
             upload_filename=upload_filename,
@@ -264,7 +276,7 @@ def get_element_illustration(
         return None
 
 
-def truncate_filename(element_text: str, extenstion: str, quiz_name: str) -> str:
+def truncate_filename(element_text: str, extension: str, quiz_name: str) -> str:
     number_of_element_text_words = 5
     while number_of_element_text_words > 1:
         split_element_text = element_text.split()
@@ -272,7 +284,7 @@ def truncate_filename(element_text: str, extenstion: str, quiz_name: str) -> str
             split_element_text[:number_of_element_text_words]
         )
         upload_filename = create_upload_filename(
-            quiz_name, split_truncated_element_text + "…", extenstion
+            quiz_name, split_truncated_element_text + "…", extension
         )
         if not filename_too_long(upload_filename):
             return upload_filename
@@ -281,7 +293,7 @@ def truncate_filename(element_text: str, extenstion: str, quiz_name: str) -> str
     # noinspection PyUnboundLocalVariable
     split_truncated_element_text = split_truncated_element_text[:15]
     upload_filename = create_upload_filename(
-        quiz_name, split_truncated_element_text + "…", extenstion
+        quiz_name, split_truncated_element_text + "…", extension
     )
     return upload_filename
 
@@ -290,8 +302,8 @@ def filename_too_long(upload_filename):
     return len(upload_filename) > 100
 
 
-def create_upload_filename(quiz_name: str, element_text: str, extenstion: str) -> str:
-    upload_filename = f'"{element_text}" ({quiz_name}){extenstion}'
+def create_upload_filename(quiz_name: str, element_text: str, extension: str) -> str:
+    upload_filename = f'"{element_text}" ({quiz_name}){extension}'
     return upload_filename
 
 
@@ -337,21 +349,20 @@ def add_answers_to_existing_question(
 
 
 def get_if_has_illustration(
-    question: Tag, subdir: Path | str, file: Path | str
+    question: Tag, directory: Path, file: Path
 ) -> StateOfIllustrations:
     if question.find("img", class_="img-responsive") or question.find(
         "img", role="presentation"
     ):
-        return get_if_illustrations_available(subdir, file)
+        return get_if_illustrations_available(directory, file)
     else:
         return StateOfIllustrations.Nil
 
 
 def get_if_illustrations_available(
-    subdir: Path | str, file: Path | str
+    directory: Path, file: Path
 ) -> StateOfIllustrations:
-    assert isinstance(file, Path)
-    asset_folder = os.path.join(subdir, f"{file.stem}_files")
+    asset_folder = os.path.join(directory, f"{file.stem}_files")
     if os.path.exists(asset_folder):
         return StateOfIllustrations.YesAndAvailable
     else:

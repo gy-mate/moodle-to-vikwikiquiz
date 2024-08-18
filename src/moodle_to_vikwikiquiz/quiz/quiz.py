@@ -91,14 +91,14 @@ class Quiz:
             raise ValueError(f"No questions were imported from '{path}'!")
 
     def import_files(self, path: Path, recursively: bool) -> None:
-        for subdir, dirs, files in os.walk(path):
+        for directory, subdirectories, files in os.walk(path):
             for file in files:
-                self.import_questions(file, subdir)
+                self.import_questions(Path(file), Path(directory))
             if not recursively:
                 break
 
-    def import_questions(self, file: Path | str, subdir: Path | str) -> None:
-        file_path = os.path.join(subdir, file)
+    def import_questions(self, file: Path, directory: Path) -> None:
+        file_path = os.path.join(directory, file)
         with open(file_path, "rb") as source_file:
             webpage = BeautifulSoup(source_file, "html.parser")
 
@@ -106,20 +106,30 @@ class Quiz:
                 "div", class_=re.compile(r"multichoice|calculatedmulti|truefalse")
             )
             for question in multi_or_single_choice_questions:
-                self.import_question(question, file_path, subdir, file)
+                self.import_question(question, Path(file_path), directory, file)
                 clear_terminal()  # type: ignore
 
     def import_question(
-        self, question: Tag, file_path: str, subdir: Path | str, file: Path | str
+        self,
+        question: Tag,
+        file_path: Path,
+        directory: Path,
+        file: Path,
     ) -> None:
         if self.state_of_illustrations == StateOfIllustrations.Nil:
-            self.state_of_illustrations = get_if_has_illustration(question, subdir, file)  # type: ignore
+            self.state_of_illustrations = get_if_has_illustration(question, directory, file)  # type: ignore
         with contextlib.suppress(NotImplementedError):
             question_type = get_question_type(question)  # type: ignore
         correctly_answered, grade, maximum_points = get_grading_of_question(question)  # type: ignore
-        question_text, illustration = get_question_data(question, self.title, Question, self.state_of_illustrations)  # type: ignore
+        question_text, illustration = get_question_data(  # type: ignore
+            question,
+            self.title,
+            Question,
+            self.state_of_illustrations,
+            Path(directory),
+        )
         answers, id_of_correct_answers, all_correct_answers_known = self.get_answers(  # type: ignore
-            question, grade, maximum_points
+            question, grade, maximum_points, directory
         )
         if not correctly_answered and not all_correct_answers_known:
             complete_correct_answers(  # type: ignore
@@ -141,7 +151,7 @@ class Quiz:
         )
 
     def get_answers(
-        self, question: Tag, grade: float, maximum_points: float
+        self, question: Tag, grade: float, maximum_points: float, current_folder: Path
     ) -> tuple[list[Answer], set[int], bool]:
         answers = question.find("div", class_="answer")
         correct_answers = get_correct_answers_if_provided(question)  # type: ignore
@@ -167,7 +177,7 @@ class Quiz:
                     case _:
                         answer_text = prettify(answer_text)  # type: ignore
             if found_tag.find("img"):
-                illustration = get_element_illustration(found_tag, answer_text, self.title, Answer, self.state_of_illustrations)  # type: ignore
+                illustration = get_element_illustration(found_tag, answer_text, self.title, Answer, self.state_of_illustrations, current_folder)  # type: ignore
             answers_to_add.append(Answer(answer_text, illustration))
             if answer_is_correct(  # type: ignore
                 answer, answer_text, grade, maximum_points, correct_answers
