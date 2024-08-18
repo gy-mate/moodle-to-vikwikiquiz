@@ -49,7 +49,7 @@ Please press Enter then follow these instructions..."""
     webbrowser.open_new_tab(f"{wiki_domain}/index.php?title=Speciális:Belépés")
     input("Please press Enter if you've logged in...")
     clear_terminal()
-    
+
     print("Great!\n")
     quiz.get_illustrations_ready_for_upload()
     pyperclip.copy(f"{os.getcwd()}/to_upload")

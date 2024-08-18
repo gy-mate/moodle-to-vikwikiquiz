@@ -359,9 +359,7 @@ def get_if_has_illustration(
         return StateOfIllustrations.Nil
 
 
-def get_if_illustrations_available(
-    directory: Path, file: Path
-) -> StateOfIllustrations:
+def get_if_illustrations_available(directory: Path, file: Path) -> StateOfIllustrations:
     asset_folder = os.path.join(directory, f"{file.stem}_files")
     if os.path.exists(asset_folder):
         return StateOfIllustrations.YesAndAvailable
