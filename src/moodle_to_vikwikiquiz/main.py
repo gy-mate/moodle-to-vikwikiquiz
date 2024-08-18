@@ -205,10 +205,7 @@ def create_article(
             open_article(args, parameters_for_opening_edit, url)
     pyperclip.copy(quiz_wikitext)
     print("\nThe wikitext of the quiz has been copied to the clipboard!")
-    url = quote(
-        string=f"{wiki_domain}/{quiz_title}?{urlencode(parameters_for_opening_edit)}",
-        safe=":/?&=",
-    )
+    url = f"{wiki_domain}/{quote(quiz_title)}?{urlencode(parameters_for_opening_edit)}"
     webbrowser.open_new_tab(url)
     print(
         "\nThe edit page of the quiz article has been opened in your browser! "
