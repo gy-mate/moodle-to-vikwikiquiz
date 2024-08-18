@@ -1,10 +1,8 @@
-from abc import ABC
-
 # noinspection PyPackages
 from .illustration import Illustration  # type: ignore
 
 
-class QuizElement(ABC):
+class QuizElement:
     def __init__(
         self,
         text: str,
