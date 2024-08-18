@@ -10,7 +10,6 @@ from pathlib import Path
 # noinspection PyUnresolvedReferences
 import re
 import shutil
-from urllib.parse import unquote
 
 # noinspection PyUnresolvedReferences
 from bs4 import BeautifulSoup, Tag
@@ -120,6 +119,7 @@ class Quiz:
         with contextlib.suppress(NotImplementedError):
             question_type = get_question_type(question)  # type: ignore
         correctly_answered, grade, maximum_points = get_grading_of_question(question)  # type: ignore
+        # noinspection PyTypeChecker
         question_text, illustration = get_question_data(  # type: ignore
             question,
             self.title,
