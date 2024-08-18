@@ -10,6 +10,7 @@ from pathlib import Path
 # noinspection PyUnresolvedReferences
 import re
 import shutil
+from urllib.parse import unquote
 
 # noinspection PyUnresolvedReferences
 from bs4 import BeautifulSoup, Tag
@@ -69,9 +70,7 @@ class Quiz:
         else:
             self.import_files(path, recursively)
         if not self.questions:
-            raise ValueError(
-                "No questions were imported from the provided source path!"
-            )
+            raise ValueError(f"No questions were imported from '{path}'!")
 
     def import_files(self, path: Path, recursively: bool) -> None:
         for subdir, dirs, files in os.walk(path):
@@ -100,7 +99,7 @@ class Quiz:
         with contextlib.suppress(NotImplementedError):
             question_type = get_question_type(question)  # type: ignore
         correctly_answered, grade, maximum_points = get_grading_of_question(question)  # type: ignore
-        question_text, illustration = get_question_data(question, self.title, Question(), self.state_of_illustrations)  # type: ignore
+        question_text, illustration = get_question_data(question, self.title, Question, self.state_of_illustrations)  # type: ignore
         answers, id_of_correct_answers, all_correct_answers_known = self.get_answers(  # type: ignore
             question, grade, maximum_points
         )
@@ -226,7 +225,9 @@ class Quiz:
         if illustration := quiz_element.illustration:
             if not os.path.exists(upload_directory):
                 os.makedirs(upload_directory)
-            shutil.copy(illustration.original_file_path, upload_directory)
+            original_file_path = illustration.original_file_path.resolve()
+            original_file_path = unquote(str(original_file_path))
+            shutil.copy(original_file_path, upload_directory)
             new_file_path = os.path.join(
                 upload_directory, illustration.original_file_path.name
             )
