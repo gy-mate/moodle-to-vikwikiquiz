@@ -266,12 +266,14 @@ def get_element_illustration(
 
         if element_text == "":
             assert question_name
-            if len(question_name) > 25:
-                question_name = f"{question_name[:25]}…"
-            random_hash = uuid.uuid4().hex[:6]
-            generated_name = f"{question_name} – válaszlehetőség {random_hash}"
+            max_question_name_length = 15
+            if len(question_name) > max_question_name_length:
+                question_name = f"{question_name[:max_question_name_length]}…"
             upload_filename = create_upload_filename(
-                quiz_name, generated_name, extension
+                quiz_name,
+                question_name,
+                extension,
+                make_unique=True,
             )
         else:
             upload_filename = create_upload_filename(quiz_name, element_text, extension)
@@ -315,9 +317,13 @@ def filename_too_long(upload_filename):
 
 
 def create_upload_filename(
-    quiz_name: str, name_of_illustration: str, extension: str
+    quiz_name: str, name_of_illustration: str, extension: str, make_unique: bool = False
 ) -> str:
-    upload_filename = f'"{name_of_illustration}" ({quiz_name}){extension}'
+    upload_filename = f'"{name_of_illustration}"'
+    if make_unique:
+        random_hash = uuid.uuid4().hex[:6]
+        upload_filename += f" – válaszlehetőség {random_hash}"
+    upload_filename += f" ({quiz_name}){extension}"
     return upload_filename
 
 
