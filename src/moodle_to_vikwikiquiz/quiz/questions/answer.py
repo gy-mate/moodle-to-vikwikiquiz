@@ -1,11 +1,11 @@
 # noinspection PyPackages
-from ..illustration import Illustration  # type: ignore
+from ..illustrations.illustration import Illustration  # type: ignore
 
 # noinspection PyPackages
 from ..quiz_element import QuizElement  # type: ignore
 
 # noinspection PyPackages
-from ..state_of_illustrations import StateOfIllustrations  # type: ignore
+from ..illustrations.state_of_illustrations import StateOfIllustrations  # type: ignore
 
 
 class Answer(QuizElement):

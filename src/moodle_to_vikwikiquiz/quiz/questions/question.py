@@ -7,13 +7,13 @@ from .answer import Answer  # type: ignore
 from ..grading_types import GradingType  # type: ignore
 
 # noinspection PyPackages
-from ..illustration import Illustration  # type: ignore
+from ..illustrations.illustration import Illustration  # type: ignore
 
 # noinspection PyPackages
 from ..quiz_element import QuizElement  # type: ignore
 
 # noinspection PyPackages
-from ..state_of_illustrations import StateOfIllustrations  # type: ignore
+from ..illustrations.state_of_illustrations import StateOfIllustrations  # type: ignore
 
 # noinspection PyPackages
 # future: report false positive to mypy developers

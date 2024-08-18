@@ -1,5 +1,5 @@
 # noinspection PyPackages
-from .illustration import Illustration  # type: ignore
+from .illustrations.illustration import Illustration  # type: ignore
 
 
 class QuizElement:
