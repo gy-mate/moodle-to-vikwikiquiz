@@ -38,10 +38,23 @@ def main() -> None:
     )
     wiki_domain = "https://vik.wiki"
 
+    input(
+        """Let's log in to the wiki! The login page will be opened. Please...
+• if you see the login page, log in
+• when you see the main page of the wiki, return here.
+
+Please press Enter then follow these instructions..."""
+    )
+    quiz_wikitext = str(quiz)
+    webbrowser.open_new_tab(f"{wiki_domain}/index.php?title=Speciális:Belépés")
+    input("Please press Enter if you've logged in...")
+    clear_terminal()
+    
+    print("Great!\n")
     quiz.get_illustrations_ready_for_upload()
     pyperclip.copy(f"{os.getcwd()}/to_upload")
     input(
-        f"""The batch upload page of the wiki will be opened. After that, please...
+        f"""The batch upload page of the wiki will now be opened. After that, please...
 • click on 'Fájlok kiválasztása...'
 • open the 'to_upload' folder in the working directory
     • if you're using macOS:
@@ -61,17 +74,6 @@ Please press Enter then follow these instructions..."""
     clear_terminal()
 
     print("Great!\n")
-    input(
-        """Now let's log in to the wiki! The login page will be opened. Please...
-• if you see the login page, log in
-• when you see the main page of the wiki, return here.
-
-Please press Enter then follow these instructions..."""
-    )
-    quiz_wikitext = str(quiz)
-    webbrowser.open_new_tab(f"{wiki_domain}/index.php?title=Speciális:Belépés")
-    input("Please press Enter if you've logged in...")
-    print("Great!")
     parameters_for_opening_edit = {
         "action": "edit",
         "summary": "Kvíz bővítése "
