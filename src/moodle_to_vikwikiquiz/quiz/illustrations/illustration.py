@@ -1,4 +1,5 @@
 from pathlib import Path
+import re
 
 # noinspection PyPackages
 from .state_of_illustrations import StateOfIllustrations  # type: ignore
@@ -13,6 +14,7 @@ class Illustration:
         original_file_path: Path | None = None,
     ) -> None:
         assert isinstance(upload_filename, str)
+        upload_filename = re.sub(r"[{}]", "", upload_filename)
         self.upload_filename = upload_filename
 
         assert isinstance(size_in_pixels, int)
