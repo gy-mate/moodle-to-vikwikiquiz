@@ -253,9 +253,7 @@ def get_element_illustration(
 
         upload_filename = create_upload_filename(quiz_name, element_text, extenstion)
         if filename_too_long(upload_filename):
-            upload_filename = truncate_filename(
-                element_text, extenstion, quiz_name
-            )
+            upload_filename = truncate_filename(element_text, extenstion, quiz_name)
 
         return Illustration(
             upload_filename=upload_filename,
@@ -267,9 +265,7 @@ def get_element_illustration(
         return None
 
 
-def truncate_filename(
-    element_text: str, extenstion: str, quiz_name: str
-) -> str:
+def truncate_filename(element_text: str, extenstion: str, quiz_name: str) -> str:
     number_of_element_text_words = 5
     while number_of_element_text_words > 1:
         split_element_text = element_text.split()
@@ -285,7 +281,9 @@ def truncate_filename(
 
     # noinspection PyUnboundLocalVariable
     split_truncated_element_text = split_truncated_element_text[:15]
-    upload_filename = create_upload_filename(quiz_name, split_truncated_element_text + "…", extenstion)
+    upload_filename = create_upload_filename(
+        quiz_name, split_truncated_element_text + "…", extenstion
+    )
     return upload_filename
 
 

@@ -30,9 +30,7 @@ class Illustration:
             self.state_of_illustrations == StateOfIllustrations.YesAndAvailable
             or self.state_of_illustrations == StateOfIllustrations.YesButNotAvailable
         ):
-            return (
-                f"\n[[Fájl:{self.upload_filename}|keret|keretnélküli|{self.size_in_pixels}px]]"
-            )
+            return f"\n[[Fájl:{self.upload_filename}|keret|keretnélküli|{self.size_in_pixels}px]]"
         else:
             raise ValueError(
                 "No images were expected in the quiz but one image filename was requested!"
