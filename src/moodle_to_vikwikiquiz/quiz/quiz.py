@@ -128,7 +128,7 @@ class Quiz:
             Path(directory),
         )
         answers, id_of_correct_answers, all_correct_answers_known = self.get_answers(  # type: ignore
-            question, grade, maximum_points, directory
+            question, grade, maximum_points, directory, file
         )
         if not correctly_answered and not all_correct_answers_known:
             complete_correct_answers(  # type: ignore
@@ -150,7 +150,12 @@ class Quiz:
         )
 
     def get_answers(
-        self, question: Tag, grade: float, maximum_points: float, current_folder: Path
+        self,
+        question: Tag,
+        grade: float,
+        maximum_points: float,
+        current_folder: Path,
+        file: Path,
     ) -> tuple[list[Answer], set[int], bool]:
         answers = question.find("div", class_="answer")
         correct_answers = get_correct_answers_if_provided(question)  # type: ignore
@@ -176,6 +181,8 @@ class Quiz:
                     case _:
                         answer_text = prettify(answer_text)  # type: ignore
             if found_tag.find("img"):
+                if self.state_of_illustrations == StateOfIllustrations.Nil:
+                    self.state_of_illustrations = get_if_illustrations_available(current_folder, file)  # type: ignore
                 question_text_tag = question.find("div", class_="qtext")
                 question_text = get_question_text(question_text_tag)  # type: ignore
                 # noinspection PyTypeChecker
