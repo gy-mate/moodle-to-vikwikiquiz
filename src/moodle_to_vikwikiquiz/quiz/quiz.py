@@ -100,10 +100,10 @@ class Quiz:
         with open(file_path, "rb") as source_file:
             webpage = BeautifulSoup(source_file, "html.parser")
 
-            multi_or_single_choice_questions = webpage.find_all(
+            accepted_questions = webpage.find_all(
                 "div", class_=re.compile(r"multichoice|calculatedmulti|truefalse")
             )
-            for question in multi_or_single_choice_questions:
+            for question in accepted_questions:
                 self.import_question(question, Path(file_path), directory, file)
                 clear_terminal()  # type: ignore
 
@@ -131,9 +131,8 @@ class Quiz:
             question, grade, maximum_points, directory, file
         )
         if not correctly_answered and not all_correct_answers_known:
-            complete_correct_answers(  # type: ignore
+            get_correct_answers(  # type: ignore
                 answers,
-                id_of_correct_answers,
                 grade,
                 maximum_points,
                 question_text,
@@ -146,7 +145,6 @@ class Quiz:
             self.state_of_illustrations,
             illustration,
             answers,
-            id_of_correct_answers,
         )
 
     def get_answers(
@@ -156,12 +154,12 @@ class Quiz:
         maximum_points: float,
         current_folder: Path,
         file: Path,
-    ) -> tuple[list[Answer], set[int], bool]:
+    ) -> tuple[set[Answer], set[int], bool]:
         answers = question.find("div", class_="answer")
         correct_answers = get_correct_answers_if_provided(question)  # type: ignore
         all_correct_answers_known = bool(correct_answers)
         assert isinstance(answers, Tag)
-        answers_to_add: list[Answer] = []
+        answers_to_add: set[Answer] = set()
         illustration: Illustration | None = None
         id_of_correct_answers: set[int] = set()
         i = 1
@@ -195,11 +193,11 @@ class Quiz:
                     current_folder,
                     question_text,
                 )
-            answers_to_add.append(Answer(answer_text, illustration))
-            if answer_is_correct(  # type: ignore
+            is_correct = answer_is_correct(  # type: ignore
                 answer, answer_text, grade, maximum_points, correct_answers
-            ):
-                id_of_correct_answers.add(i)
+            )
+            answers_to_add.add(Answer(answer_text, is_correct, illustration))
+
             i += 1
         return answers_to_add, id_of_correct_answers, all_correct_answers_known
 
@@ -209,19 +207,17 @@ class Quiz:
         question_text: str,
         has_illustration: StateOfIllustrations,
         illustration: Illustration | None,
-        answers: list[Answer],
-        correct_answers: set[int],
+        answers: set[Answer],
     ) -> None:
         for existing_question in self.questions:
             if question_already_exists(existing_question, question_text):  # type: ignore
                 add_answers_to_existing_question(  # type: ignore
-                    answers, correct_answers, existing_question
+                    answers, existing_question
                 )
                 break
         else:
             self.add_question(
                 answers,
-                correct_answers,
                 has_illustration,
                 illustration,
                 question_text,
@@ -230,8 +226,7 @@ class Quiz:
 
     def add_question(
         self,
-        answers: list[Answer],
-        correct_answers: set[int],
+        answers: set[Answer],
         has_illustration: StateOfIllustrations,
         illustration: Illustration | None,
         question_text: str,
@@ -244,7 +239,6 @@ class Quiz:
                     text=question_text,
                     state_of_illustrations=has_illustration,
                     answers=answers,
-                    correct_answers=correct_answers,
                     illustration=illustration,
                 )
             )

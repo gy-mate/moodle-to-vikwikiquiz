@@ -26,8 +26,7 @@ class Question(QuizElement):
         q_type: QuestionType,
         text: str,
         state_of_illustrations: StateOfIllustrations,
-        answers: list[Answer],
-        correct_answers: set[int],
+        answers: set[Answer],
         grading: GradingType | None = None,
         illustration: Illustration | None = None,
     ) -> None:
@@ -39,13 +38,9 @@ class Question(QuizElement):
         assert isinstance(state_of_illustrations, StateOfIllustrations)
         self.state_of_illustrations = state_of_illustrations
 
-        assert isinstance(answers, list)
+        assert isinstance(answers, set)
         assert answers
         self.answers = answers
-
-        assert isinstance(correct_answers, set)
-        assert correct_answers
-        self.correct_answers = correct_answers
 
         if grading:
             assert isinstance(grading, GradingType)
@@ -60,7 +55,7 @@ class Question(QuizElement):
         text = f"== {self.text} =="
         if self.illustration:
             text += str(self.illustration)
-        ordered_correct_answers = list(self.correct_answers)
+        ordered_correct_answers = [answer for answer in self.answers if answer.correct]
         ordered_correct_answers.sort()
         text += (
             f"\n{{{{kvízkérdés|típus={self.q_type.value}"
@@ -79,8 +74,7 @@ class Question(QuizElement):
                 (
                     self.q_type,
                     self.text,
-                    frozenset(sorted([str(answer) for answer in self.answers])),
-                    frozenset(self.correct_answers),
+                    frozenset(self.answers),
                     self.grading,
                 )
             )

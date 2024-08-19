@@ -72,59 +72,71 @@ def get_grading_of_question(question: Tag) -> tuple[bool, float | None, float]:
     return correctly_answered, grade, maximum_points
 
 
-def complete_correct_answers(
-    answers: list[Answer],
-    correct_answers: set[int],
+def get_correct_answers(
+    answers: set[Answer],
     grade: float,
     maximum_points: float,
     question_text: str,
     question_type: QuestionType,
     filename: str,
 ) -> None:
-    if len(correct_answers) == len(answers) - 1:
-        correct_answers.add(get_id_of_only_remaining_answer(answers, correct_answers))
-        return
+    number_of_current_correct_answers = 0
+    list_of_answers = list(answers)
+    correct_answers: list[Answer] = []
+    for answer in answers:
+        if answer.correct:
+            number_of_current_correct_answers += 1
+            correct_answers.append(answer)
+
+    if number_of_current_correct_answers == len(answers) - 1:
+        for answer in answers:
+            if not answer.correct:
+                answer.correct = True
+                return
     print(f"File:\t\t{filename}")
     print(f"Question:\t'{question_text}'")
-    match len(correct_answers):
+    match number_of_current_correct_answers:
         case 0:
             print("\nI couldn't determine any correct answers for sure.", end=" ")
         case 1:
             print(
-                f"\nI see that answer #{list(correct_answers)[0]} is correct, "
+                f"\nI see that answer #{list_of_answers.index(correct_answers[0]) + 1} is correct, "
                 f"but there might be additional correct answers because you only got {grade:g} points out of {maximum_points:g}.",
                 end=" ",
             )
         case _:
+            correct_answer_indexes: list[int] = []
+            for correct_answer in correct_answers:
+                correct_answer_indexes.append(list_of_answers.index(correct_answer) + 1)
             print(
-                f"\nI see that answers {correct_answers} are correct, "
+                f"\nI see that answers {correct_answer_indexes} are correct, "
                 f"but this list may be incomplete because you only got {grade:g} points out of {maximum_points:g}.",
                 end=" ",
             )
     print(f"The possible answers are:", end="\n\n")
-    assert isinstance(answers, list)
-    # report false positive to mypy developers
-    for j, answer in enumerate(answers):  # type: ignore
+    for j, answer in enumerate(list_of_answers):
         print(f"#{j + 1}\t{answer}")
     print()
-    while True:
-        get_missing_correct_answers(answers, correct_answers, question_type)
-        if correct_answers:
-            break
-        print("Error: no correct answers were provided!", end="\n\n")
-
-
-def get_id_of_only_remaining_answer(
-    answers: list[Answer], correct_answers: set[int]
-) -> int:
-    for i, answer in enumerate(answers, 1):
-        if i not in correct_answers:
-            return i
-    raise NotImplementedError
+    get_missing_correct_answers(correct_answers, list_of_answers, question_type)
 
 
 def get_missing_correct_answers(
-    answers: list[Answer], correct_answers: set[int], question_type: QuestionType
+    correct_answers: list[Answer],
+    list_of_answers: list[Answer],
+    question_type: QuestionType,
+) -> None:
+    while True:
+        get_input_for_missing_correct_answers(
+            list_of_answers, correct_answers, question_type
+        )
+        for answer in list_of_answers:
+            if answer.correct:
+                return
+        print("Error: no correct answers were provided!", end="\n\n")
+
+
+def get_input_for_missing_correct_answers(
+    answers: list[Answer], correct_answers: list[Answer], question_type: QuestionType
 ) -> None:
     while len(correct_answers) < len(answers):
         additional_correct_answer = input(
@@ -146,7 +158,7 @@ def get_missing_correct_answers(
                 end="\n\n",
             )
             continue
-        correct_answers.add(int(additional_correct_answer))
+        answers[int(additional_correct_answer) - 1].correct = True
         if question_type == QuestionType.SingleChoice:
             break
 
@@ -360,15 +372,9 @@ def question_already_exists(existing_question: Question, question_text: str) -> 
 
 
 def add_answers_to_existing_question(
-    answers: list[Answer], correct_answers: set[int], existing_question: Question
+    answers: set[Answer], existing_question: Question
 ) -> None:
-    # report false positive to mypy developers
-    for k, answer in enumerate(answers):  # type: ignore
-        if answer not in existing_question.answers:
-            assert isinstance(answer, Answer)
-            existing_question.answers.append(answer)
-            if k + 1 in correct_answers:
-                existing_question.correct_answers.add(len(existing_question.answers))
+    existing_question.answers.update(answers)
 
 
 def get_if_has_illustration(

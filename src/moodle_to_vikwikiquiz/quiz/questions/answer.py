@@ -9,5 +9,10 @@ from ..illustrations.state_of_illustrations import StateOfIllustrations  # type:
 
 
 class Answer(QuizElement):
-    def __init__(self, text: str, illustration: Illustration | None = None) -> None:
+    def __init__(
+        self, text: str, correct: bool, illustration: Illustration | None = None
+    ) -> None:
         super().__init__(text, illustration)
+
+        assert isinstance(correct, bool)
+        self.correct = correct
