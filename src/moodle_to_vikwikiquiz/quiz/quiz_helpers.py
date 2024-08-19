@@ -1,7 +1,7 @@
 import os
 from pathlib import Path
 import re
-from urllib.parse import unquote
+from urllib.parse import unquote, urlparse
 import uuid
 
 from bs4 import Tag
@@ -248,9 +248,12 @@ def get_element_illustration(
 ) -> Illustration | None:
     if image := tag.find("img"):
         assert isinstance(image, Tag)
-        illustration_path_string = image["src"]
-        assert isinstance(illustration_path_string, str)
-        illustration_path_string = unquote(illustration_path_string)
+        illustration_url = image["src"]
+        assert isinstance(illustration_url, str)
+        illustration_url_parsed = urlparse(illustration_url)
+        illustration_url_parsed = illustration_url_parsed._replace(query="")
+        illustration_url_string = illustration_url_parsed.geturl()
+        illustration_path_string = unquote(illustration_url_string)
         original_file_path_string = os.path.join(
             current_folder, illustration_path_string
         )
