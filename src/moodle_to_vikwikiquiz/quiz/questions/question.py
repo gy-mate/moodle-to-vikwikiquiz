@@ -55,11 +55,13 @@ class Question(QuizElement):
         text = f"== {self.text} =="
         if self.illustration:
             text += str(self.illustration)
-        ordered_correct_answers = [answer for answer in self.answers if answer.correct]
-        ordered_correct_answers.sort()
+        correct_answer_indexes: list[str] = []
+        for i, answer in enumerate(self.answers):
+            if answer.correct:
+                correct_answer_indexes.append(str(i + 1))
         text += (
             f"\n{{{{kvízkérdés|típus={self.q_type.value}"
-            f"|válasz={",".join([str(answer) for answer in ordered_correct_answers])}"
+            f"|válasz={",".join(correct_answer_indexes)}"
         )
         if self.grading:
             text += f"|pontozás={self.grading}"
