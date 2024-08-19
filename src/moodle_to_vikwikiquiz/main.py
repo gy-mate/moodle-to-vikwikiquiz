@@ -1,13 +1,14 @@
 from argparse import ArgumentParser, Namespace
 import logging
-import os
 from pathlib import Path
+from platform import system
 import time
 from urllib.parse import quote, urlencode
 import webbrowser
 
 # future: delete the comment below when stubs for the package below are available
 import pyperclip  # type: ignore
+from send2trash import send2trash  # type: ignore
 
 # future: report false positive to JetBrains developers
 # noinspection PyPackages
@@ -39,11 +40,11 @@ def main() -> None:
     wiki_domain = "https://vik.wiki"
 
     input(
-        """Let's log in to the wiki! The login page will be opened. Please...
+        """Let's log in to the wiki! Please...
 • if you see the login page, log in
 • when you see the main page of the wiki, return here.
 
-Please press Enter then follow these instructions..."""
+Please press Enter to open the login page..."""
     )
     quiz_wikitext = str(quiz)
     webbrowser.open_new_tab(f"{wiki_domain}/index.php?title=Speciális:Belépés")
@@ -51,40 +52,50 @@ Please press Enter then follow these instructions..."""
     clear_terminal()
 
     print("Great!\n")
-    quiz.get_illustrations_ready_for_upload()
-    pyperclip.copy(f"{os.getcwd()}/to_upload")
-    input(
-        f"""The batch upload page of the wiki will now be opened. After that, please...
+    upload_directory = quiz.get_illustrations_ready_for_upload()
+    if upload_directory:
+        operating_system = system()
+        if operating_system == "Darwin":
+            pyperclip.copy(str(upload_directory))
+        print(
+            f"""The batch upload page of the wiki will now be opened. After that, please...
 • click on 'Fájlok kiválasztása...'
-• open the 'to_upload' folder in the working directory
-    • if you're using macOS:
-        • press Command+Shift+G
-        • paste the content of the clipboard
-        • press Enter
-• select all files in the folder
-• click on 'Upload'
-• return here.
+• open the 'to_upload' folder in the working directory"""
+        )
+        if operating_system == "Darwin":
+            print(
+                """    • press Command–Shift–G
+    • paste the content of the clipboard
+    • press Enter"""
+            )
+        else:
+            print("• open the following folder: " + str(upload_directory))
+        print(
+            """• select all files in the folder
+    • click on 'Upload'
+    • return here."""
+        )
+        input("Please press Enter then follow these instructions...")
+        webbrowser.open_new_tab(
+            f"{wiki_domain}/Speciális:TömegesFeltöltés/moodle-to-vikwikiquiz"
+        )
+        input("Please press Enter if you're done with uploading...")
+        remove_uploaded_files(upload_directory)
+        clear_terminal()
+        print("Great! I've deleted the uploaded files from your disk.\n")
 
-Please press Enter then follow these instructions..."""
-    )
-    webbrowser.open_new_tab(
-        f"{wiki_domain}/Speciális:TömegesFeltöltés/moodle-to-vikwikiquiz"
-    )
-    input("Please press Enter if you're done with uploading...")
-    clear_terminal()
-
-    print("Great!\n")
     parameters_for_opening_edit = {
         "action": "edit",
         "summary": "Kvíz bővítése "
         "a https://github.com/gy-mate/moodle-to-vikwikiquiz segítségével importált Moodle-kvíz(ek)ből",
         "preload": "Sablon:Előbetöltés",
         "preloadparams[]": """<!-- További teendőid (ebben a sorrendben):
-• az e komment alatti sorba illeszd be a vágólapodra másolt tartalmat
+• e komment alatti sorba illeszd be a vágólapodra másolt tartalmat
 • kattints az 'Előnézet megtekintése' gombra
-• javítsd a helyesírást és a formázást, különös tekintettel a képletekre
-• töltsd fel kézzel az előnézetben piros linkekkel formázott illusztrációkat
-• add hozzá a "Fájl:" wikitextekhez a feltöltés során megadott fájlneveket
+• javítsd a helyesírást és a formázást (ha szükséges), különös tekintettel a képletekre
+• ha vannak piros linkekkel formázott illusztrációk:
+    • töltsd fel őket kézzel a szerkesztő eszköztárában található 'Képek és médiafájlok' gombra kattintva
+    • illeszd be a "Fájl:" wikitextek után a feltöltés során megadott fájlneveket
 • töröld ezt a kommentet
 -->""",
     }
@@ -93,6 +104,10 @@ Please press Enter then follow these instructions..."""
         args, parameters_for_opening_edit, quiz_title, quiz_wikitext, wiki_domain
     )
     logging.getLogger(__name__).debug("Program finished!")
+
+
+def remove_uploaded_files(folder: Path) -> None:
+    send2trash(folder)
 
 
 def parse_arguments() -> Namespace:

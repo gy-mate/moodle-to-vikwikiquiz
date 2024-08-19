@@ -41,7 +41,7 @@ from .quiz_element import QuizElement  # type: ignore
 
 
 def move_illustration_to_upload_folder(
-    quiz_element: QuizElement, upload_directory: str
+    quiz_element: QuizElement, upload_directory: Path
 ) -> None:
     if illustration := quiz_element.illustration:
         if not os.path.exists(upload_directory):
@@ -246,10 +246,14 @@ class Quiz:
                 f"Error: question '{question_text}' was not added to the quiz because it wasn't processed correctly!"
             )
 
-    def get_illustrations_ready_for_upload(self) -> None:
-        upload_directory = os.path.join(os.getcwd(), "to_upload")
+    def get_illustrations_ready_for_upload(self) -> Path | None:
+        upload_directory = Path(os.path.join(os.getcwd(), "to_upload"))
         for question in self.questions:
             move_illustration_to_upload_folder(question, upload_directory)
             for answer in question.answers:
                 if answer.illustration:
                     move_illustration_to_upload_folder(answer, upload_directory)
+        if os.path.exists(upload_directory):
+            return upload_directory
+        else:
+            return None

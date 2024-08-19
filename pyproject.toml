@@ -23,6 +23,7 @@ dependencies = [
     "plum-dispatch",
     "pylatexenc",
     "pyperclip",
+    "Send2Trash",
 ]
 
 [project.urls]
