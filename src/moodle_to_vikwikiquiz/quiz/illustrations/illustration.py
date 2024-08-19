@@ -30,7 +30,7 @@ class Illustration:
     def __str__(self) -> str:
         if (
             self.state_of_illustrations == StateOfIllustrations.YesAndAvailable
-            or self.state_of_illustrations == StateOfIllustrations.YesButNotAvailable
+            or self.state_of_illustrations == StateOfIllustrations.YesButUnavailable
         ):
             return f"\n[[Fájl:{self.upload_filename}|keret|keretnélküli|{self.size_in_pixels}px]]"
         else:

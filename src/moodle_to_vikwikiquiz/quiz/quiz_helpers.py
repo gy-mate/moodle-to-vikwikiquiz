@@ -262,7 +262,7 @@ def get_element_illustration(
         elif element is Answer:
             illustration_size = 250
         else:
-            raise ValueError(f"Unexpected QuizElement type: {type(element)}!")
+            raise ValueError(f"Unexpected QuizElement type: {element}!")
 
         if element_text == "":
             assert question_name
@@ -384,7 +384,7 @@ def get_if_illustrations_available(directory: Path, file: Path) -> StateOfIllust
     if os.path.exists(asset_folder):
         return StateOfIllustrations.YesAndAvailable
     else:
-        return StateOfIllustrations.YesButNotAvailable
+        return StateOfIllustrations.YesButUnavailable
 
 
 def clear_terminal():
