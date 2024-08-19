@@ -10,6 +10,9 @@ import webbrowser
 import pyperclip  # type: ignore
 from send2trash import send2trash  # type: ignore
 
+# noinspection PyPackages
+from .quiz.illustrations.state_of_illustrations import StateOfIllustrations  # type: ignore
+
 # future: report false positive to JetBrains developers
 # noinspection PyPackages
 from .quiz.grading_types import GradingType  # type: ignore
@@ -52,52 +55,59 @@ Please press Enter to open the login page..."""
     clear_terminal()
 
     print("Great!\n")
-    upload_directory = quiz.get_illustrations_ready_for_upload()
-    if upload_directory:
-        operating_system = system()
-        if operating_system == "Darwin":
-            pyperclip.copy(str(upload_directory))
-        print(
-            f"""The batch upload page of the wiki will now be opened. After that, please...
-• click on 'Fájlok kiválasztása...'
-• open the 'to_upload' folder in the working directory"""
-        )
-        if operating_system == "Darwin":
+    wikitext_instructions = """<!-- További teendőid (ebben a sorrendben):
+• e komment alatti sorba illeszd be a vágólapodra másolt tartalmat
+• kattints az 'Előnézet megtekintése' gombra
+• javítsd a helyesírást és a formázást (ha szükséges), különös tekintettel a képletekre"""
+    match quiz.state_of_illustrations:
+        case StateOfIllustrations.YesAndAvailable:
+            upload_directory = quiz.get_illustrations_ready_for_upload()
+            operating_system = system()
+            if operating_system == "Darwin":
+                pyperclip.copy(str(upload_directory))
             print(
-                """    • press Command–Shift–G
-    • paste the content of the clipboard
-    • press Enter"""
+                f"""The batch upload page of the wiki will now be opened. After that, please...
+    • click on 'Fájlok kiválasztása...'
+    • open the 'to_upload' folder in the working directory"""
             )
-        else:
-            print("• open the following folder: " + str(upload_directory))
-        print(
-            """• select all files in the folder
-    • click on 'Upload'
-    • return here."""
-        )
-        input("Please press Enter then follow these instructions...")
-        webbrowser.open_new_tab(
-            f"{wiki_domain}/Speciális:TömegesFeltöltés/moodle-to-vikwikiquiz"
-        )
-        input("Please press Enter if you're done with uploading...")
-        remove_uploaded_files(upload_directory)
-        clear_terminal()
-        print("Great! I've deleted the uploaded files from your disk.\n")
-
+            if operating_system == "Darwin":
+                print(
+                    """    • press Command–Shift–G
+        • paste the content of the clipboard
+        • press Enter"""
+                )
+            else:
+                print("• open the following folder: " + str(upload_directory))
+            print(
+                """• select all files in the folder
+        • click on 'Upload'
+        • return here."""
+            )
+            input("Please press Enter then follow these instructions...")
+            webbrowser.open_new_tab(
+                f"{wiki_domain}/Speciális:TömegesFeltöltés/moodle-to-vikwikiquiz"
+            )
+            input("Please press Enter if you're done with uploading...")
+            remove_uploaded_files(upload_directory)
+            clear_terminal()
+            print("Great! I've deleted the uploaded files from your disk.\n")
+        case StateOfIllustrations.YesButUnavailable:
+            wikitext_instructions += """
+• töltsd fel kézzel, egyesével a piros linkekkel formázott illusztrációkat
+    • másold ki a megfelelő "Fájl:" wikitext után található generált fájlnevet
+    • kattints a szerkesztő eszköztárában található 'Képek és médiafájlok' gombra
+    • töltsd fel az illusztrációt"""
+        case StateOfIllustrations.Nil:
+            pass
+    wikitext_instructions += """
+• töröld ezt a kommentet
+-->"""
     parameters_for_opening_edit = {
         "action": "edit",
         "summary": "Kvíz bővítése "
         "a https://github.com/gy-mate/moodle-to-vikwikiquiz segítségével importált Moodle-kvíz(ek)ből",
         "preload": "Sablon:Előbetöltés",
-        "preloadparams[]": """<!-- További teendőid (ebben a sorrendben):
-• e komment alatti sorba illeszd be a vágólapodra másolt tartalmat
-• kattints az 'Előnézet megtekintése' gombra
-• javítsd a helyesírást és a formázást (ha szükséges), különös tekintettel a képletekre
-• ha vannak piros linkekkel formázott illusztrációk:
-    • töltsd fel őket kézzel a szerkesztő eszköztárában található 'Képek és médiafájlok' gombra kattintva
-    • illeszd be a "Fájl:" wikitextek után a feltöltés során megadott fájlneveket
-• töröld ezt a kommentet
--->""",
+        "preloadparams[]": wikitext_instructions,
     }
     clear_terminal()
     create_article(
