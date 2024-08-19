@@ -16,3 +16,7 @@ class Answer(QuizElement):
 
         assert isinstance(correct, bool)
         self.correct = correct
+
+    def __hash__(self) -> int:
+        object_hash = hash(frozenset((self.text, self.correct, self.illustration)))
+        return object_hash
