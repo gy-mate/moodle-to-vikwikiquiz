@@ -20,3 +20,12 @@ class Answer(QuizElement):
     def __hash__(self) -> int:
         object_hash = hash(frozenset((self.text, self.correct, self.illustration)))
         return object_hash
+
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, Answer):
+            return False
+        return (
+            self.text == other.text
+            and self.correct == other.correct
+            and self.illustration == other.illustration
+        )

@@ -78,6 +78,18 @@ class Question(QuizElement):
                     self.text,
                     frozenset(self.answers),
                     self.grading,
+                    self.illustration,
                 )
             )
+        )
+
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, Question):
+            return False
+        return (
+            self.q_type == other.q_type
+            and self.text == other.text
+            and self.answers == other.answers
+            and self.grading == other.grading
+            and self.illustration == other.illustration
         )
