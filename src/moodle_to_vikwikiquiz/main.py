@@ -67,8 +67,7 @@ Please press Enter to open the login page..."""
                 pyperclip.copy(str(upload_directory))
             print(
                 f"""The batch upload page of the wiki will now be opened. After that, please...
-    • click on 'Fájlok kiválasztása...'
-    • open the 'to_upload' folder in the working directory"""
+• click on 'Fájlok kiválasztása...'"""
             )
             if operating_system == "Darwin":
                 print(
@@ -77,11 +76,11 @@ Please press Enter to open the login page..."""
         • press Enter"""
                 )
             else:
-                print("• open the following folder: " + str(upload_directory))
+                print("    • open the following folder: " + str(upload_directory))
             print(
-                """• select all files in the folder
-        • click on 'Upload'
-        • return here."""
+                """    • select all files in the folder
+    • click on 'Upload'
+• return here."""
             )
             input("Please press Enter then follow these instructions...")
             webbrowser.open_new_tab(
