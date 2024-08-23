@@ -55,8 +55,9 @@ Please press Enter to open the login page..."""
     clear_terminal()
 
     print("Great!\n")
-    wikitext_instructions = """<!-- További teendőid (ebben a sorrendben):
-• e komment alatti sorba illeszd be a vágólapodra másolt tartalmat
+    wikitext_instructions = """
+<!-- További teendőid (ebben a sorrendben):
+• e komment feletti sorba illeszd be a vágólapodra másolt tartalmat
 • kattints az 'Előnézet megtekintése' gombra
 • javítsd a helyesírást és a formázást (ha szükséges), különös tekintettel a képletekre"""
     match quiz.state_of_illustrations:
