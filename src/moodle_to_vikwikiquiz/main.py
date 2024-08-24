@@ -122,7 +122,12 @@ Please press Enter to open the login page..."""
     clear_terminal()
 
     create_article(
-        args, parameters_for_opening_edit, quiz_title, quiz_wikitext, wiki_domain
+        args,
+        parameters_for_opening_edit,
+        quiz_title,
+        quiz_wikitext,
+        wiki_domain,
+        wikitext_instructions,
     )
     logging.getLogger(__name__).debug("Program finished!")
 
@@ -222,6 +227,7 @@ def create_article(
     quiz_title: str,
     quiz_wikitext: str,
     wiki_domain: str,
+    wikitext_instructions: str,
 ) -> None:
     if args.new:
         parameters_for_opening_edit_with_paste = parameters_for_opening_edit.copy()
@@ -244,6 +250,11 @@ def create_article(
     pyperclip.copy(quiz_wikitext)
     print("The wikitext of the quiz has been copied to the clipboard!")
     url = f"{wiki_domain}/{quote(quiz_title)}?{urlencode(parameters_for_opening_edit)}"
+    if not args.new:
+        print("The existing article will now be opened for editing.")
+        print(wikitext_instructions)
+        input("Please press Enter then follow these instructions...")
+        clear_terminal()
     webbrowser.open_new_tab(url)
     print(
         "\nThe edit page of the quiz article has been opened in your browser! Please follow the instructions there."
