@@ -127,7 +127,9 @@ Please press Enter to open the login page..."""
         quiz_title,
         quiz_wikitext,
         wiki_domain,
-        wikitext_instructions,
+        wiki_modifier_keys,
+        wiki_editor_keys,
+        operating_system,
     )
     logging.getLogger(__name__).debug("Program finished!")
 
@@ -223,11 +225,13 @@ def get_grading() -> GradingType:
 
 def create_article(
     args: Namespace,
-    parameters_for_opening_edit: dict,
+    parameters_for_opening_edit: dict[str, str],
     quiz_title: str,
     quiz_wikitext: str,
     wiki_domain: str,
-    wikitext_instructions: str,
+    wiki_modifier_keys: dict[str, str],
+    wiki_editor_keys: dict[str, str],
+    operating_system: str,
 ) -> None:
     if args.new:
         parameters_for_opening_edit_with_paste = parameters_for_opening_edit.copy()
@@ -251,14 +255,22 @@ def create_article(
     print("The wikitext of the quiz has been copied to the clipboard!")
     url = f"{wiki_domain}/{quote(quiz_title)}?{urlencode(parameters_for_opening_edit)}"
     if not args.new:
-        print("The existing article will now be opened for editing.")
-        print(wikitext_instructions)
-        input("Please press Enter then follow these instructions...")
-        clear_terminal()
+        print(
+            f"""
+The existing article will now be opened for editing. After that, please...
+• scroll to the bottom of the wikitext in the editor
+• paste the content of the clipboard in the second line below the existing wikitext
+• click on the 'Előnézet megtekintése' button ({wiki_modifier_keys[operating_system]}-{wiki_editor_keys["Show preview"]})
+• correct the spelling and formatting (if necessary), especially the formulas
+• click on the 'Lap mentése' button ({wiki_modifier_keys[operating_system]}-{wiki_editor_keys["Publish page"]})"""
+        )
+        input("\nPlease press Enter then follow these instructions...")
     webbrowser.open_new_tab(url)
     print(
-        "\nThe edit page of the quiz article has been opened in your browser! Please follow the instructions there."
+        "\nThe edit page of the quiz article has been opened in your browser!", end=""
     )
+    if args.new:
+        print(" Please follow the instructions there.")
 
 
 def open_article_paste_text(args: Namespace, quiz_wikitext: str, url: str) -> None:
@@ -279,7 +291,9 @@ def open_article_paste_text(args: Namespace, quiz_wikitext: str, url: str) -> No
     return
 
 
-def open_article(args: Namespace, parameters_for_opening_edit: dict, url: str) -> None:
+def open_article(
+    args: Namespace, parameters_for_opening_edit: dict[str, str], url: str
+) -> None:
     logging.getLogger(__name__).warning(
         "I can't create the article automatically "
         "because the URL would be too long for some browsers (or the server)."
