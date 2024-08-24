@@ -58,12 +58,20 @@ Please press Enter to open the login page..."""
     wikitext_instructions = """
 <!-- További teendőid (ebben a sorrendben):
 • e komment feletti sorba illeszd be a vágólapodra másolt tartalmat
-• kattints az 'Előnézet megtekintése' gombra
+• kattints az 'Előnézet megtekintése' gombra"""
+    operating_system = system()
+    wiki_modifier_keys = {
+        "Darwin": "Control-Option",
+        "Linux": "Alt-Shift",
+    }
+    wiki_editor_keys = {"Show preview": "P", "Publish page": "S"}
+    if operating_system == "Darwin" or operating_system == "Linux":
+        wikitext_instructions += f" ({wiki_modifier_keys[operating_system]}-{wiki_editor_keys["Show preview"]})"
+    wikitext_instructions += """
 • javítsd a helyesírást és a formázást (ha szükséges), különös tekintettel a képletekre"""
     match quiz.state_of_illustrations:
         case StateOfIllustrations.YesAndAvailable:
             upload_directory = quiz.get_illustrations_ready_for_upload()
-            operating_system = system()
             if operating_system == "Darwin":
                 pyperclip.copy(str(upload_directory))
             print(
@@ -101,7 +109,10 @@ Please press Enter to open the login page..."""
             pass
     wikitext_instructions += """
 • töröld ezt a kommentet
-• kattints a 'Lap mentése' gombra
+• kattints a 'Lap mentése' gombra"""
+    if operating_system == "Darwin" or operating_system == "Linux":
+        wikitext_instructions += f" ({wiki_modifier_keys[operating_system]}-{wiki_editor_keys["Publish page"]})"
+    wikitext_instructions += """
 -->"""
     parameters_for_opening_edit = {
         "action": "edit",
