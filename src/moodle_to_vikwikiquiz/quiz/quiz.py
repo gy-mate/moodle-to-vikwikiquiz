@@ -69,12 +69,12 @@ class Quiz:
         self.state_of_illustrations = StateOfIllustrations.Nil
 
     def __str__(self) -> str:
-        text = f"{{{{Vissza | {self.parent_article}}}}}"
-        text += f"""{{{{Kvízoldal
-| cím = {self.title}"""
+        text = ""
         if self.grading:
-            text += f"\n| pontozás = {self.grading.value}"
-        text += "\n}}"
+            text += f"""{{{{Vissza | {self.parent_article}}}}}{{{{Kvízoldal
+| cím = {self.title}
+| pontozás = {self.grading.value}
+}}}}"""
         for question in self.questions:
             text += f"\n\n\n{question}"
         text += "\n"
