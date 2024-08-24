@@ -1,22 +1,19 @@
 from argparse import ArgumentParser, Namespace
 import logging
 from pathlib import Path
+from platform import system
 import time
-from urllib.parse import urlencode
+from urllib.parse import quote, urlencode
 import webbrowser
 
 # future: delete the comment below when stubs for the package below are available
 import pyperclip  # type: ignore
+from send2trash import send2trash  # type: ignore
 
-# future: report false positive to JetBrains developers
-# noinspection PyPackages
-from .grading_types import GradingType  # type: ignore
-
-# noinspection PyPackages
-from .quiz import Quiz  # type: ignore
-
-# noinspection PyPackages
-from .quiz_helpers import clear_terminal  # type: ignore
+from quiz.illustrations.state_of_illustrations import StateOfIllustrations  # type: ignore
+from quiz.grading_types import GradingType  # type: ignore
+from quiz.quiz import Quiz  # type: ignore
+from quiz.quiz_helpers import clear_terminal  # type: ignore
 
 
 def main() -> None:
@@ -25,40 +22,113 @@ def main() -> None:
     logging.getLogger(__name__).debug("Program started...")
 
     quiz_title = get_desired_name_of_quiz(args.new)
+    if args.new:
+        grading = get_grading()
+    else:
+        grading = None
     quiz = Quiz(
         parent_article=get_name_of_parent_article(),
         title=quiz_title,
-        grading=get_grading(),
+        grading=grading,
     )
     absolute_source_path: Path = args.source_path.resolve()
     quiz.import_file_or_files(
         path=absolute_source_path,
         recursively=args.recursive,
     )
-
-    quiz_wikitext = str(quiz)
     wiki_domain = "https://vik.wiki"
+
+    input(
+        """Let's log in to the wiki! Please...
+• if you see the login page, log in
+• when you see the main page of the wiki, return here.
+
+Please press Enter to open the login page..."""
+    )
+    quiz_wikitext = str(quiz)
     webbrowser.open_new_tab(f"{wiki_domain}/index.php?title=Speciális:Belépés")
-    input("Please log in to the wiki then press Enter to continue...")
+    input("Please press Enter if you've logged in...")
+    clear_terminal()
+
+    print("Great!\n")
+    wikitext_instructions = """
+<!-- További teendőid (ebben a sorrendben):
+• e komment feletti sorba illeszd be a vágólapodra másolt tartalmat
+• kattints az 'Előnézet megtekintése' gombra"""
+    operating_system = system()
+    wiki_modifier_keys = {
+        "Darwin": "Control-Option",
+        "Linux": "Alt-Shift",
+    }
+    wiki_editor_keys = {"Show preview": "P", "Publish page": "S"}
+    if operating_system == "Darwin" or operating_system == "Linux":
+        wikitext_instructions += f" ({wiki_modifier_keys[operating_system]}-{wiki_editor_keys["Show preview"]})"
+    wikitext_instructions += """
+• javítsd a helyesírást és a formázást (ha szükséges), különös tekintettel a képletekre"""
+    match quiz.state_of_illustrations:
+        case StateOfIllustrations.YesAndAvailable:
+            upload_directory = quiz.get_illustrations_ready_for_upload()
+            if operating_system == "Darwin":
+                pyperclip.copy(str(upload_directory))
+            print(
+                f"""The batch upload page of the wiki will now be opened. After that, please...
+• click on 'Fájlok kiválasztása...'"""
+            )
+            if operating_system == "Darwin":
+                print(
+                    """    • press Command–Shift–G
+        • paste the content of the clipboard
+        • press Enter"""
+                )
+            else:
+                print("    • open the following folder: " + str(upload_directory))
+            print(
+                """    • select all files in the folder
+    • click on 'Upload'
+• return here."""
+            )
+            input("Please press Enter then follow these instructions...")
+            webbrowser.open_new_tab(
+                f"{wiki_domain}/Speciális:TömegesFeltöltés/moodle-to-vikwikiquiz"
+            )
+            input("Please press Enter if you're done with uploading...")
+            if upload_directory:
+                remove_uploaded_files(upload_directory)
+            clear_terminal()
+
+            print("Great! I've deleted the uploaded files from your disk.\n")
+        case StateOfIllustrations.YesButUnavailable:
+            wikitext_instructions += """
+• töltsd fel kézzel, egyesével a piros linkekkel formázott illusztrációkat
+    • másold ki a megfelelő "Fájl:" wikitext után található generált fájlnevet
+    • kattints a szerkesztő eszköztárában található 'Képek és médiafájlok' gombra
+    • töltsd fel az illusztrációt"""
+        case StateOfIllustrations.Nil:
+            pass
+    wikitext_instructions += """
+• töröld ezt a kommentet
+• kattints a 'Lap mentése' gombra"""
+    if operating_system == "Darwin" or operating_system == "Linux":
+        wikitext_instructions += f" ({wiki_modifier_keys[operating_system]}-{wiki_editor_keys["Publish page"]})"
+    wikitext_instructions += """
+-->"""
     parameters_for_opening_edit = {
         "action": "edit",
         "summary": "Kvíz bővítése "
         "a https://github.com/gy-mate/moodle-to-vikwikiquiz segítségével importált Moodle-kvíz(ek)ből",
         "preload": "Sablon:Előbetöltés",
-        "preloadparams[]": """<!-- További teendőid (ebben a sorrendben):
-- az e komment alatti sorba illeszd be a vágólapodra másolt tartalmat
-- kattints az 'Előnézet megtekintése' gombra
-- javítsd a helyesírást és a formázást, különös tekintettel a képletekre
-- töltsd fel kézzel az előnézetben piros linkekkel formázott illusztrációkat
-- add hozzá a "Fájl:.png" wikitextekhez a feltöltés során megadott fájlneveket
-- töröld ezt a kommentet
--->""",
+        "preloadparams[]": wikitext_instructions,
     }
     clear_terminal()
+
     create_article(
         args, parameters_for_opening_edit, quiz_title, quiz_wikitext, wiki_domain
     )
     logging.getLogger(__name__).debug("Program finished!")
+
+
+def remove_uploaded_files(folder: Path) -> None:
+    send2trash(folder)
 
 
 def parse_arguments() -> Namespace:
@@ -106,7 +176,7 @@ def get_name_of_parent_article() -> str:
     while True:
         try:
             input_name = input(
-                f"\nPlease enter the name of the vik.wiki article on the corresponding course on then press Enter:\n"
+                f"\nPlease enter the name of the vik.wiki article of the corresponding course then press Enter:\n"
             )
             if not input_name:
                 raise ValueError("Nothing was entered!")
@@ -172,12 +242,11 @@ def create_article(
         else:
             open_article(args, parameters_for_opening_edit, url)
     pyperclip.copy(quiz_wikitext)
-    print("\nThe wikitext of the quiz has been copied to the clipboard!")
-    url = f"{wiki_domain}/{quiz_title}?{urlencode(parameters_for_opening_edit)}"
+    print("The wikitext of the quiz has been copied to the clipboard!")
+    url = f"{wiki_domain}/{quote(quiz_title)}?{urlencode(parameters_for_opening_edit)}"
     webbrowser.open_new_tab(url)
     print(
-        "\nThe edit page of the quiz article has been opened in your browser! "
-        "Please paste the wikitext and upload illustrations (if any) there manually."
+        "\nThe edit page of the quiz article has been opened in your browser! Please follow the instructions there."
     )
 
 

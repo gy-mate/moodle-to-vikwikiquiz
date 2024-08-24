@@ -1,7 +1,7 @@
 name: 🐛 Bug report
 description: Create a bug report to help us improve this software
-labels: ["bug"]
-projects: ["gy-mate/1"]
+labels: [ "bug" ]
+projects: [ "gy-mate/1" ]
 assignees:
   - gy-mate
 body:
@@ -16,7 +16,9 @@ body:
     id: app_version
     attributes:
       label: Version
-      description: Which version of `moodle-to-vikwikiquiz` are you using?
+      description: |
+        Which version of `moodle-to-vikwikiquiz` are you using?
+        *If you installed it via `pipx`, you can check the version by running `pipx list` in the terminal.*
     validations:
       required: true
   - type: textarea

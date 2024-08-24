@@ -5,3 +5,4 @@
 *.whl
 *.html
 *.htm
+source_htmls*/**

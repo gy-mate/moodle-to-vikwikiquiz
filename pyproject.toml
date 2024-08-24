@@ -7,9 +7,9 @@ name = "moodle-to-vikwikiquiz"
 description = "A CLI for converting graded Moodle quiz HTMLs to a vik.wiki quiz wikitext"
 readme = "README.md"
 authors = [
-    { name="Máté Gyöngyösi", email="melees00_quern@icloud.com" },
+    { name = "Máté Gyöngyösi", email = "melees00_quern@icloud.com" },
 ]
-version = "1.2.3"
+version = "1.3.0"
 classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
@@ -23,6 +23,7 @@ dependencies = [
     "plum-dispatch",
     "pylatexenc",
     "pyperclip",
+    "Send2Trash",
 ]
 
 [project.urls]

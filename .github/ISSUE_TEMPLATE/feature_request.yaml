@@ -1,7 +1,7 @@
 name: ✨ Feature request
 description: Suggest an idea for this software
-labels: ["enhancement"]
-projects: ["gy-mate/1"]
+labels: [ "enhancement" ]
+projects: [ "gy-mate/1" ]
 assignees:
   - gy-mate
 body:
@@ -17,7 +17,9 @@ body:
     id: app_version
     attributes:
       label: Version
-      description: Which version of `moodle-to-vikwikiquiz` are you using?
+      description: |
+        Which version of `moodle-to-vikwikiquiz` are you using?
+        *If you installed it via `pipx`, you can check the version by running `pipx list` in the terminal.*
     validations:
       required: true
   - type: textarea
