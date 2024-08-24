@@ -10,18 +10,10 @@ import webbrowser
 import pyperclip  # type: ignore
 from send2trash import send2trash  # type: ignore
 
-# noinspection PyPackages
-from .quiz.illustrations.state_of_illustrations import StateOfIllustrations  # type: ignore
-
-# future: report false positive to JetBrains developers
-# noinspection PyPackages
-from .quiz.grading_types import GradingType  # type: ignore
-
-# noinspection PyPackages
-from .quiz.quiz import Quiz  # type: ignore
-
-# noinspection PyPackages
-from .quiz.quiz_helpers import clear_terminal  # type: ignore
+from quiz.illustrations.state_of_illustrations import StateOfIllustrations  # type: ignore
+from quiz.grading_types import GradingType  # type: ignore
+from quiz.quiz import Quiz  # type: ignore
+from quiz.quiz_helpers import clear_terminal  # type: ignore
 
 
 def main() -> None:
@@ -30,10 +22,14 @@ def main() -> None:
     logging.getLogger(__name__).debug("Program started...")
 
     quiz_title = get_desired_name_of_quiz(args.new)
+    if args.new:
+        grading = get_grading()
+    else:
+        grading = None
     quiz = Quiz(
         parent_article=get_name_of_parent_article(),
         title=quiz_title,
-        grading=get_grading(),
+        grading=grading,
     )
     absolute_source_path: Path = args.source_path.resolve()
     quiz.import_file_or_files(
@@ -96,7 +92,8 @@ Please press Enter to open the login page..."""
                 f"{wiki_domain}/Speciális:TömegesFeltöltés/moodle-to-vikwikiquiz"
             )
             input("Please press Enter if you're done with uploading...")
-            remove_uploaded_files(upload_directory)
+            if upload_directory:
+                remove_uploaded_files(upload_directory)
             clear_terminal()
             print("Great! I've deleted the uploaded files from your disk.\n")
         case StateOfIllustrations.YesButUnavailable:
