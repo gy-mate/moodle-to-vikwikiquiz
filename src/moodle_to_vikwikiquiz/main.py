@@ -101,6 +101,7 @@ Please press Enter to open the login page..."""
             pass
     wikitext_instructions += """
 • töröld ezt a kommentet
+• kattints a 'Lap mentése' gombra
 -->"""
     parameters_for_opening_edit = {
         "action": "edit",
