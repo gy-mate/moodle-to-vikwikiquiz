@@ -266,7 +266,7 @@ def get_element_illustration(
         illustration_url_parsed = illustration_url_parsed._replace(query="")
         illustration_url_string = illustration_url_parsed.geturl()
         illustration_path_string = unquote(illustration_url_string)
-        illustration_path = Path(illustration_path_string).resolve()
+        illustration_path = Path(illustration_path_string)
         original_file_path_string = os.path.join(current_folder, illustration_path)
         original_file_path = Path(original_file_path_string)
         extension = original_file_path.suffix
