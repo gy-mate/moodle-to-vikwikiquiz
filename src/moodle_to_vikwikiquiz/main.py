@@ -95,6 +95,7 @@ Please press Enter to open the login page..."""
             if upload_directory:
                 remove_uploaded_files(upload_directory)
             clear_terminal()
+
             print("Great! I've deleted the uploaded files from your disk.\n")
         case StateOfIllustrations.YesButUnavailable:
             wikitext_instructions += """
@@ -119,6 +120,7 @@ Please press Enter to open the login page..."""
         "preloadparams[]": wikitext_instructions,
     }
     clear_terminal()
+
     create_article(
         args, parameters_for_opening_edit, quiz_title, quiz_wikitext, wiki_domain
     )

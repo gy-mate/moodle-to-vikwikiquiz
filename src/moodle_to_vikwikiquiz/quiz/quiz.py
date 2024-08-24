@@ -197,7 +197,6 @@ class Quiz:
                 answer, answer_text, grade, maximum_points, correct_answers
             )
             answers_to_add.add(Answer(answer_text, is_correct, illustration))
-
             i += 1
         return answers_to_add, id_of_correct_answers, all_correct_answers_known
 
