@@ -1,6 +1,6 @@
 # 🎓 moodle-to-vikwikiquiz
 
-![Lines of code](https://img.shields.io/badge/lines_of_code-600+-blue)
+![Lines of code](https://img.shields.io/badge/lines_of_code-900+-blue)
 [![Build status](https://scrutinizer-ci.com/g/gy-mate/moodle-to-vikwikiquiz/badges/build.png?b=main)](https://scrutinizer-ci.com/g/gy-mate/moodle-to-vikwikiquiz/build-status/main)
 [![Code quality](https://img.shields.io/scrutinizer/quality/g/gy-mate/moodle-to-vikwikiquiz/main)](https://scrutinizer-ci.com/g/gy-mate/moodle-to-vikwikiquiz/)
 [![Type hinting used](https://img.shields.io/badge/type_hinting-used-brightgreen)](https://docs.python.org/3/library/typing.html)
@@ -32,6 +32,12 @@ A CLI for converting graded [Moodle quizzes](https://docs.moodle.org/404/en/Quiz
 ### 🛠️ Executable `zipapp`
 
 1. Download the `.pyz` file of the latest release from [here](https://github.com/gy-mate/moodle-to-vikwikiquiz/releases/latest).
+1. _If using Linux: run the following command in the terminal:_
+
+    ```bash
+    chmod +x moodle-to-vikwikiquiz_x.x.x.pyz
+    ```
+    
 1. Run the following command in the terminal:
 
     ```bash
@@ -58,14 +64,15 @@ This includes uploading all images and adding their filenames to the quiz manual
 ### 📋 Features
 
 * Imports multiple HTML files at once (recursively, if desired)
-* Can open an existing article or create a new one on [vik.wiki](https://vik.wiki/) with the edit summary pre-filled
-* Copies the generated wikitext to the clipboard
 * Supports true or false, single and multiple choice questions
-* Deduplicates questions with the same text
-* Asks for correct answers if it can't be determined from a graded question
-* Adds the only remaining correct answer automatically if it can be determined from the grade
+* Opens an existing article or creates a new one on [vik.wiki](https://vik.wiki/) with the edit summary pre-filled
 * Formats LaTeX equations as wikitext
-* Creates placeholders for illustrations
+* Adds the only remaining correct answer automatically if it can be determined from the grade
+* Asks for correct answers if it can't be determined from a graded question
+* Deduplicates questions with the same text
+* Prepares illustrations for batch upload
+    * If they are unavailable: creates placeholders for them
+* Copies the generated wikitext to the clipboard
 
 
 ### ⏫ Updating
@@ -97,6 +104,17 @@ If you want this to run automatically, create a cron job:
 
 
 ## 🧑‍💻 Development
+
+### ⌨️ Developing
+
+After you make changes to the Python codebase, please check whether the supported minimum Python version has changed. 
+Run the following command in the terminal:
+
+```bash
+vermin --backport argparse --backport enum --backport typing_extensions --eval-annotations .
+```
+
+If it has changed, update [`pyproject.toml`](pyproject.toml) accordingly.
 
 ### 🏗️ Building
 
