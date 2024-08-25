@@ -14,29 +14,13 @@ import shutil
 # noinspection PyUnresolvedReferences
 from bs4 import BeautifulSoup, Tag
 
-# noinspection PyPackages
 from .questions.answer import Answer  # type: ignore
-
-# noinspection PyPackages
-# future: report false positive to mypy developers
 from .grading_types import GradingType  # type: ignore
-
-# noinspection PyPackages
 from .illustrations.illustration import Illustration  # type: ignore
-
-# noinspection PyPackages
 from .illustrations.state_of_illustrations import StateOfIllustrations  # type: ignore
-
-# noinspection PyPackages
 from .questions.question_types import QuestionType  # type: ignore
-
-# noinspection PyPackages
 from .quiz_helpers import *  # type: ignore
-
-# noinspection PyPackages
 from .questions.question import Question  # type: ignore
-
-# noinspection PyPackages
 from .quiz_element import QuizElement  # type: ignore
 
 

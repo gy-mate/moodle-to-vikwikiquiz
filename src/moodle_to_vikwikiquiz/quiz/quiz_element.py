@@ -1,4 +1,3 @@
-# noinspection PyPackages
 from .illustrations.illustration import Illustration  # type: ignore
 
 

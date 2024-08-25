@@ -1,7 +1,6 @@
 from pathlib import Path
 import re
 
-# noinspection PyPackages
 from .state_of_illustrations import StateOfIllustrations  # type: ignore
 
 

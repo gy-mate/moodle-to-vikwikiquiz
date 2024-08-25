@@ -1,22 +1,10 @@
 from typing_extensions import override
 
-# noinspection PyPackages
 from .answer import Answer  # type: ignore
-
-# noinspection PyPackages
 from ..grading_types import GradingType  # type: ignore
-
-# noinspection PyPackages
 from ..illustrations.illustration import Illustration  # type: ignore
-
-# noinspection PyPackages
 from ..quiz_element import QuizElement  # type: ignore
-
-# noinspection PyPackages
 from ..illustrations.state_of_illustrations import StateOfIllustrations  # type: ignore
-
-# noinspection PyPackages
-# future: report false positive to mypy developers
 from .question_types import QuestionType  # type: ignore
 
 

@@ -10,24 +10,11 @@ from bs4 import Tag
 from plum import dispatch
 from pylatexenc.latexencode import unicode_to_latex  # type: ignore
 
-# noinspection PyPackages
 from .illustrations.illustration import Illustration  # type: ignore
-
-# noinspection PyPackages
 from .questions.answer import Answer  # type: ignore
-
-# noinspection PyPackages
 from .quiz_element import QuizElement  # type: ignore
-
-# future: report false positive to JetBrains developers
-# noinspection PyPackages
 from .illustrations.state_of_illustrations import StateOfIllustrations  # type: ignore
-
-# future: report false positive to JetBrains developers
-# noinspection PyPackages
 from .questions.question import Question  # type: ignore
-
-# noinspection PyPackages
 from .questions.question_types import QuestionType  # type: ignore
 
 
