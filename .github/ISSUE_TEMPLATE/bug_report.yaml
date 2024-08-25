@@ -15,10 +15,19 @@ body:
   - type: input
     id: app_version
     attributes:
-      label: Version
+      label: App version
       description: |
         Which version of `moodle-to-vikwikiquiz` are you using?
         *If you installed it via `pipx`, you can check the version by running `pipx list` in the terminal.*
+    validations:
+      required: true
+  - type: input
+    id: python_version
+    attributes:
+      label: Python version
+      description: |
+        Which Python version do you have installed?
+        *You can check this by running `python3 --version` in the terminal.*
     validations:
       required: true
   - type: textarea
