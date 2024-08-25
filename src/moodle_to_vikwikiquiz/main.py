@@ -251,6 +251,9 @@ def create_article(
             return open_article_paste_text(args, quiz_wikitext, url)
         else:
             open_article(args, parameters_for_opening_edit, url)
+    else:
+        del parameters_for_opening_edit["preload"]
+        del parameters_for_opening_edit["preloadparams[]"]
     pyperclip.copy(quiz_wikitext)
     print("The wikitext of the quiz has been copied to the clipboard!")
     url = f"{wiki_domain}/{quote(quiz_title)}?{urlencode(parameters_for_opening_edit)}"
@@ -259,7 +262,8 @@ def create_article(
             f"""
 The existing article will now be opened for editing. After that, please...
 • scroll to the bottom of the wikitext in the editor
-• paste the content of the clipboard in the second line below the existing wikitext
+• add a new line
+• paste the content of the clipboard in that line
 • click on the 'Előnézet megtekintése' button ({wiki_modifier_keys[operating_system]}-{wiki_editor_keys["Show preview"]})
 • correct the spelling and formatting (if necessary), especially the formulas
 • click on the 'Lap mentése' button ({wiki_modifier_keys[operating_system]}-{wiki_editor_keys["Publish page"]})"""
