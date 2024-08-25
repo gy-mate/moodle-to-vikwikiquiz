@@ -32,15 +32,10 @@ A CLI for converting graded [Moodle quizzes](https://docs.moodle.org/404/en/Quiz
 ### 🛠️ Executable `zipapp`
 
 1. Download the `.pyz` file of the latest release from [here](https://github.com/gy-mate/moodle-to-vikwikiquiz/releases/latest).
-1. _If using Linux: run the following command in the terminal:_
+1. Run the following commands in the terminal:
 
     ```bash
     chmod +x moodle-to-vikwikiquiz_x.x.x.pyz
-    ```
-    
-1. Run the following command in the terminal:
-
-    ```bash
     ./moodle-to-vikwikiquiz_x.x.x.pyz [parameters]
     ```
 
