@@ -59,10 +59,20 @@ def move_illustration_to_upload_folder(
 
 class Quiz:
     def __init__(
-        self, parent_article: str, title: str, grading: GradingType | None = None
+        self,
+        title: str,
+        parent_article: str | None = None,
+        grading: GradingType | None = None,
     ):
-        self.parent_article = parent_article
+        assert isinstance(title, str)
         self.title = title
+
+        if parent_article:
+            assert isinstance(parent_article, str)
+        self.parent_article = parent_article
+
+        if grading:
+            assert isinstance(grading, GradingType)
         self.grading = grading
 
         self.questions: set[Question] = set()

@@ -23,12 +23,14 @@ def main() -> None:
 
     quiz_title = get_desired_name_of_quiz(args.new)
     if args.new:
+        parent_article = get_name_of_parent_article()
         grading = get_grading()
     else:
+        parent_article = None
         grading = None
     quiz = Quiz(
-        parent_article=get_name_of_parent_article(),
         title=quiz_title,
+        parent_article=parent_article,
         grading=grading,
     )
     absolute_source_path: Path = args.source_path.resolve()
