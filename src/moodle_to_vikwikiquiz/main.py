@@ -70,15 +70,18 @@ Please press Enter to open the login page..."""
     match quiz.state_of_illustrations:
         case StateOfIllustrations.YesAndAvailable:
             upload_directory = quiz.get_illustrations_ready_for_upload()
-            if operating_system == "Darwin":
-                pyperclip.copy(str(upload_directory))
+            go_to_folder_keyboard_shortcuts = {
+                "Darwin": "Command-Shift-G",
+                "Linux": "Ctrl-L",
+            }
             print(
                 f"""The batch upload page of the wiki will now be opened. After that, please...
 • click on 'Fájlok kiválasztása...'"""
             )
-            if operating_system == "Darwin":
+            if operating_system == "Darwin" or operating_system == "Linux":
+                pyperclip.copy(str(upload_directory))
                 print(
-                    """    • press Command–Shift–G
+                    f"""    • press {go_to_folder_keyboard_shortcuts[operating_system]}
         • paste the content of the clipboard
         • press Enter"""
                 )
