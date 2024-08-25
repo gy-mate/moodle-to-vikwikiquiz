@@ -92,7 +92,7 @@ Please press Enter to open the login page..."""
     • click on 'Upload'
 • return here."""
             )
-            input("Please press Enter then follow these instructions...")
+            input("\nPlease press Enter then follow these instructions...")
             webbrowser.open_new_tab(
                 f"{wiki_domain}/Speciális:TömegesFeltöltés/moodle-to-vikwikiquiz"
             )
@@ -260,7 +260,7 @@ def create_article(
         del parameters_for_opening_edit["preload"]
         del parameters_for_opening_edit["preloadparams[]"]
     pyperclip.copy(quiz_wikitext)
-    print("The wikitext of the quiz has been copied to the clipboard!")
+    print("\nThe wikitext of the quiz has been copied to the clipboard!")
     url = f"{wiki_domain}/{quote(quiz_title)}?{urlencode(parameters_for_opening_edit)}"
     if not args.new:
         print(
@@ -276,10 +276,10 @@ The existing article will now be opened for editing. After that, please...
         input("\nPlease press Enter then follow these instructions...")
     webbrowser.open_new_tab(url)
     print(
-        "\nThe edit page of the quiz article has been opened in your browser!", end=""
+        "\nThe edit page of the quiz article has been opened in your browser!", end=" "
     )
     if args.new:
-        print(" Please follow the instructions there.")
+        print("Please follow the instructions there.")
 
 
 def open_article_paste_text(args: Namespace, quiz_wikitext: str, url: str) -> None:
