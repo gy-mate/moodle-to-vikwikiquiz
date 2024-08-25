@@ -10,10 +10,10 @@ import webbrowser
 import pyperclip  # type: ignore
 from send2trash import send2trash  # type: ignore
 
-from quiz.illustrations.state_of_illustrations import StateOfIllustrations  # type: ignore
-from quiz.grading_types import GradingType  # type: ignore
-from quiz.quiz import Quiz  # type: ignore
-from quiz.quiz_helpers import clear_terminal  # type: ignore
+from .quiz.illustrations.state_of_illustrations import StateOfIllustrations  # type: ignore
+from .quiz.grading_types import GradingType  # type: ignore
+from .quiz.quiz import Quiz  # type: ignore
+from .quiz.quiz_helpers import clear_terminal  # type: ignore
 
 
 def main() -> None:
