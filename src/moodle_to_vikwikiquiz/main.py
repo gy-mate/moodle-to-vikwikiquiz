@@ -20,7 +20,9 @@ from .quiz.quiz_helpers import clear_terminal  # type: ignore
 def main() -> None:
     # future: remove the conditional below when https://github.com/linkedin/shiv/issues/268 is fixed
     if version_info < (3, 12):
-        raise SystemError("This app requires Python 3.12 or later. Please upgrade it from https://www.python.org/downloads/!")
+        raise SystemError(
+            "This app requires Python 3.12 or later. Please upgrade it from https://www.python.org/downloads/!"
+        )
 
     args = parse_arguments()
     configure_logging(args.verbose)
