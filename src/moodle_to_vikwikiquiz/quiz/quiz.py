@@ -47,7 +47,7 @@ class Quiz:
         title: str,
         parent_article: str | None = None,
         grading: GradingType | None = None,
-    ):
+    ) -> None:
         assert isinstance(title, str)
         self.title = title
 

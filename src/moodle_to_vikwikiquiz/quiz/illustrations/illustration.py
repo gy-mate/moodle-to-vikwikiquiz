@@ -4,7 +4,7 @@ import re
 from .state_of_illustrations import StateOfIllustrations  # type: ignore
 
 
-def remove_wiki_unsafe_characters(upload_filename):
+def remove_wiki_unsafe_characters(upload_filename) -> str:
     upload_filename = re.sub(r"[{\[]", "(", upload_filename)
     upload_filename = re.sub(r"[}\]]", ")", upload_filename)
     return upload_filename

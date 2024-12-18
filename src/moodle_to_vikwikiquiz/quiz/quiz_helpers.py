@@ -313,7 +313,7 @@ def truncate_filename(element_text: str, extension: str, quiz_name: str) -> str:
     return upload_filename
 
 
-def filename_too_long(upload_filename):
+def filename_too_long(upload_filename) -> bool:
     return len(upload_filename) > 100
 
 
