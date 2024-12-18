@@ -13,7 +13,7 @@
 
 ## 📖 About
 
-A CLI for converting graded [Moodle quizzes](https://docs.moodle.org/404/en/Quiz_activity) saved as HTML files to a [vik.viki quiz](https://vik.wiki/Segítség:Kvíz) wikitext.
+A CLI for converting graded and downloaded [Moodle quizzes](https://docs.moodle.org/404/en/Quiz_activity) to a [vik.viki quiz](https://vik.wiki/Segítség:Kvíz) wikitext.
 
 
 ## 📥 Installation
@@ -70,6 +70,28 @@ This includes uploading all images and adding their filenames to the quiz manual
 * Prepares illustrations for batch upload
     * If they are unavailable: creates placeholders for them
 * Copies the generated wikitext to the clipboard
+
+
+### 🏫 Compatibility
+
+| file format   | tested                    | can it be imported? |
+|---------------|---------------------------|---------------------|
+| `.html`       | ✅                         | ✅                   |
+| `.webarchive` | yes, except illustrations | ✅                   |
+| `.mhtml`      | ❌                         | maybe               |
+| all others    | ❌                         | maybe               |
+
+| Moodle instance                       | tested | can it import a quiz from there? |
+|---------------------------------------|--------|----------------------------------|
+| [BME VIK](https://edu.vik.bme.hu)     | ✅      | ✅                                |
+| [BME VIK HIT](https://www.hit.bme.hu) | ❌      | ❌                                |
+| [BME GTK](https://edu.gtk.bme.hu)     | ✅      | ✅                                |
+
+| Moodle language | is it understood by the app? |
+|-----------------|------------------------------|
+| Hungarian       | ✅                            |
+| English         | ✅                            |
+| German          | ❌                            |
 
 
 ### ⏫ Updating
