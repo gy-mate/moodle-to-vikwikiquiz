@@ -1,3 +1,5 @@
+from random import random
+
 from typing_extensions import override
 
 from .answer import Answer  # type: ignore
@@ -59,8 +61,19 @@ class Question(QuizElement):
         return text
 
     def __hash__(self) -> int:
-        return hash(
-            frozenset(
+        if self.question_text_is_not_unique():
+            to_hash = frozenset(
+                (
+                    self.q_type,
+                    self.text,
+                    frozenset(self.answers),
+                    self.grading,
+                    self.illustration,
+                    hash(random()),
+                )
+            )
+        else:
+            to_hash = frozenset(
                 (
                     self.q_type,
                     self.text,
@@ -69,15 +82,28 @@ class Question(QuizElement):
                     self.illustration,
                 )
             )
+        return hash(to_hash)
+
+    def question_text_is_not_unique(self) -> bool:
+        question_text = self.text.rstrip("?").lower()
+        return (
+            "melyik állítás igaz" == question_text
+            or "melyik állítás hamis" == question_text
         )
 
     def __eq__(self, other: object) -> bool:
-        if not isinstance(other, Question):
+        if isinstance(other, Question):
+            if self.question_text_is_not_unique():
+                return False
+            elif (
+                self.q_type != other.q_type
+                or self.text != other.text
+                or self.answers != other.answers
+                or self.grading != other.grading
+                or self.illustration != other.illustration
+            ):
+                return False
+            else:
+                return True
+        else:
             return False
-        return (
-            self.q_type == other.q_type
-            and self.text == other.text
-            and self.answers == other.answers
-            and self.grading == other.grading
-            and self.illustration == other.illustration
-        )

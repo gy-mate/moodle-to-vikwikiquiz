@@ -353,8 +353,10 @@ def format_latex_as_wikitext(latex: str) -> str:
     return wikitext
 
 
-def question_already_exists(existing_question: Question, question_text: str) -> bool:
-    return existing_question.text == question_text
+def question_already_exists(
+    existing_question: Question, new_question: Question
+) -> bool:
+    return existing_question == new_question
 
 
 def add_answers_to_existing_question(

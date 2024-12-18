@@ -133,7 +133,7 @@ class Quiz:
                 question_type,
                 os.path.basename(file_path),
             )
-        self.add_question_no_duplicates(
+        self.add_question_if_new(
             question_type,
             question_text,
             self.state_of_illustrations,
@@ -194,7 +194,7 @@ class Quiz:
             i += 1
         return answers_to_add, id_of_correct_answers, all_correct_answers_known
 
-    def add_question_no_duplicates(
+    def add_question_if_new(
         self,
         question_type: QuestionType,
         question_text: str,
@@ -203,7 +203,16 @@ class Quiz:
         answers: set[Answer],
     ) -> None:
         for existing_question in self.questions:
-            if question_already_exists(existing_question, question_text):  # type: ignore
+            if question_already_exists(  # type: ignore
+                existing_question,
+                Question(
+                    q_type=question_type,
+                    text=question_text,
+                    state_of_illustrations=has_illustration,
+                    answers=answers,
+                    illustration=illustration,
+                ),
+            ):
                 add_answers_to_existing_question(  # type: ignore
                     answers, existing_question
                 )
