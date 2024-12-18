@@ -384,5 +384,5 @@ def get_if_illustrations_available(directory: Path, file: Path) -> StateOfIllust
         return StateOfIllustrations.YesButUnavailable
 
 
-def clear_terminal():
+def clear_terminal() -> None:
     os.system("clear||cls")
