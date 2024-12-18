@@ -42,6 +42,29 @@ def main() -> None:
     log_in_to_wiki(wiki_domain)
 
     print("Great!\n")
+    (
+        operating_system,
+        parameters_for_opening_edit,
+        wiki_editor_keys,
+        wiki_modifier_keys,
+    ) = get_article_instructions(quiz, wiki_domain)
+
+    create_article(
+        args,
+        parameters_for_opening_edit,
+        quiz_title,
+        str(quiz),
+        wiki_domain,
+        wiki_modifier_keys,
+        wiki_editor_keys,
+        operating_system,
+    )
+    logging.getLogger(__name__).debug("Program finished!")
+
+
+def get_article_instructions(
+    quiz: Quiz, wiki_domain: str
+) -> tuple[str, dict[str, str], dict[str, str], dict[str, str]]:
     wikitext_instructions = """
 <!-- További teendőid (ebben a sorrendben):
 • e komment feletti sorba illeszd be a vágólapodra másolt tartalmat
@@ -114,16 +137,11 @@ def main() -> None:
         "preloadparams[]": wikitext_instructions,
     }
     clear_terminal()
-
-    create_article(
-        args,
-        parameters_for_opening_edit,
-        quiz_title,
-        quiz_wikitext,
-        wiki_domain,
-        wiki_modifier_keys,
-        wiki_editor_keys,
+    return (
         operating_system,
+        parameters_for_opening_edit,
+        wiki_editor_keys,
+        wiki_modifier_keys,
     )
 
 
