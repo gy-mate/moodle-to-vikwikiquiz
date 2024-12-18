@@ -58,17 +58,21 @@ class Quiz:
         if grading:
             assert isinstance(grading, GradingType)
         self.grading = grading
+        self.new = True if grading else False
 
         self.questions: set[Question] = set()
         self.state_of_illustrations = StateOfIllustrations.Nil
 
     def __str__(self) -> str:
         text = ""
-        if self.grading:
-            text += f"""{{{{Vissza | {self.parent_article}}}}}{{{{Kvízoldal
+        if self.new:
+            text += f"""{{{{Vissza | {self.parent_article}}}}}
+{{{{moodle-to-vikwikiquiz reklám}}}}
+
+{{{{Kvízoldal
 | cím = {self.title}
 | pontozás = {self.grading.value}
-}}}}"""
+}}}}\n"""
         for question in self.questions:
             text += f"\n\n\n{question}"
         text += "\n"
