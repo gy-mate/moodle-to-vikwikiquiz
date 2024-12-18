@@ -1,15 +1,14 @@
-import contextlib
+from contextlib import suppress
 
 # future: report false positive to JetBrains developers
 # noinspection PyUnresolvedReferences
-import os
+from os import getcwd, makedirs, path, rename, walk
 
 # noinspection PyUnresolvedReferences
 from pathlib import Path
 
-# noinspection PyUnresolvedReferences
-import re
-import shutil
+from re import compile
+from shutil import copy
 
 # noinspection PyUnresolvedReferences
 from bs4 import BeautifulSoup, Tag
@@ -28,17 +27,13 @@ def move_illustration_to_upload_folder(
     quiz_element: QuizElement, upload_directory: Path
 ) -> None:
     if illustration := quiz_element.illustration:
-        if not os.path.exists(upload_directory):
-            os.makedirs(upload_directory)
+        if not path.exists(upload_directory):
+            makedirs(upload_directory)
         original_file_path = illustration.original_file_path.resolve()
-        shutil.copy(original_file_path, upload_directory)
-        current_file_path = Path(
-            os.path.join(upload_directory, illustration.original_file_path.name)
-        )
-        new_file_path = os.path.join(
-            current_file_path.parent, illustration.upload_filename
-        )
-        os.rename(current_file_path, new_file_path)
+        copy(original_file_path, upload_directory)
+        current_file_path = upload_directory / illustration.original_file_path.name
+        new_file_path = current_file_path.parent / illustration.upload_filename
+        rename(current_file_path, new_file_path)
 
 
 class Quiz:
@@ -78,31 +73,31 @@ class Quiz:
         text += "\n"
         return text
 
-    def import_file_or_files(self, path: Path, recursively: bool) -> None:
-        if not os.path.exists(path):
+    def import_file_or_files(self, source_path: Path, recursively: bool) -> None:
+        if not path.exists(source_path):
             raise FileNotFoundError(f"'{path}' does not exist!")
-        elif os.path.isfile(path):
-            self.import_questions(path, path.parent)
+        elif path.isfile(source_path):
+            self.import_questions(source_path, source_path.parent)
         else:
-            self.import_files(path, recursively)
+            self.import_files(source_path, recursively)
 
         if not self.questions:
             raise ValueError(f"No questions were imported from '{path}'!")
 
-    def import_files(self, path: Path, recursively: bool) -> None:
-        for directory, subdirectories, files in os.walk(path):
+    def import_files(self, source_path: Path, recursively: bool) -> None:
+        for directory, subdirectories, files in walk(source_path):
             for file in files:
                 self.import_questions(Path(file), Path(directory))
             if not recursively:
                 break
 
     def import_questions(self, file: Path, directory: Path) -> None:
-        file_path = os.path.join(directory, file)
+        file_path = path.join(directory, file)
         with open(file_path, "rb") as source_file:
             webpage = BeautifulSoup(source_file, "html.parser")
 
             accepted_questions = webpage.find_all(
-                "div", class_=re.compile(r"multichoice|calculatedmulti|truefalse")
+                "div", class_=compile(r"multichoice|calculatedmulti|truefalse")
             )
             for question in accepted_questions:
                 self.import_question(question, Path(file_path), directory, file)
@@ -117,7 +112,7 @@ class Quiz:
     ) -> None:
         if self.state_of_illustrations == StateOfIllustrations.Nil:
             self.state_of_illustrations = get_if_has_illustration(question, directory, file)  # type: ignore
-        with contextlib.suppress(NotImplementedError):
+        with suppress(NotImplementedError):
             question_type = get_question_type(question)  # type: ignore
         correctly_answered, grade, maximum_points = get_grading_of_question(question)  # type: ignore
         # noinspection PyTypeChecker
@@ -138,7 +133,7 @@ class Quiz:
                 maximum_points,
                 question_text,
                 question_type,
-                os.path.basename(file_path),
+                path.basename(file_path),
             )
         self.add_question_if_new(
             question_type,
@@ -257,13 +252,13 @@ class Quiz:
             )
 
     def get_illustrations_ready_for_upload(self) -> Path | None:
-        upload_directory = Path(os.path.join(os.getcwd(), "to_upload"))
+        upload_directory = Path(path.join(getcwd(), "to_upload"))
         for question in self.questions:
             move_illustration_to_upload_folder(question, upload_directory)
             for answer in question.answers:
                 if answer.illustration:
                     move_illustration_to_upload_folder(answer, upload_directory)
-        if os.path.exists(upload_directory):
+        if path.exists(upload_directory):
             return upload_directory
         else:
             return None

@@ -1,8 +1,8 @@
-import os
+from os import path, system
 from pathlib import Path
-import re
+from re import findall, sub
 from urllib.parse import unquote, urlparse
-import uuid
+from uuid import uuid4
 
 from bs4 import Tag
 
@@ -34,7 +34,7 @@ def get_grading_of_question(question: Tag) -> tuple[bool, float | None, float]:
     assert isinstance(found_tag, Tag)
 
     grading_text = found_tag.text
-    numbers_in_capture_groups: list[tuple[str, str]] = re.findall(
+    numbers_in_capture_groups: list[tuple[str, str]] = findall(
         r"(\d+)([.,]\d+)?", grading_text
     )
     numbers = [
@@ -158,7 +158,7 @@ def prettify(text: str) -> str:
 
 def strip_whitespaces(text: str) -> str:
     text = text.strip("., \n")
-    text = re.sub(r" \n|\r\n|\s{2}", " ", text)
+    text = sub(r" \n|\r\n|\s{2}", " ", text)
     return text
 
 
@@ -249,7 +249,7 @@ def get_question_data(
 
 def get_question_text(found_tag: Tag) -> str:
     assert isinstance(found_tag, Tag)
-    text = re.sub(r"\s?\r?\n\s?", " ", found_tag.text)
+    text = sub(r"\s?\r?\n\s?", " ", found_tag.text)
     text = text.rstrip()
     text = format_latex_as_wikitext(text)
     return text
@@ -273,7 +273,7 @@ def get_element_illustration(
         illustration_url_string = illustration_url_parsed.geturl()
         illustration_path_string = unquote(illustration_url_string)
         illustration_path = Path(illustration_path_string)
-        original_file_path_string = os.path.join(current_folder, illustration_path)
+        original_file_path_string = current_folder / illustration_path
         original_file_path = Path(original_file_path_string)
         extension = original_file_path.suffix
 
@@ -341,7 +341,7 @@ def create_upload_filename(
 ) -> str:
     upload_filename = f'"{name_of_illustration}"'
     if make_unique:
-        random_hash = uuid.uuid4().hex[:6]
+        random_hash = uuid4().hex[:6]
         upload_filename += f" – válaszlehetőség {random_hash}"
     upload_filename += f" ({quiz_name}){extension}"
     return upload_filename
@@ -358,17 +358,17 @@ def format_latex_as_wikitext(latex: Tag) -> str:
 
 @dispatch  # type: ignore
 def format_latex_as_wikitext(latex: str) -> str:
-    if re.findall(latex_start_anchored := r"^\s?\\?\\\(\s?(\s?\\(?=\\))?", latex):
-        wikitext = re.sub(latex_start_anchored, "<math>", latex)
+    if findall(latex_start_anchored := r"^\s?\\?\\\(\s?(\s?\\(?=\\))?", latex):
+        wikitext = sub(latex_start_anchored, "<math>", latex)
     else:
         latex_start = latex_start_anchored.replace(r"^\s?", "")
-        wikitext = re.sub(latex_start, "<math>", latex)
+        wikitext = sub(latex_start, "<math>", latex)
 
-    if re.findall(latex_end_anchored := r"\s*\\?\\\)\s?$", wikitext):
-        wikitext = re.sub(latex_end_anchored, "</math>", wikitext)
+    if findall(latex_end_anchored := r"\s*\\?\\\)\s?$", wikitext):
+        wikitext = sub(latex_end_anchored, "</math>", wikitext)
     else:
         latex_end = latex_end_anchored.replace(r"\s?$", "")
-        wikitext = re.sub(latex_end, "</math>", wikitext)
+        wikitext = sub(latex_end, "</math>", wikitext)
     return wikitext
 
 
@@ -396,12 +396,12 @@ def get_if_has_illustration(
 
 
 def get_if_illustrations_available(directory: Path, file: Path) -> StateOfIllustrations:
-    asset_folder = os.path.join(directory, f"{file.stem}_files")
-    if os.path.exists(asset_folder):
+    asset_folder = directory / f"{file.stem}_files"
+    if path.exists(asset_folder):
         return StateOfIllustrations.YesAndAvailable
     else:
         return StateOfIllustrations.YesButUnavailable
 
 
 def clear_terminal() -> None:
-    os.system("clear||cls")
+    system("clear||cls")

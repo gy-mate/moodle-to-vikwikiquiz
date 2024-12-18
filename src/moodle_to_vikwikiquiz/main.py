@@ -2,12 +2,13 @@ from argparse import ArgumentParser, Namespace
 import logging
 from pathlib import Path
 from platform import system
-import time
+from sys import version_info
+from time import sleep
 from urllib.parse import quote, urlencode
-import webbrowser
+from webbrowser import open_new_tab
 
 # future: delete the comment below when stubs for the package below are available
-import pyperclip  # type: ignore
+from pyperclip import copy  # type: ignore
 from send2trash import send2trash  # type: ignore
 
 from .quiz.illustrations.state_of_illustrations import StateOfIllustrations  # type: ignore
@@ -35,7 +36,7 @@ def main() -> None:
     )
     absolute_source_path: Path = args.source_path.resolve()
     quiz.import_file_or_files(
-        path=absolute_source_path,
+        source_path=absolute_source_path,
         recursively=args.recursive,
     )
     wiki_domain = "https://vik.wiki"
@@ -91,7 +92,7 @@ def get_article_instructions(
 • click on 'Fájlok kiválasztása...'"""
             )
             if operating_system == "Darwin" or operating_system == "Linux":
-                pyperclip.copy(str(upload_directory))
+                copy(str(upload_directory))
                 print(
                     f"""    • press {go_to_folder_keyboard_shortcuts[operating_system]}
         • paste the content of the clipboard
@@ -105,7 +106,7 @@ def get_article_instructions(
 • return here."""
             )
             input("\nPlease press Enter then follow these instructions...")
-            webbrowser.open_new_tab(
+            open_new_tab(
                 f"{wiki_domain}/Speciális:TömegesFeltöltés/moodle-to-vikwikiquiz"
             )
             input("Please press Enter if you're done with uploading...")
@@ -153,7 +154,7 @@ def log_in_to_wiki(wiki_domain: str) -> None:
 
 Please press Enter to open the login page..."""
     )
-    webbrowser.open_new_tab(f"{wiki_domain}/index.php?title=Speciális:Belépés")
+    open_new_tab(f"{wiki_domain}/index.php?title=Speciális:Belépés")
     input("Please press Enter if you've logged in...")
     clear_terminal()
 
@@ -280,7 +281,7 @@ def create_article(
     else:
         del parameters_for_opening_edit["preload"]
         del parameters_for_opening_edit["preloadparams[]"]
-    pyperclip.copy(quiz_wikitext)
+    copy(quiz_wikitext)
     print("\nThe wikitext of the quiz has been copied to the clipboard!")
     url = f"{wiki_domain}/{quote(quiz_title)}?{urlencode(parameters_for_opening_edit)}"
     if not args.new:
@@ -295,7 +296,7 @@ The existing article will now be opened for editing. After that, please...
 • click on the 'Lap mentése' button ({wiki_modifier_keys[operating_system]}-{wiki_editor_keys["Publish page"]})"""
         )
         input("\nPlease press Enter then follow these instructions...")
-    webbrowser.open_new_tab(url)
+    open_new_tab(url)
     print(
         "\nThe edit page of the quiz article has been opened in your browser!", end=" "
     )
@@ -304,16 +305,16 @@ The existing article will now be opened for editing. After that, please...
 
 
 def open_article_paste_text(args: Namespace, quiz_wikitext: str, url: str) -> None:
-    pyperclip.copy(quiz_wikitext)
+    copy(quiz_wikitext)
     print(
         "\nThe wikitext of the quiz has been copied to the clipboard! "
         "This will be overwritten but you may recall it later if you use an app like Pastebot."
     )
     wait_for_pastebot_to_recognize_copy()
     if args.verbose:
-        pyperclip.copy(url)
+        copy(url)
         print("The URL has been copied to the clipboard!")
-    webbrowser.open_new_tab(url)
+    open_new_tab(url)
     print(
         "\nThe edit page of the new quiz article has been opened in your browser with the wikitext pre-filled! "
         "Please upload illustrations manually, if there are any."
@@ -329,7 +330,7 @@ def open_article(
         "because the URL would be too long for some browsers (or the server)."
     )
     if args.verbose:
-        pyperclip.copy(url)
+        copy(url)
         print(
             "\nThis URL has been copied to the clipboard! "
             "It will be overwritten but you may recall it later if you use an app like Pastebot."
@@ -342,7 +343,7 @@ def open_article(
 
 def wait_for_pastebot_to_recognize_copy() -> None:
     print("Waiting 2 seconds for Pastebot to recognize it...")
-    time.sleep(2)
+    sleep(2)
     print("...done!")
 
 
