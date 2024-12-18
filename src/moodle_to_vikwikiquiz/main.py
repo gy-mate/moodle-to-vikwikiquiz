@@ -39,18 +39,7 @@ def main() -> None:
         recursively=args.recursive,
     )
     wiki_domain = "https://vik.wiki"
-
-    input(
-        """Let's log in to the wiki! Please...
-• if you see the login page, log in
-• when you see the main page of the wiki, return here.
-
-Please press Enter to open the login page..."""
-    )
-    quiz_wikitext = str(quiz)
-    webbrowser.open_new_tab(f"{wiki_domain}/index.php?title=Speciális:Belépés")
-    input("Please press Enter if you've logged in...")
-    clear_terminal()
+    log_in_to_wiki(wiki_domain)
 
     print("Great!\n")
     wikitext_instructions = """
@@ -136,7 +125,19 @@ Please press Enter to open the login page..."""
         wiki_editor_keys,
         operating_system,
     )
-    logging.getLogger(__name__).debug("Program finished!")
+
+
+def log_in_to_wiki(wiki_domain: str) -> None:
+    input(
+        """Let's log in to the wiki! Please...
+• if you see the login page, log in
+• when you see the main page of the wiki, return here.
+
+Please press Enter to open the login page..."""
+    )
+    webbrowser.open_new_tab(f"{wiki_domain}/index.php?title=Speciális:Belépés")
+    input("Please press Enter if you've logged in...")
+    clear_terminal()
 
 
 def remove_uploaded_files(folder: Path) -> None:
