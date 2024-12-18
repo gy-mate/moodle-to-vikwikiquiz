@@ -145,7 +145,9 @@ def remove_uploaded_files(folder: Path) -> None:
 
 
 def parse_arguments() -> Namespace:
-    parser = ArgumentParser()
+    parser = ArgumentParser(
+        "Convert graded and downloaded Moodle quizzes to a vik.viki quiz wikitext."
+    )
     parser.add_argument(
         "-v", "--verbose", action="store_true", help="increase output verbosity"
     )
