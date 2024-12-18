@@ -18,7 +18,7 @@ A CLI for converting graded [Moodle quizzes](https://docs.moodle.org/404/en/Quiz
 
 ## 📥 Installation
 
-### ✨ Easy
+### 🌍 Global
 
 1. [Install `pipx`](https://pipx.pypa.io/stable/#install-pipx)
 1. _If using Linux: [follow these steps](https://github.com/asweigart/pyperclip/blob/master/docs/index.rst#not-implemented-error)._
@@ -27,9 +27,11 @@ A CLI for converting graded [Moodle quizzes](https://docs.moodle.org/404/en/Quiz
     ```bash
     pipx install moodle-to-vikwikiquiz
     ```
+   
+### 🏠 Local
 
 
-### 🛠️ Executable `zipapp`
+#### 🛠️ Executable `zipapp`
 
 1. Download the `.pyz` file of the latest release from [here](https://github.com/gy-mate/moodle-to-vikwikiquiz/releases/latest).
 1. Run the following commands in the terminal:
@@ -109,10 +111,22 @@ Run the following command in the terminal:
 vermin --backport argparse --backport enum --backport typing_extensions --eval-annotations .
 ```
 
-If it has changed, update [`pyproject.toml`](pyproject.toml) accordingly.
+If it has changed, please update [`pyproject.toml`](pyproject.toml) accordingly.
 
 ### 🏗️ Building
 
+
+- Repruducible `zipapp` (`.pyz`):
+    1. [Install `pipx`](https://pipx.pypa.io/stable/#install-pipx)
+    1. Install [`shiv`](https://github.com/linkedin/shiv):
+        ```bash
+        pipx install shiv
+        ```
+    1. Create the executable:
+        ```bash
+        shiv --entry-point moodle_to_vikwikiquiz.main:main --output-file moodle-to-vikwikiquiz.pyz --reproducible .
+        ```
+    1. _Optional: compare its hash with the one of the [latest release](https://github.com/gy-mate/moodle-to-vikwikiquiz/releases/)._
 - Wheels (`.whl`):
     1. Install `build`:
         ```bash
@@ -122,17 +136,6 @@ If it has changed, update [`pyproject.toml`](pyproject.toml) accordingly.
     1. Create the wheels:
         ```bash
         python3 -m build
-        ```
-
-- `zipapp` (`.pyz`):
-    1. [Install `pipx`](https://pipx.pypa.io/stable/#install-pipx)
-    1. Install `shiv`:
-        ```bash
-        pipx install shiv
-        ```
-    1. Create the executable:
-        ```bash
-        shiv --entry-point moodle_to_vikwikiquiz.main:main --output-file moodle-to-vikwikiquiz.pyz --reproducible .
         ```
 
 
