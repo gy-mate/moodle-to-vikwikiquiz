@@ -74,6 +74,7 @@ def get_article_instructions(
     wiki_modifier_keys = {
         "Darwin": "Control-Option",
         "Linux": "Alt-Shift",
+        "Windows": "Alt-Shift",
     }
     wiki_editor_keys = {"Show preview": "P", "Publish page": "S"}
     if operating_system == "Darwin" or operating_system == "Linux":
@@ -86,6 +87,7 @@ def get_article_instructions(
             go_to_folder_keyboard_shortcuts = {
                 "Darwin": "Command-Shift-G",
                 "Linux": "Ctrl-L",
+                "Windows": "Ctrl-L",
             }
             print(
                 f"""The batch upload page of the wiki will now be opened. After that, please...
