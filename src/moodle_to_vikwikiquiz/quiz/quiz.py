@@ -79,10 +79,13 @@ class Quiz:
         return text
 
     def import_file_or_files(self, path: Path, recursively: bool) -> None:
-        if os.path.isfile(path):
+        if not os.path.exists(path):
+            raise FileNotFoundError(f"'{path}' does not exist!")
+        elif os.path.isfile(path):
             self.import_questions(path, path.parent)
         else:
             self.import_files(path, recursively)
+
         if not self.questions:
             raise ValueError(f"No questions were imported from '{path}'!")
 
