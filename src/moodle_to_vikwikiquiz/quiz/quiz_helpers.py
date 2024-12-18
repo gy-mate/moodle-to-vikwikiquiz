@@ -165,27 +165,46 @@ def strip_whitespaces(text: str) -> str:
 def get_correct_answers_if_provided(question: Tag) -> set[str | None]:
     tag = question.find("div", class_="rightanswer")
     correct_answers: set[str | None] = set()
+
     if tag:
         assert isinstance(tag, Tag)
         hint_text = prettify(tag.text)
-        if only_correct_answer := re.findall(
-            r"(?<=The correct answer is: ).+", hint_text
-        ):
-            assert only_correct_answer
-            prettified_answer = prettify(only_correct_answer[0])
-            correct_answers.add(prettified_answer)
-        elif hint_text.find("The correct answers are: ") != -1:
-            correct_answer_tags = tag.find_all("p")
-            for correct_answer_tag in correct_answer_tags:
-                correct_answer = correct_answer_tag.text
-                correct_answers.add(prettify(correct_answer))
-        elif tag.find("img"):
+        single_correct_answer_description_translations = [
+            "A helyes válasz: ",
+            "The correct answer is: ",
+        ]
+        for (
+            correct_answer_description
+        ) in single_correct_answer_description_translations:
+            if correct_answer_description in hint_text:
+                correct_answer = hint_text.removeprefix(correct_answer_description)
+                correct_answers.add(correct_answer)
+                return correct_answers
+
+        multiple_correct_answer_description_translations = [
+            "A helyes válaszok: ",
+            "The correct answers are: ",
+        ]
+        for (
+            correct_answer_description
+        ) in multiple_correct_answer_description_translations:
+            if correct_answer_description in hint_text:
+                correct_answer_tags = tag.find_all("p")
+                for correct_answer_tag in correct_answer_tags:
+                    correct_answer = correct_answer_tag.text
+                    prettified_answer = prettify(correct_answer)
+                    correct_answers.add(prettified_answer)
+                return correct_answers
+
+        if tag.find("img"):
             pass
-        else:
-            raise NotImplementedError(
-                f"Correct answers could not be extracted from '{hint_text}'!"
-            )
-    return correct_answers
+            return correct_answers
+
+        raise NotImplementedError(
+            f"Correct answers could not be extracted from '{hint_text}'!"
+        )
+    else:
+        return correct_answers
 
 
 def answer_is_correct(
