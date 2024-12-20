@@ -13,14 +13,26 @@ from shutil import copy
 # noinspection PyUnresolvedReferences
 from bs4 import BeautifulSoup, Tag
 
-from .questions.answer import Answer  # type: ignore
 from .grading_types import GradingType  # type: ignore
 from .illustrations.illustration import Illustration  # type: ignore
 from .illustrations.state_of_illustrations import StateOfIllustrations  # type: ignore
+from .questions.answers.answer import Answer  # type: ignore
+from .questions.answers.helpers import answer_is_correct, get_correct_answers, get_correct_answers_if_provided  # type: ignore
+from .questions.helpers import (  # type: ignore
+    add_answers_to_existing_question,
+    get_element_illustration, get_grading_of_question,
+    get_if_has_illustration,
+    get_if_illustrations_available,
+    get_question_data,
+    get_question_text,
+    get_question_type,
+    question_already_exists,
+)
 from .questions.question_types import QuestionType  # type: ignore
-from .quiz_helpers import *  # type: ignore
+from .helpers import *  # type: ignore
 from .questions.question import Question  # type: ignore
 from .quiz_element import QuizElement  # type: ignore
+from ..helpers import clear_terminal  # type: ignore
 
 
 def move_illustration_to_upload_folder(

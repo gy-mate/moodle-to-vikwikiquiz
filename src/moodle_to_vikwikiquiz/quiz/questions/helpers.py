@@ -1,0 +1,236 @@
+from os import path
+from pathlib import Path
+from re import findall, sub
+from urllib.parse import unquote, urlparse
+from uuid import uuid4
+
+from bs4 import Tag
+
+# noinspection PyPackageRequirements
+from plum import dispatch
+from pylatexenc.latexencode import unicode_to_latex  # type: ignore
+
+from .question_types import QuestionType  # type: ignore
+from ..illustrations.illustration import Illustration  # type: ignore
+from ..illustrations.state_of_illustrations import StateOfIllustrations  # type: ignore
+from .answers.answer import Answer  # type: ignore
+from .question import Question  # type: ignore
+from ..quiz_element import QuizElement  # type: ignore
+
+
+def question_already_exists(
+    existing_question: Question, new_question: Question
+) -> bool:
+    return existing_question == new_question
+
+
+def add_answers_to_existing_question(
+    answers: set[Answer], existing_question: Question
+) -> None:
+    existing_question.answers.update(answers)
+
+
+def get_if_has_illustration(
+    question: Tag, directory: Path, file: Path
+) -> StateOfIllustrations:
+    if question.find("img", class_="img-responsive") or question.find(
+        "img", role="presentation"
+    ):
+        return get_if_illustrations_available(directory, file)
+    else:
+        return StateOfIllustrations.Nil
+
+
+def get_if_illustrations_available(directory: Path, file: Path) -> StateOfIllustrations:
+    asset_folder = directory / f"{file.stem}_files"
+    if path.exists(asset_folder):
+        return StateOfIllustrations.YesAndAvailable
+    else:
+        return StateOfIllustrations.YesButUnavailable
+
+
+@dispatch
+def format_latex_as_wikitext(latex: Tag) -> str:
+    wikitext = latex.text
+    mathjax = latex.find(class_="MathJax").find("span").text
+    wikitext = wikitext.replace(mathjax, "", 1)
+    wikitext = wikitext.replace(mathjax, f"<math>{unicode_to_latex(mathjax)}</math>")
+    return wikitext
+
+
+@dispatch  # type: ignore
+def format_latex_as_wikitext(latex: str) -> str:
+    if findall(latex_start_anchored := r"^\s?\\?\\\(\s?(\s?\\(?=\\))?", latex):
+        wikitext = sub(latex_start_anchored, "<math>", latex)
+    else:
+        latex_start = latex_start_anchored.replace(r"^\s?", "")
+        wikitext = sub(latex_start, "<math>", latex)
+
+    if findall(latex_end_anchored := r"\s*\\?\\\)\s?$", wikitext):
+        wikitext = sub(latex_end_anchored, "</math>", wikitext)
+    else:
+        latex_end = latex_end_anchored.replace(r"\s?$", "")
+        wikitext = sub(latex_end, "</math>", wikitext)
+    return wikitext
+
+
+def get_question_data(
+    question: Tag,
+    quiz_name: str,
+    element: QuizElement,
+    state_of_illustrations: StateOfIllustrations,
+    current_folder: Path,
+) -> tuple[str, Illustration]:
+    found_tag = question.find("div", class_="qtext")
+    assert isinstance(found_tag, Tag)
+    question_text = get_question_text(found_tag)
+    illustration = get_element_illustration(
+        found_tag,
+        question_text,
+        quiz_name,
+        element,
+        state_of_illustrations,
+        current_folder,
+    )
+    return question_text, illustration
+
+
+def get_question_text(found_tag: Tag) -> str:
+    assert isinstance(found_tag, Tag)
+    text = sub(r"\s?\r?\n\s?", " ", found_tag.text)
+    text = text.rstrip()
+    text = format_latex_as_wikitext(text)
+    return text
+
+
+def get_question_type(question: Tag) -> QuestionType:
+    if question.find("input", type="radio"):
+        return QuestionType.SingleChoice
+    elif question.find("input", type="checkbox"):
+        return QuestionType.MultipleChoice
+    else:
+        raise NotImplementedError("Question type not implemented.")
+
+
+def get_grading_of_question(question: Tag) -> tuple[bool, float | None, float]:
+    correctly_answered: bool
+
+    found_tag = question.find("div", class_="grade")
+    assert isinstance(found_tag, Tag)
+
+    grading_text = found_tag.text
+    numbers_in_capture_groups: list[tuple[str, str]] = findall(
+        r"(\d+)([.,]\d+)?", grading_text
+    )
+    numbers = [
+        whole + fraction.replace(",", ".")
+        for whole, fraction in numbers_in_capture_groups
+    ]
+    grade: float | None = None
+    match len(numbers):
+        case 1:
+            maximum_points = float(numbers[0])
+        case 2:
+            grade = float(numbers[0])
+            maximum_points = float(numbers[1])
+        case _:
+            raise NotImplementedError(
+                f"{len(numbers)} grade numbers found in '{grading_text}'!"
+            )
+    if grade == maximum_points:
+        correctly_answered = True
+    else:
+        correctly_answered = False
+    return correctly_answered, grade, maximum_points
+
+
+def get_element_illustration(
+    tag: Tag,
+    element_text: str,
+    quiz_name: str,
+    element: QuizElement,
+    state_of_illustrations: StateOfIllustrations,
+    current_folder: Path,
+    question_name: str | None = None,
+) -> Illustration | None:
+    if image := tag.find("img"):
+        assert isinstance(image, Tag)
+        illustration_url = image["src"]
+        assert isinstance(illustration_url, str)
+        illustration_url_parsed = urlparse(illustration_url)
+        illustration_url_parsed = illustration_url_parsed._replace(query="")
+        illustration_url_string = illustration_url_parsed.geturl()
+        illustration_path_string = unquote(illustration_url_string)
+        illustration_path = Path(illustration_path_string)
+        original_file_path_string = current_folder / illustration_path
+        original_file_path = Path(original_file_path_string)
+        extension = original_file_path.suffix
+
+        if element is Question:
+            illustration_size = 500
+        elif element is Answer:
+            illustration_size = 250
+        else:
+            raise ValueError(f"Unexpected QuizElement type: {element}!")
+
+        if element_text == "":
+            assert question_name
+            max_question_name_length = 15
+            if len(question_name) > max_question_name_length:
+                question_name = f"{question_name[:max_question_name_length]}…"
+            upload_filename = create_upload_filename(
+                quiz_name,
+                question_name,
+                extension,
+                make_unique=True,
+            )
+        else:
+            upload_filename = create_upload_filename(quiz_name, element_text, extension)
+            if filename_too_long(upload_filename):
+                upload_filename = truncate_filename(element_text, extension, quiz_name)
+
+        return Illustration(
+            upload_filename=upload_filename,
+            size_in_pixels=illustration_size,
+            state_of_illustrations=state_of_illustrations,
+            original_file_path=original_file_path,
+        )
+    else:
+        return None
+
+
+def truncate_filename(element_text: str, extension: str, quiz_name: str) -> str:
+    number_of_element_text_words = 5
+    while number_of_element_text_words > 1:
+        split_element_text = element_text.split()
+        split_truncated_element_text = " ".join(
+            split_element_text[:number_of_element_text_words]
+        )
+        upload_filename = create_upload_filename(
+            quiz_name, split_truncated_element_text + "…", extension
+        )
+        if not filename_too_long(upload_filename):
+            return upload_filename
+        number_of_element_text_words -= 1
+
+    # noinspection PyUnboundLocalVariable
+    split_truncated_element_text = split_truncated_element_text[:15]
+    upload_filename = create_upload_filename(
+        quiz_name, split_truncated_element_text + "…", extension
+    )
+    return upload_filename
+
+
+def filename_too_long(upload_filename) -> bool:
+    return len(upload_filename) > 100
+
+
+def create_upload_filename(
+    quiz_name: str, name_of_illustration: str, extension: str, make_unique: bool = False
+) -> str:
+    upload_filename = f'"{name_of_illustration}"'
+    if make_unique:
+        random_hash = uuid4().hex[:6]
+        upload_filename += f" – válaszlehetőség {random_hash}"
+    upload_filename += f" ({quiz_name}){extension}"
+    return upload_filename

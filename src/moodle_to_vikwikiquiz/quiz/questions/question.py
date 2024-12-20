@@ -2,7 +2,7 @@ from random import random
 
 from typing_extensions import override
 
-from .answer import Answer  # type: ignore
+from .answers.answer import Answer  # type: ignore
 from ..grading_types import GradingType  # type: ignore
 from ..illustrations.illustration import Illustration  # type: ignore
 from ..quiz_element import QuizElement  # type: ignore
