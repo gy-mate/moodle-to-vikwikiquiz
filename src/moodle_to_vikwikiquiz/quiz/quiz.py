@@ -20,7 +20,8 @@ from .questions.answers.answer import Answer  # type: ignore
 from .questions.answers.helpers import answer_is_correct, get_correct_answers, get_correct_answers_if_provided  # type: ignore
 from .questions.helpers import (  # type: ignore
     add_answers_to_existing_question,
-    get_element_illustration, get_grading_of_question,
+    get_element_illustration,
+    get_grading_of_question,
     get_if_has_illustration,
     get_if_illustrations_available,
     get_question_data,
