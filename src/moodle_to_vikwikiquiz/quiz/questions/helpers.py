@@ -228,7 +228,7 @@ def filename_too_long(upload_filename) -> bool:
 def create_upload_filename(
     quiz_name: str, name_of_illustration: str, extension: str, make_unique: bool = False
 ) -> str:
-    upload_filename = f'"{name_of_illustration}"'
+    upload_filename = name_of_illustration
     if make_unique:
         random_hash = uuid4().hex[:6]
         upload_filename += f" – válaszlehetőség {random_hash}"
