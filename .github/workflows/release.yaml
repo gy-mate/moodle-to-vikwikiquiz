@@ -17,16 +17,17 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up latest python3
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.x.x"
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+
+      - name: Install Python
+        run: uv python install 3.13
+
+      - name: Install shiv
+        run: uv tool install shiv
 
       - name: Build zipapp
-        run: |
-          python3 -m pip install --upgrade pip
-          pip install shiv
-          shiv --entry-point moodle_to_vikwikiquiz.main:main --output-file moodle-to-vikwikiquiz.pyz --reproducible .
+        run: shiv --entry-point moodle_to_vikwikiquiz.main:main --output-file moodle-to-vikwikiquiz.pyz --reproducible .
 
       - name: Attach the generated zipapp
         uses: svenstaro/upload-release-action@v2
