@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools"]
+requires = ["setuptools==72.2.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -20,11 +20,18 @@ classifiers = [
 ]
 requires-python = ">=3.12"
 dependencies = [
-    "beautifulsoup4",
-    "plum-dispatch",
-    "pylatexenc",
-    "pyperclip",
-    "Send2Trash",
+    "beautifulsoup4==4.12.3",
+    "plum-dispatch==2.5.2",
+    "pylatexenc==2.10",
+    "pyperclip==1.9.0",
+    "Send2Trash==1.8.3",
+]
+
+[project.optional-dependencies]
+dev = [
+    "black==24.8.0",
+    "mypy==1.11.1",
+    "types-beautifulsoup4==4.12.0.20240511"
 ]
 
 [project.urls]

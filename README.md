@@ -20,12 +20,12 @@ A CLI for converting graded and downloaded [Moodle quizzes](https://docs.moodle.
 
 ### 🌍 Global
 
-1. [Install `pipx`](https://pipx.pypa.io/stable/#install-pipx)
+1. [Install `uv`](https://docs.astral.sh/uv/getting-started/installation/#installation-methods)
 1. _If using Linux: [follow these steps](https://github.com/asweigart/pyperclip/blob/master/docs/index.rst#not-implemented-error)._
 1. Run the following command in the terminal:
 
     ```bash
-    pipx install moodle-to-vikwikiquiz
+    uv tool install moodle-to-vikwikiquiz
     ```
    
 ### 🏠 Local
@@ -99,7 +99,7 @@ This includes uploading all images and adding their filenames to the quiz manual
 Run the following command in the terminal:
 
 ```bash
-pipx upgrade-all
+uv tool upgrade --all
 ```
 
 If you want this to run automatically, create a cron job:
@@ -117,7 +117,7 @@ If you want this to run automatically, create a cron job:
 
 1. Add the following line to the end of the file:
     ```bash
-    @daily		pipx upgrade-all
+    @daily		uv tool upgrade --all
     ```
    You may replace `@daily` with `@weekly` or `@monthly`.
 
@@ -126,39 +126,47 @@ If you want this to run automatically, create a cron job:
 
 ### ⌨️ Developing
 
-After you make changes to the Python codebase, please check whether the supported minimum Python version has changed. 
-Run the following command in the terminal:
+1. Create a `venv`:
+    ```bash
+    uv venv
+    ```
+1. Activate the `venv` in your IDE
+1. Install the dependencies:
+    ```bash
+    uv sync --extra dev
+    ```
 
-```bash
-vermin --backport argparse --backport enum --backport typing_extensions --eval-annotations .
-```
+### 📤 Release
 
-If it has changed, please update [`pyproject.toml`](pyproject.toml) accordingly.
+#### 🛠️ Setup
+
+1. Install `vermin`:
+    ```bash
+    uv tool install vermin
+1. Check the minimum Python version:
+    ```bash
+    vermin --backport argparse --backport enum --backport typing_extensions --eval-annotations .
+    ```
+1. If the result is higher than the one in [`pyproject.toml`](pyproject.toml), update it.
+1. Bump the version number:
+    ```bash
+    uv version --bump [major|minor|patch]
+    ```
+1. Commit and push the changes
 
 ### 🏗️ Building
 
+To build a repruducible `zipapp` (`.pyz`):
 
-- Repruducible `zipapp` (`.pyz`):
-    1. [Install `pipx`](https://pipx.pypa.io/stable/#install-pipx)
-    1. Install [`shiv`](https://github.com/linkedin/shiv):
-        ```bash
-        pipx install shiv
-        ```
-    1. Create the executable:
-        ```bash
-        shiv --entry-point moodle_to_vikwikiquiz.main:main --output-file moodle-to-vikwikiquiz.pyz --reproducible .
-        ```
-    1. _Optional: compare its hash with the one of the [latest release](https://github.com/gy-mate/moodle-to-vikwikiquiz/releases/)._
-- Wheels (`.whl`):
-    1. Install `build`:
-        ```bash
-        python3 -m pip install --upgrade pip
-        pip install build
-        ```
-    1. Create the wheels:
-        ```bash
-        python3 -m build
-        ```
+1. Install [`shiv`](https://github.com/linkedin/shiv):
+    ```bash
+    uv tool install shiv
+    ```
+1. Create the executable:
+    ```bash
+    shiv --entry-point moodle_to_vikwikiquiz.main:main --output-file moodle-to-vikwikiquiz.pyz --reproducible .
+    ```
+1. _Optional: compare its hash with the one of the [latest release](https://github.com/gy-mate/moodle-to-vikwikiquiz/releases/)._
 
 
 ## 📜 License
